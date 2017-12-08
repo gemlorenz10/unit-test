@@ -1,0 +1,36 @@
+{
+  "name": "unit-test",
+  "version": "1.0.0",
+  "description": "Use for unit-testing projects of withcenter.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gemlorenz10/unit-test.git"
+  },
+  "keywords": [
+    "unit",
+    "testing"
+  ],
+  "author": "gemlorenz10",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gemlorenz10/unit-test/issues"
+  },
+  "homepage": "https://github.com/gemlorenz10/unit-test#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "nightmare": "^2.10.0",
+    "puppeteer": "^0.13.0",
+    "yargs": "^10.0.3"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.6",
+    "@types/nightmare": "^2.10.0",
+    "@types/node": "^8.0.55",
+    "@types/puppeteer": "^0.13.6",
+    "@types/yargs": "^8.0.2"
+  }
+}
