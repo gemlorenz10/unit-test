@@ -1,4 +1,5 @@
 ﻿import { PuppeteerExtension } from './puppeteer-extension';
+import * as path from 'path';
 const puppeteer = require('puppeteer');
 
 class Ontue extends PuppeteerExtension{
@@ -14,7 +15,7 @@ class Ontue extends PuppeteerExtension{
         nickname: 'Jell',
         phone: '1234567890',
         kakaotalk: 'JellYEAH123',
-        photo: '../data/picture/aileen.png'
+        photo: '../data/picture/eden.jpg'
     }
 
     constructor() {
@@ -44,10 +45,18 @@ class Ontue extends PuppeteerExtension{
         await this.page.waitFor('.ion-md-person-add').then(a=>this.success('Register Button appeared!'))
         await this.waitInCase(1);
         await this.page.click('.ion-md-person-add').then(a=>this.success('Open Registration'))
-    }
+        
+        //upload image
+        await this.waitInCase(1);
+        let profilePic =  await this.page.$('.profile-user>input[type="file"]');
+        await profilePic.uploadFile(path.resolve(__dirname, this.person.photo));
+        
+        //fill up form
 
-    async upload( selector, file ) {
-        await this.page.$(selector).upload(file);
-    }
+    // async upload( selector, file ) {
+    //     await this.page.$(selector).upload(file);
+    // }
 }
+
 (new Ontue()).main();
+
