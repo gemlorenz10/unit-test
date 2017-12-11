@@ -15,7 +15,6 @@ export class PuppeteerExtension {
         safari: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38"
 
     };
-
     constructor() {
 
     }
@@ -63,7 +62,7 @@ export class PuppeteerExtension {
         const filename = `${code}.png`
         const filepath = path.join(dir, filename);
 
-        console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}. See ${filepath}`);
+        console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}`);
 
 
         if ( ! this.page ) {
@@ -72,7 +71,7 @@ export class PuppeteerExtension {
         }
 
         if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-        await this.page.screenshot({ path: filepath });
+        await this.page.screenshot({ path: filepath }).then(a=>console.log(`See ${filepath}`));
         
     }
 
@@ -228,13 +227,47 @@ export class PuppeteerExtension {
      * @param textFile - path to text file to read
      * @param imgFile - path to image to upload
      */
-    get_job_ad_post( textFile = path.join( __dirname, '..', 'file', 'description.txt'), imgFile = path.join(__dirname, '..', 'file', 'hiring.jpg') ) {
+    get_data( textFile = path.join( __dirname, '..', 'data', 'register-data.txt')) {
         
         let content = fs.readFileSync( textFile ).toString();
-        let arr = content.split('\n');
-        return { file : (imgFile) ?  imgFile : null,
-                 description: arr.join(String.fromCharCode(13)),
-                 referrence: arr[0] }
-                 
+        let extract = content.split('\n');
+        let data, rows = [];
+
+        extract.forEach(e => {
+            if( e.indexOf('#') != -1 ) return;
+            data = e.split(',');
+            rows.push({
+                type: data[0],
+                timezone: '#alert-input-0-' + Math.floor(Math.random() * 24), //'-11 Pacific/Midway',
+                email: data[1],
+                password: data[2],
+                name: data[3],
+                nickname: data[4],
+                phone: data[5],
+                kakaotalk: data[6],
+                photo: data[7]
+            });
+        });
+        
+
+        return rows;
+    }
+
+    async type( selector, str ) {
+        
+        await this.deletePrevious( selector );
+        await this.page.type(selector, str, { delay: 70 });
+    }
+
+    
+    async deletePrevious( selector ) {
+        await this.page.focus(selector);
+        await this.page.keyboard.down('Control');
+        await this.page.keyboard.down('A');
+
+        await this.page.keyboard.up('A');
+        await this.page.keyboard.up('Control');
+
+        await this.page.keyboard.press('Backspace');
     }
 }
