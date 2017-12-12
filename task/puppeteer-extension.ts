@@ -53,7 +53,7 @@ export class PuppeteerExtension {
             'accept-language': 'ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4'
         });
     }
-
+    
 
 
     async error(code, msg) {
@@ -231,21 +231,23 @@ export class PuppeteerExtension {
         
         let content = fs.readFileSync( textFile ).toString();
         let extract = content.split('\n');
-        let data, rows = [];
+        let data, rows = [], id = 0;
+        let timezone; 
 
         extract.forEach(e => {
+            timezone = Math.floor(Math.random() * 24);
             if( e.indexOf('#') != -1 ) return;
             data = e.split(',');
             rows.push({
-                type: data[0],
-                timezone: '#alert-input-0-' + Math.floor(Math.random() * 24), //'-11 Pacific/Midway',
-                email: data[1],
-                password: data[2],
-                name: data[3],
-                nickname: data[4],
-                phone: data[5],
+                type:      data[0],
+                timezone: `#alert-input-0-${ timezone }`, //'-11 Pacific/Midway',
+                email:     data[1],
+                password:  data[2],
+                name:      data[3],
+                nickname:  data[4],
+                phone:     data[5],
                 kakaotalk: data[6],
-                photo: data[7]
+                photo:     data[7]
             });
         });
         
