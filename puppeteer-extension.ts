@@ -159,7 +159,7 @@ export abstract class PuppeteerExtension{
 
      * @endcode
      */
-    async waitAppear(selectors: Array<string>, timeout = 30):Promise<number> {
+    async waitAppear(selectors: Array<string>, timeout = 10):Promise<number> {
         let $html = null;
         const maxWaitCount = timeout * 1000 / 100;
         for (let i = 0; i < maxWaitCount; i++) {
@@ -169,10 +169,20 @@ export abstract class PuppeteerExtension{
                 if ($html.find(selectors[i]).length > 0) return i;
             }
         }
-        return -1;
+        throw -1;
     }
 
+    async click( selector: string ) {
+        await this.page.waitFor(selector);
+        await this.waitInCase(1);
+        await this.page.click( selector );
+    }
 
+    async open( selector: string, expect: string ) {
+        await this.click( selector );
+        await this.waitAppear([ expect ]);
+    }
+    
     /**
      * Waits until the selector disappears.
      * 
@@ -263,8 +273,7 @@ export abstract class PuppeteerExtension{
         await this.page.setViewport({height: 900, width: 800});
         if ( !headless ) await this.chrome();
         console.log('Headless? :', headless)
-        await this.page.goto( website )//.then(a=>this.success('Go to ontue.com'));         
-
+        await this.page.goto( website )//.then(a=>this.success('Go to ontue.com'));
     }
 
     

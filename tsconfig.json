@@ -3,7 +3,7 @@
     "compilerOptions": {
       "outDir": "./dist",
       "baseUrl": "src",
-      "sourceMap": false,
+      "sourceMap": true,
       "declaration": false,
       "moduleResolution": "node",
       "emitDecoratorMetadata": true,
