@@ -91,6 +91,10 @@ export class OntueRegister extends PuppeteerExtension{
         await this.type('input[name="nickname"]', user.nickname).then(a=>this.success('Nickname entered'));
         await this.type('input[name="phone_number"]', user.phone).then(a=>this.success('Phone number entered')); 
         await this.type('input[name="kakaotalk_id"]', user.kakaotalk).then(a=>this.success('kakaotalk_id entered'));       
+        
+        // gender
+        await this.waitInCase(1);
+        await this.page.click(`input[value="${user.gender}"]`).then(a=>this.success('Selecting account type.'));
          
         //timezone
         await this.waitInCase(1);
@@ -127,7 +131,8 @@ export class OntueRegister extends PuppeteerExtension{
     }
 
 }
-// (new OntueRegister()).register();
+
 (new OntueRegister()).register();
+// console.log(ontue.getUserData());
 
 

@@ -5,6 +5,7 @@
     password: string
     name:     string
     nickname: string
+    gender:   string
     phone:    string
     kakaotalk:string
     photo:    string

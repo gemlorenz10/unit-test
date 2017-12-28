@@ -127,15 +127,18 @@ export class OntueFunctions extends PuppeteerExtension {
             id = 0,
             timezone; 
 
+        // console.log( extract );
         extract.forEach(e => {
             timezone = Math.floor(Math.random() * 24);
-            if( e.indexOf('#') != -1 ) return;
+            if( e.indexOf('#') > -1 ) return;
+            if ( e === '' ) return;
             data = e.split(',');
+            // let users = this.makeUserInfo( data, timezone );
+            // console.log(users);
             if ( type === undefined || null ) type = 'all';
             if ( type.trim().toUpperCase() === data[0] ) users.push( this.makeUserInfo( data, timezone ) );
             if ( type === 'all' ) users.push( this.makeUserInfo( data, timezone ) );
         });
-        
         return users;
     }
     /**
@@ -153,7 +156,7 @@ export class OntueFunctions extends PuppeteerExtension {
      * @param data 
      * @param timezone 
      */
-    private makeUserInfo( data: IUserInfo, timezone ) {
+    private makeUserInfo( data: IUserInfo, timezone ): IUserInfo{
         return {
             type:      data[0].trim(),
             timezone: `#alert-input-0-${ timezone }`, //'-11 Pacific/Midway',
@@ -161,9 +164,10 @@ export class OntueFunctions extends PuppeteerExtension {
             password:  data[2].trim(),
             name:      data[3].trim(),
             nickname:  data[4].trim(),
-            phone:     data[5].trim(),
-            kakaotalk: data[6].trim(),
-            photo:     data[7].trim()
+            gender:    data[5].trim().toUpperCase(),
+            phone:     data[6].trim(),
+            kakaotalk: data[7].trim(),
+            photo:     data[8].trim()
         }
     }
 
@@ -177,7 +181,10 @@ export class OntueFunctions extends PuppeteerExtension {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
       }
-    /**
+   
+   
+   
+      /**
      * Returns series of weekdays randomly as an array. Returns 7 days of the week when all is set to true.
      * @param all - Returns all weeks when all is set to true.
      */
@@ -202,9 +209,16 @@ export class OntueFunctions extends PuppeteerExtension {
             return weekDays;
         }
     }
+
+
+    /**
+     * Returns weeks mon - fri
+     */
     getMonToFri(){
         return ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
     }
+
+
     /**
      * Returns student if its reserved, empty string if not.
      * @param student - Returns the student if its reserve.
@@ -213,24 +227,29 @@ export class OntueFunctions extends PuppeteerExtension {
         // 1- 5 is reserve while 6-10 is not reserve
         let re = this.getRandomInt( 3, 10 ); // not reserve is favorable
         let reserve = ( re < 6 )? student : '';
-        console.log(re);
         return reserve;
     }
 
+    /**
+     * Generates schedule information. Manually edit if needed.
+     */
     schedGenerator() : ISchedule {
         let _beginHour, _beginMin, _duration, _point, _weekDays = [], _preRe;
-        // _beginHour = ontue.getRandomInt(1,24);
-        // _beginMin = ontue.getRandomInt(0,59);
-        // _duration = ontue.getRandomInt(0,60);
-        // _point = ontue.getRandomInt(400,8000);
-        // _weekDays = ontue.getWeekDays( 6, true );
         _beginHour = 13;
         _beginMin = 0;
         _duration = 25;
         _point = '5000'
         _weekDays = this.getMonToFri();
-        // _preRe = ontue.getPreReserve('gem');
         _preRe = '';
+        
+        //Randomize
+        // _beginHour = ontue.getRandomInt(1,24);
+        // _beginMin = ontue.getRandomInt(0,59);
+        // _duration = ontue.getRandomInt(0,60);
+        // _point = ontue.getRandomInt(400,8000);
+        // _weekDays = ontue.getWeekDays( 6, true );
+        // _preRe = ontue.getPreReserve('gem');
+        
         return {
             beginHour: _beginHour.toString(),
             beginMin: _beginMin.toString(),
