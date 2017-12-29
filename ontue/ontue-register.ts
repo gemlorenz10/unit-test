@@ -1,15 +1,13 @@
-﻿import { RegistrationPage, OntueFunctions } from './ontue-elements';
-import { IUserInfo } from './ontue-interface';
+﻿import { RegistrationPage, getUserData } from './declarations/ontue-declarations';
+import { IUserInfo } from './declarations/interface';
 import * as path from 'path';
 import { PuppeteerExtension } from '../puppeteer-extension';
-import { data } from './register-data';
 
-let ontue = new OntueFunctions;
 
 export class OntueRegister extends PuppeteerExtension {
 
     // get account information to a text
-    persons: IUserInfo[] = ontue.getUserData();
+    persons: IUserInfo[] = getUserData();
     person: IUserInfo = this.persons[this.persons.length - 1];
 
     constructor() {

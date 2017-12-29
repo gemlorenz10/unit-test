@@ -1,8 +1,8 @@
-﻿import { IUserInfo, ISchedule } from './ontue-interface';
-import { SchedulePage, OntueFunctions, LoginPage } from './ontue-elements';
+﻿import { IUserInfo, ISchedule } from './declarations/interface';
+import { SchedulePage, LoginPage, getUserData, schedGenerator } from './declarations/ontue-declarations';
 import { PuppeteerExtension } from './../puppeteer-extension';
 import { OntueLogin } from './ontue-login'
-let ontue = new OntueFunctions;
+
 const schedPage = new SchedulePage;
 
 export class OntueSchedule extends OntueLogin{
@@ -11,7 +11,7 @@ export class OntueSchedule extends OntueLogin{
             await this.start('https://ontue.com');
         
             await this.waitInCase(1);
-            await this.submitLogin( ontue.getUserData()[0] ).then(a=>{ this.success('Login finish.') });
+            await this.submitLogin( getUserData()[0] ).then(a=>{ this.success('Login finish.') });
             await this.waitInCase(1);
             await this.addSched();
         }catch(e){
@@ -29,7 +29,7 @@ export class OntueSchedule extends OntueLogin{
         await this.page.click( schedPage.btnAddSchedule ).then( a=>{ this.success('Open add schedule form.') } );
         await this.waitInCase(2);
         // fill up form
-        let schedule: ISchedule = ontue.schedGenerator();
+        let schedule: ISchedule = schedGenerator();
         await this.type( schedPage.beginHour, schedule.beginHour );
         await this.type( schedPage.beginMinute, schedule.beginMin );
         await this.type( schedPage.classDuration, schedule.duration );

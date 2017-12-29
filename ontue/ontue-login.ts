@@ -1,13 +1,12 @@
-﻿import { IUserInfo } from './ontue-interface';
+﻿import { IUserInfo } from './declarations/interface';
 import * as path from 'path';
-import { LoginPage, OntueFunctions } from './ontue-elements';
+import { LoginPage, getUserData  } from './declarations/ontue-declarations';
 import { PuppeteerExtension } from '../puppeteer-extension';
-const ontue = new OntueFunctions;
 const loginPage = new LoginPage;
 // const puppeteer = require('puppeteer');
 
 export class OntueLogin extends PuppeteerExtension{
-    private user =  ontue.getUserData()
+    private user =  getUserData()
     constructor(){
         super()
 
