@@ -31,7 +31,7 @@ export class OntueLogin extends PuppeteerExtension{
 
         // console.log(user);
         // GO TO LOGIN
-        await this.page.click( login.menu_login ).then( a=> this.success('Go to Menus') );
+        await this.page.click( login.head_menu ).then( a=> this.success('Go to Menus') );
         await this.waitInCase(1);
         await this.page.click( login.menu_login).then( a=> this.success('Go to Login.') );
         await this.waitInCase(1);
@@ -40,7 +40,7 @@ export class OntueLogin extends PuppeteerExtension{
         await this.type( login.login_password, user.password).then(a=>this.success('Password entered'));
         await this.page.click( login.login_btnSubmit ).then( a=>this.success('Attempt to login. Click submit.') );
         // CHECK if wrong password.
-        await this.waitAppear([login.login_wrongPassword], 2)
+        await this.waitAppear([login.login_wrongPassword], 1)
             .then( a => { this.success('Password Incorrect!') } )
             .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
     }

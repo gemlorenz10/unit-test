@@ -48,8 +48,8 @@ export class OntueSchedule extends OntueLogin{
      */
     private async _checkAlert( alertWrapper = '.ion-alert' ) {
         
-        await this.alertSuccess([`.alert-head>div:contains('Create Success')`], 'Schedule Created!');
-        await this.alertSuccess([`.alert-head>h3:contains('-40911')`], 'Schedule already exists!');
+        await this.alertSuccess([`.alert-head>div:contains('Create Success')`], 'Schedule Created!', 2);
+        await this.alertSuccess([`.alert-head>h3:contains('-40911')`], 'Schedule already exists!', 2);
         await this.alertCapture(['.ion-alert'], null, 1);
    }
 
