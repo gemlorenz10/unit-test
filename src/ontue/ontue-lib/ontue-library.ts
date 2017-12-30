@@ -55,17 +55,15 @@ export class RegistrationPage extends MenuPage {
     reg_nickName = 'input[name="nickname"]';
     reg_mobile = 'input[name="phone_number"]';
     reg_kakao = 'input[name="kakaotalk_id"]';
-    // reg_timezone = '.select-timezone';
     reg_btnSubmit = '.button-md-primary';   
     ret_btnTimezone = 'ion-select[name="timezone"]';
-    reg_timezone( selector, timezone ) {
+    reg_timezone( selector = ".select-timezone", timezone ) {
         return tzQuery( selector, timezone );
     }
     
     constructor(){
         super()
     }
-
 
     /**
      * Returns radio element with based on value/
