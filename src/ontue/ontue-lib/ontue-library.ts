@@ -63,14 +63,11 @@ export class RegistrationPage extends MenuPage {
         super()
     }
 
-    reg_timezone( timezone: number ) {
-        if ( timezone < -11 || timezone > 12 ) throw new Error('Timezone only ranges from -11 to +12');
-        let utc = 12;
-        let _timezone = utc + timezone;
-        let radio_group = '.alert-radio-group'
 
-        console.log( _timezone );
-    }
+    /**
+     * Returns radio element with based on value/
+     * @param value 
+     */
     reg_radio( value ) {
         let re = value.trim().toUpperCase()
         return `input[value="${re}"]`;
@@ -78,7 +75,6 @@ export class RegistrationPage extends MenuPage {
 
 }
 
-( new RegistrationPage ).reg_timezone(+13);
 
 /**
  * Ontue element queries for login page.
@@ -274,3 +270,17 @@ export function schedGenerator() : ISchedule {
         preRe: _preRe
     }
 }
+    /**
+     * Returns query selector for timezone.
+     * @param timezone
+     * @param selector - timezone parent/main selector.
+     */
+    export function tzQuery( selector: string, timezone: number ) {
+        if ( timezone < -11 || timezone > 12 ) throw new Error('Timezone only ranges from -11 to +12');
+        let utc = 12;
+        let _timezone = utc + timezone;
+        let radio_group = '.alert-radio-group'
+        let query = `${selector}>${radio_group}:nth-child(${_timezone})`;
+        // console.log( query );
+        return query;
+    }
