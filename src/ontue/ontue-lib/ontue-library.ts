@@ -55,7 +55,7 @@ export class RegistrationPage extends MenuPage {
     reg_nickName = 'input[name="nickname"]';
     reg_mobile = 'input[name="phone_number"]';
     reg_kakao = 'input[name="kakaotalk_id"]';
-    reg_timezone = 'ion-select[name="timezone"]';
+    // reg_timezone = '.select-timezone';
     reg_btnSubmit = '.button-md-primary';   
 
     
@@ -63,12 +63,22 @@ export class RegistrationPage extends MenuPage {
         super()
     }
 
+    reg_timezone( timezone: number ) {
+        if ( timezone < -11 || timezone > 12 ) throw new Error('Timezone only ranges from -11 to +12');
+        let utc = 12;
+        let _timezone = utc + timezone;
+        let radio_group = '.alert-radio-group'
+
+        console.log( _timezone );
+    }
     reg_radio( value ) {
         let re = value.trim().toUpperCase()
         return `input[value="${re}"]`;
     }
 
 }
+
+( new RegistrationPage ).reg_timezone(+13);
 
 /**
  * Ontue element queries for login page.
