@@ -1,11 +1,11 @@
 ﻿import { IUserInfo } from './ontue/ontue-lib/interface';
 const puppeteer = require('puppeteer');
 import { Page, Browser } from 'puppeteer';
+import { userInfo } from 'os';
+import { LoginPage } from './ontue/ontue-lib/ontue-library';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
 import * as fs from 'fs';
-import { userInfo } from 'os';
-import { LoginPage } from './ontue/ontue-lib/ontue-declarations';
 
 export abstract class PuppeteerExtension{
     browser: Browser;
@@ -60,7 +60,7 @@ export abstract class PuppeteerExtension{
 
 
     async error(code, msg) {
-        if (!code) code = 'undefined';
+        if (!code) code = 'error';
         console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}`);
 
         if ( ! this.page ) {
@@ -73,8 +73,11 @@ export abstract class PuppeteerExtension{
     }
 
     async fatal(code, msg) {
+        if ( !code ) code = 'fatal'
         await this.error(code, msg);
+        console.log("FATAL:", msg)
         console.log("Going to exit since it is fatal error.");
+        
         process.exit(1);
     }
 
@@ -92,10 +95,18 @@ export abstract class PuppeteerExtension{
         await this.page.screenshot({ path: filepath }).then(a=>console.log(`${level}: See ${filepath}`));
     }
 
+    /**
+     * Ads OK: to message.
+     * @param msg 
+     */
     success(msg){
         console.log('OK: ', msg);
     }
 
+    /**
+     * Put the program to sleep at a given time in seconds.
+     * @param sec 
+     */
     async sleep(sec) {
         // sleep and do it over again.
         console.log(`OK: Sleeping for ${sec} seconds.`);
@@ -131,50 +142,35 @@ export abstract class PuppeteerExtension{
 
 
     /**
-     * Returns a promise of number indicating which selector has been appeared.
-     * ( 여러 selector 들을 배열로 입력하고 그 중에 하나가 30 초 이내에 나타나면 0 부터 ... 배열.length 값 중 하나를 리턴한다. )
-     * 
-     * 만약, selector 가 timeout 될 때까지 나타나지 않으면 -1 일 리턴된다.
-     * 
+     * Returns a message: string when a selector was found. 
+     * Throws an object = { code: 'selector-not-found', message: "Selectors not found." } when selector was not found.
      * @return
-     *      Promise(-1) - If none of the selectors are appeared.
-     *      Promise( 0 ) - If the first selector appeared.
-     *      Promise( 1 ) - If the second selector appeared.
-     *      Promise( 2 ) - If the third selector appeared.
-     *      and so on.
-     * 
      * @code
-     *      const n = await this.waitAppear( [ '.error', '.home-form-header' ] );
      * @endcode
      * 
      * @code
-     
-            let url = "https://accounts.kakao.com/login?continue=https://center-pf.kakao.com/signup";
-            await this.page.goto( url );
-            let re = await this.waitAppear(['#recaptcha_area', '#email', 'input[name="email"]']);
-            if ( re === -1 ) protocol.end('fail', 'login page open failed');
-            else if ( re === 0 ) protocol.end('fail', 'capture appeared');
-            else protocol.send('login page open ok');
-
      * @endcode
      */
-    async waitAppear(selectors: Array<string>, timeout = 10):Promise<number> {
+    async waitAppear(selectors: Array<string>, message?, timeout = 10):Promise<string> {
         let $html = null;
+        let msg;
         const maxWaitCount = timeout * 1000 / 100;
         for (let i = 0; i < maxWaitCount; i++) {
             await this.page.waitFor(100);
             $html = await this.jQuery();
             for (let i = 0; i < selectors.length; i++) {
-                if ($html.find(selectors[i]).length > 0) return i;
+                msg = ( message ) ? message : `Selector "${selectors[i]}" appeared!`
+                if ($html.find(selectors[i]).length > 0) return msg ;
             }
         }
-        throw -1;
+        throw { code: 'selector-not-found', message: "Selectors not found." };
     }
 
-    async click( selector: string ) {
+    async click( selector: string, message? ) {
+        let msg = ( !message ) ? `Click: ${selector}` : message
         await this.page.waitFor(selector);
         await this.waitInCase(1);
-        await this.page.click( selector );
+        await this.page.click( selector ).then( a => { this.success( msg ) } );
     }
 
     async open( selector: string, expect: string ) {
@@ -243,13 +239,23 @@ export abstract class PuppeteerExtension{
         });
     }
 
-    async type( selector, str ) {
+    /**
+     * Clears the field before typing. with delay option.
+     * @param selector 
+     * @param str 
+     */
+    async type( selector, str, delay = 60 ) {
         
         await this.deletePrevious( selector );
-        await this.page.type(selector, str, { delay: 60 }).then(a=>{ this.success('Type in ' + selector) });
+        await this.page.type(selector, str, { delay: delay })
+            .then(a=>{ this.success('Type in ' + selector) })
+            .catch( e => { this.fatal(e.code, e) } );
     }
 
-    
+    /**
+     * Deletes text in an input.
+     * @param selector 
+     */
     async deletePrevious( selector ) {
         await this.page.focus(selector);
         await this.page.keyboard.down('Control');
@@ -275,5 +281,64 @@ export abstract class PuppeteerExtension{
         await this.page.goto( website )//.then(a=>this.success('Go to ontue.com'));
     }
 
+    /**
+     * uploads file
+     * @param filePath
+     * @param inputElement - puppeteer.page.$(input-selector); 
+     */
+    async upload( filePath, inputElement ) {
+        
+        console.log(filePath);
+        await inputElement.uploadFile( filePath )
+            .then(a => this.success('Image Uploaded'))
+            .catch( e => { this.fatal(e.code, e) } );
+    }
+
+    /**
+     * Checks for Alert boxes. Capture and press enter to exit.
+     * @param selector_list 
+     * @param message - null if not necessary
+     * @param timeout 
+     */
+    async alertCapture(selector_list = [],  message, timeout = 5) {
+        if (message === null) message = 'Capture Alert';
+        await this.waitAppear(selector_list, message, timeout)
+            .then( async a => { 
+                this.warn( 'capture-alert', a )
+                await this.waitInCase(1);
+                await this.page.keyboard.press('Enter');
+            } ).catch( e => e );
+
+    }
+
+    /**
+     * Checks for Alert boxes. Capture and press enter to exit.
+     * @param selector_list 
+     * @param message - null if not necessary
+     * @param timeout 
+     */
+    async alertSuccess(selector_list = [],  message, timeout = 5) {
+        if (message === null || undefined) message = 'Success! closing alert.';
+        await this.waitAppear(selector_list, message, timeout)
+            .then( async a => { 
+                this.success( a );        
+                await this.waitInCase(1);
+                await this.page.keyboard.press('Enter').then( a=>{this.success('Press Enter.')} );
+            }).catch( e => e );
+
+    }
+
+    exitProgram( code: number ) {
+        console.log('Program finish. Process will exit ', code);
+        process.exit( code );
+    }
     
 }
+
+/**
+ * Form of data that Puppeteer-extension error handlers accepts.
+ */
+// export interface IUserException {
+//     code: string,
+//     message: string
+// }
