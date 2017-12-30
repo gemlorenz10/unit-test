@@ -1,8 +1,8 @@
-﻿import { RegistrationPage, getUserData, getUserJson } from './ontue-lib/ontue-library';
+﻿import { RegistrationPage } from './ontue-lib/ontue-library';
 import { IUserInfo } from './ontue-lib/interface';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import * as path from 'path';
-import * as userData from '../../data/user-data.json';
+import { user_data } from './../data/user-data';
 let register_page = new RegistrationPage();
 
 export class OntueRegister extends PuppeteerExtension {
@@ -49,7 +49,6 @@ export class OntueRegister extends PuppeteerExtension {
         await this.upload(photo_url, profile_pic);
 
         // type
-        await this.waitInCase(.1);
         await this.click( register_page.reg_radio( user.type ) , 'Select Type.');
         await this.waitInCase(.2);
         await this.type(register_page.reg_email, user.email);
@@ -60,13 +59,10 @@ export class OntueRegister extends PuppeteerExtension {
         await this.type(register_page.reg_kakao, user.kakao);
 
         // gender
-        await this.waitInCase(.1);
         await this.click( register_page.reg_radio( user.gender ), 'Select Gender.' );
 
         // timezone
-        await this.waitInCase(.1);
         await this.click( register_page.reg_btnTimezone, 'select timezone');
-        await this.waitInCase(.3);
         await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , 'submit timezone'); // click ok
         await this.click( register_page.reg_btnTimezoneOK, 'click ok' );
         // await this.click( register_page.reg_btnTimezoneCancel, 'click cancel' );
@@ -75,7 +71,6 @@ export class OntueRegister extends PuppeteerExtension {
         
         
         // submit
-        await this.waitInCase(.2);
         await this.click('.button-md-primary', 'Submit form!');
 
         await this._checkAlert();
@@ -89,7 +84,6 @@ export class OntueRegister extends PuppeteerExtension {
         await this.alertSuccess(['.alert-head>h3:contains("-40001")'],'User Already Registered!', 1);
         await this.alertSuccess(['.alert-wrapper>.alert-message:contains("registered")'], user.email+' Registered', 1);
         await this.alertCapture(['.alert-head'], null, 1);
-
     }
 
     test(){
@@ -100,6 +94,4 @@ export class OntueRegister extends PuppeteerExtension {
     }
 }
 
-
-let person_list: IUserInfo[] = getUserJson( userData );
-(new OntueRegister( person_list[0] )).register();
+(new OntueRegister( user_data[1] )).register();

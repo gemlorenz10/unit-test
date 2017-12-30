@@ -1,5 +1,8 @@
 ﻿{
     "compileOnSave": true,
+    "include": [
+      "src/**/*.ts"
+    ],
     "compilerOptions": {
       "module":"commonjs",
       "outDir": "./dist",
@@ -7,7 +10,7 @@
       "noImplicitAny": false,
       "target": "es5",
       "watch": true,
-      "baseUrl": "./src",
+      // "baseUrl": "./src",
       "types": [
         "node"
       ],

@@ -1,6 +1,5 @@
 ﻿import * as path from 'path';
 import * as fs from 'fs';
-import * as userJson from '../../../data/user-data.json'
 import { IUserInfo, ISchedule } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 
@@ -21,8 +20,6 @@ export class HeaderElements{
     head_menu = ".header-menu";
     constructor(){
     }
-
-
 }
 /**
  * Ontue elements queries for Menu
@@ -37,7 +34,6 @@ export class MenuPage extends HeaderElements {
     menu_policy = ".menu-policy";
     menu_login = ".menu-login";
     menu_registration = ".menu-registration";
-
     
     constructor(){
         super()
@@ -120,72 +116,49 @@ class IntroPage {
     content = 'intro-page';
 }
 
-/**
- * Extracts user_data[] in a json file.
- * Json must have entry for user_data;
- * @param json 
- */
-let user_json = userJson
-export function getUserJson( json = user_json ): IUserInfo[] {
-    let data = (<any>json).user_data
-    if ( !data ) throw new Error(`"user_data" key not found in specified json file.`);
-    let user_list = []
+// /**
+//  * Extracts user_data[] in a json file.
+//  * Json must have entry for user_data;
+//  * @param json 
+//  */
+// let user_json = userJson
+// export function getUserJson( json = user_json ): IUserInfo[] {
+//     return (<any>json).user_data;
 
-    data.forEach(e => {
-        user_list.push( makeUserInfo(e) );
-    });
+//     // let data = (<any>json).user_data
+//     // if ( !data ) throw new Error(`"user_data" key not found in specified json file.`);
+//     // let user_list = []
 
-    return user_list;
-}
+//     // data.forEach(e => {
+//     //     user_list.push( e );
+//     // });
 
-/**
-* Returns the contents and image file to upload.
-* @param textFile - path to text file to read
-* @param imgFile - path to image to upload
-*/
-export function getUserData( type?, textFile = path.join( __dirname, '..','..', 'data', 'register-data.txt')) :IUserInfo[]{
-        let content = fs.readFileSync( textFile ).toString();
-        let extract = content.split('\n');
-        let data,
-            users: IUserInfo[] = [],
-            id = 0,
-            timezone; 
-
-        extract.forEach(e => {
-            timezone = Math.floor(Math.random() * 24);
-            if( e.indexOf('#') > -1 ) return;
-            if ( e === '' ) return;
-            data = e.split(',');
-
-            if ( type === undefined || null ) type = 'all';
-            if ( type.trim().toUpperCase() === data[0] ) users.push( makeUserInfo( data ) );
-            if ( type === 'all' ) users.push( makeUserInfo( data ) );
-        });
-        return users;
-    }
+//     // return user_list;
+// }
 
 
-/**
- * For get_data, to returns object for user information.
- * @param data 
- * @param timezone 
- */
-function makeUserInfo( data ): IUserInfo{
-    return {
-        type:      data.type.trim(),
-        timezone:  data.timezone, //'-11 Pacific/Midway',
-        email:     data.email.trim(),
-        password:  data.password.trim(),
-        name:      data.name.trim(),
-        nickname:  data.nickname.trim(),
-        gender:    data.gender.trim().toUpperCase(),
-        phone:     data.phone.trim(),
-        kakao:     data.kakao.trim(),
-        photo:     data.photo.trim(),
-        birthdate: data.birthdate.trim()
-    }
 
-}
+// /**
+//  * For get_data, to returns object for user information.
+//  * @param data 
+//  * @param timezone 
+//  */
+// function makeUserInfo( data ): IUserInfo{
+//     return {
+//         type:      data.type.trim(),
+//         timezone:  data.timezone, //'-11 Pacific/Midway',
+//         email:     data.email.trim(),
+//         password:  data.password.trim(),
+//         name:      data.name.trim(),
+//         nickname:  data.nickname.trim(),
+//         gender:    data.gender.trim().toUpperCase(),
+//         phone:     data.phone.trim(),
+//         kakao:     data.kakao.trim(),
+//         photo:     data.photo.trim(),
+//         birthdate: data.birthdate.trim()
+//     }
+
+// }
 
 /**
  * Get a random integer
@@ -204,7 +177,7 @@ export function getRandomInt(min, max) {
  * @param all - Returns all weeks when all is set to true.
  */
 export function getWeekDays( numOfDays?, all : boolean = false ){
-    if ( numOfDays > 7 ) throw { message: 'Max number of weeks is 7!' };
+    if ( numOfDays > 7 ) throw { message: 'Max number of weeks is 7...!' };
     let weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     let numberOfDays = (numOfDays)? numOfDays : this.getRandomInt(1,7); // number of days to add.
     let i, index, included, reserveDays=[], day;        

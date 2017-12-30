@@ -1,8 +1,8 @@
 ﻿import { IUserInfo, ISchedule } from './ontue-lib/interface';
-import { SchedulePage, LoginPage, getUserData, schedGenerator, getUserJson } from './ontue-lib/ontue-library';
+import { SchedulePage, LoginPage, schedGenerator } from './ontue-lib/ontue-library';
 import { PuppeteerExtension } from './../puppeteer-extension';
 import { OntueLogin } from './ontue-login'
-import * as user_list from '../../data/user-data.json';
+import { user_data } from './../data/user-data';
 
 const schedPage = new SchedulePage;
 export class OntueSchedule extends OntueLogin{
@@ -63,4 +63,4 @@ export class OntueSchedule extends OntueLogin{
 }
 
 let schedule: ISchedule = schedGenerator();
- ( new OntueSchedule( getUserJson( user_list ), schedule) ).main();
+ ( new OntueSchedule( user_data[0], schedule) ).main();
