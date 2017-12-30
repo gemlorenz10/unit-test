@@ -9,7 +9,8 @@
             "gender":"f",
             "phone":"064347986",
             "kakao":"Eden123",
-            "photo":"eden.jpg"
+            "photo":"eden.jpg",
+            "timezone": -2
 
         },
         {
@@ -21,7 +22,8 @@
             "gender":"f",
             "phone":"165432188",
             "kakao":"eljei125",
-            "photo":"eljei.jpg"
+            "photo":"eljei.jpg",
+            "timezone": 8
 
         }
     ]

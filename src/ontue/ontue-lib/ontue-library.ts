@@ -56,7 +56,7 @@ export class RegistrationPage extends MenuPage {
     reg_mobile = 'input[name="phone_number"]';
     reg_kakao = 'input[name="kakaotalk_id"]';
     reg_btnSubmit = '.button-md-primary';   
-    ret_btnTimezone = 'ion-select[name="timezone"]';
+    reg_btnTimezone = 'ion-select[name="timezone"]';
     reg_timezone( selector = ".select-timezone", timezone ) {
         return tzQuery( selector, timezone );
     }
@@ -130,7 +130,7 @@ export function getUserJson( json = user_json ): IUserInfo[] {
     let user_list = []
 
     data.forEach(e => {
-        user_list.push( makeUserInfo(e, '8') );
+        user_list.push( makeUserInfo(e) );
     });
 
     return user_list;
@@ -156,8 +156,8 @@ export function getUserData( type?, textFile = path.join( __dirname, '..','..', 
             data = e.split(',');
 
             if ( type === undefined || null ) type = 'all';
-            if ( type.trim().toUpperCase() === data[0] ) users.push( makeUserInfo( data, timezone ) );
-            if ( type === 'all' ) users.push( makeUserInfo( data, timezone ) );
+            if ( type.trim().toUpperCase() === data[0] ) users.push( makeUserInfo( data ) );
+            if ( type === 'all' ) users.push( makeUserInfo( data ) );
         });
         return users;
     }
@@ -168,10 +168,10 @@ export function getUserData( type?, textFile = path.join( __dirname, '..','..', 
  * @param data 
  * @param timezone 
  */
-function makeUserInfo( data, timezone ): IUserInfo{
+function makeUserInfo( data ): IUserInfo{
     return {
         type:      data.type.trim(),
-        timezone: `#alert-input-0-${ timezone }`, //'-11 Pacific/Midway',
+        timezone:  data.timezone, //'-11 Pacific/Midway',
         email:     data.email.trim(),
         password:  data.password.trim(),
         name:      data.name.trim(),

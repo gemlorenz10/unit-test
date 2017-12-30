@@ -1,6 +1,6 @@
 ﻿export interface IUserInfo {
     type:     string
-    timezone: string
+    timezone: number
     email:    string
     password: string
     name:     string

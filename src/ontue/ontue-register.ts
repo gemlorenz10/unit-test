@@ -13,13 +13,14 @@ export class OntueRegister extends PuppeteerExtension {
 
     }
 
-    async register(user: IUserInfo = this.person) {
+    async register() {
+        let user = this.person
         console.log(user);
         await this.start('https://ontue.com', false).catch( e => this.fatal(e, 'failed to open ontue.com') );
         //check alert
         await this.alertCapture(['.ion-alert'], null, 1);
         // Register all info that are in text file
-        await this.fillUpForm(user).catch( e => { this.fatal(e.code, e) } );
+        await this.fillUpForm().catch( e => { this.fatal(e.code, e) } );
         await this.page.reload();
         
         process.exit(0);
@@ -29,8 +30,8 @@ export class OntueRegister extends PuppeteerExtension {
     /**
      * Will fill up the form.
      */
-    async fillUpForm(user: IUserInfo = this.person) {
-
+    async fillUpForm() {
+        let user: IUserInfo = this.person
         // NAVIGATE TO REGISTRATION
 
         await this.waitAppear([register_page.head_menu]);
@@ -64,22 +65,21 @@ export class OntueRegister extends PuppeteerExtension {
 
         //timezone
         await this.waitInCase(.1);
-        await this.click('ion-select[name="timezone"]', 'select timezone');
+        await this.click( register_page.reg_btnTimezone, 'select timezone');
         await this.waitInCase(.3);
-        await this.click(user.timezone, 'timezone selected' + user.timezone);
-        await this.click('.alert-button-group button:nth-child(2)', 'submit timezone'); // click ok
+        await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , 'submit timezone'); // click ok
         // submit
         await this.waitInCase(.2);
         await this.click('.button-md-primary', 'Submit form!');
 
-        await this._checkAlert(user);
+        await this._checkAlert();
     }
     /**
      * Checks alert box in register.
      * @param user 
      */
-    private async _checkAlert(user: IUserInfo) {
-
+    private async _checkAlert() {
+        let user: IUserInfo = this.person
         await this.alertSuccess(['.alert-head>h3:contains("-40001")'],'User Already Registered!', 1);
         await this.alertSuccess(['.alert-wrapper>.alert-message:contains("registered")'], user.email+' Registered', 1);
         await this.alertCapture(['.alert-head'], null, 1);
