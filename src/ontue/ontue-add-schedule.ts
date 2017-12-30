@@ -1,5 +1,5 @@
-﻿import { IUserInfo, ISchedule } from './declarations/interface';
-import { SchedulePage, LoginPage, getUserData, schedGenerator } from './declarations/ontue-declarations';
+﻿import { IUserInfo, ISchedule } from './ontue-lib/interface';
+import { SchedulePage, LoginPage, getUserData, schedGenerator } from './ontue-lib/ontue-declarations';
 import { PuppeteerExtension } from './../puppeteer-extension';
 import { OntueLogin } from './ontue-login'
 

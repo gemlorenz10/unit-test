@@ -1,6 +1,6 @@
-﻿import { IUserInfo } from './declarations/interface';
+﻿import { IUserInfo } from './ontue-lib/interface';
 import * as path from 'path';
-import { LoginPage, getUserData  } from './declarations/ontue-declarations';
+import { LoginPage, getUserData  } from './ontue-lib/ontue-declarations';
 import { PuppeteerExtension } from '../puppeteer-extension';
 const loginPage = new LoginPage;
 // const puppeteer = require('puppeteer');

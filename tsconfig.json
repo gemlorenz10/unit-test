@@ -1,21 +1,13 @@
 ﻿{
     "compileOnSave": true,
     "compilerOptions": {
+      "module":"commonjs",
       "outDir": "./dist",
-      "baseUrl": "src",
       "sourceMap": true,
-      "declaration": false,
-      "moduleResolution": "node",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "allowJs": true,
+      "noImplicitAny": false,
       "target": "es5",
       "watch": true,
-      "paths": {
-        "environments": [
-          "./environments"
-        ]
-      },
+      "baseUrl": "./src",
       "types": [
         "node"
       ],
@@ -23,12 +15,11 @@
         "node_modules/@types"
       ],
       "lib": [
-        "es2016",
-        "dom"
+        "es2016"
       ]
     },
     "exclude": [
       "node_modules",
-      "dist"
+      "./dist"
     ]
   }

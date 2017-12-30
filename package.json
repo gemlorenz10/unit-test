@@ -23,10 +23,11 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "puppeteer": "^0.13.0",
+    "typescript": "^2.6.2",
     "yargs": "^10.0.3"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.6",
+    "@types/cheerio": "^0.22.7",
     "@types/node": "^8.0.55",
     "@types/puppeteer": "^0.13.6",
     "@types/yargs": "^8.0.2"

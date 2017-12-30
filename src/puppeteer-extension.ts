@@ -1,12 +1,11 @@
-﻿import { IUserInfo } from './ontue/ontue-interface';
+﻿import { IUserInfo } from './ontue/ontue-lib/interface';
 const puppeteer = require('puppeteer');
-// import {  } from "puppeteer";
 import { Page, Browser } from 'puppeteer';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
 import * as fs from 'fs';
 import { userInfo } from 'os';
-import { LoginPage } from './ontue/ontue-elements';
+import { LoginPage } from './ontue/ontue-lib/ontue-declarations';
 
 export abstract class PuppeteerExtension{
     browser: Browser;

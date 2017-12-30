@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import { IUserInfo, ISchedule } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
+
 /**
  * Ontue elements queries for Header navbar
  */
@@ -109,6 +110,10 @@ class IntroPage {
     content = 'intro-page';
 }
 
+export function getUserJson( json ): IUserInfo {
+    let re = (<any>json).user_data
+    return re;
+}
 
  
     /**
@@ -116,7 +121,7 @@ class IntroPage {
     * @param textFile - path to text file to read
     * @param imgFile - path to image to upload
     */
-export function getUserData( type?, textFile = path.join( __dirname, '..', 'data', 'register-data.txt')) :IUserInfo[]{
+export function getUserData( type?, textFile = path.join( __dirname, '..','..', 'data', 'register-data.txt')) :IUserInfo[]{
         let content = fs.readFileSync( textFile ).toString();
         let extract = content.split('\n');
         let data,
@@ -124,31 +129,18 @@ export function getUserData( type?, textFile = path.join( __dirname, '..', 'data
             id = 0,
             timezone; 
 
-        // console.log( extract );
         extract.forEach(e => {
             timezone = Math.floor(Math.random() * 24);
             if( e.indexOf('#') > -1 ) return;
             if ( e === '' ) return;
             data = e.split(',');
-            // let users = this.makeUserInfo( data, timezone );
-            // console.log(users);
+
             if ( type === undefined || null ) type = 'all';
-            if ( type.trim().toUpperCase() === data[0] ) users.push( this.makeUserInfo( data, timezone ) );
-            if ( type === 'all' ) users.push( this.makeUserInfo( data, timezone ) );
+            if ( type.trim().toUpperCase() === data[0] ) users.push( makeUserInfo( data, timezone ) );
+            if ( type === 'all' ) users.push( makeUserInfo( data, timezone ) );
         });
         return users;
     }
-
-
-/**
- * Checks if the current page is the intro then presses skip to exit.
- */
-// async checkIntro() {
-//     let introPage = new IntroPage;
-//     let intro = await this.waitDisappear(introPage.content);
-//     if ( intro ) await this.page.click(introPage.btnSkip).then(a=>{ this.success('Intro page found, Click skip.') });
-//     return
-// }
 
 /**
  * For get_data, to returns object for user information.

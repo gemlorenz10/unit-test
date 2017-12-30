@@ -1,7 +1,9 @@
-﻿import { RegistrationPage, getUserData } from './declarations/ontue-declarations';
-import { IUserInfo } from './declarations/interface';
-import * as path from 'path';
+﻿import { RegistrationPage, getUserData, getUserJson } from './ontue-lib/ontue-declarations';
+import { IUserInfo } from './ontue-lib/interface';
 import { PuppeteerExtension } from '../puppeteer-extension';
+import * as path from 'path';
+import * as userData from '../../data/user-data.json';
+
 
 
 export class OntueRegister extends PuppeteerExtension {
@@ -16,12 +18,11 @@ export class OntueRegister extends PuppeteerExtension {
 
     async register(user: IUserInfo = this.person) {
         
-            await this.start('https://ontue.com', false).catch( e => this.fatal(e, 'failed to open ontue.com') );
+        await this.start('https://ontue.com', false).catch( e => this.fatal(e, 'failed to open ontue.com') );
             
-
         // Register all info that are in text file
         await this.fillUpForm(user);
-        await this.page.reload();
+        // await this.page.reload();
         
         process.exit(0);
     }
@@ -68,10 +69,9 @@ export class OntueRegister extends PuppeteerExtension {
 
         await profilePic.uploadFile(path.resolve(__dirname, user.photo)).then(a => this.success('Image Uploaded'));
 
-        debugger;
         // type
         await this.waitInCase(.1);
-        await this.page.click(`input[value="${user.type}"]`).then(a => this.success('Selecting account type.'));
+        await this.page.click(`input[value="${user.type}"]`).then(a => this.success('Account type selected.'));
 
         await this.waitInCase(.2);
         await this.type('input[name="email"]', user.email).then(a => this.success('Email entered'));
@@ -121,7 +121,5 @@ export class OntueRegister extends PuppeteerExtension {
 
 }
 
-(new OntueRegister()).register();
-// console.log(ontue.getUserData());
-
-
+// (new OntueRegister()).register();
+console.log( getUserJson(userData) );

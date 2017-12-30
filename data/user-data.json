@@ -1,0 +1,16 @@
+﻿{
+    "user_data": [
+        {
+            "type": "T",
+            "email":"eden@gmail.com",
+            "password":"secret",
+            "name":"Eden Ontue",
+            "nickname":"Eden",
+            "gender":"f",
+            "phone":"064347986",
+            "kakao":"Eden123",
+            "photo_url":"../../data/picture/eden.jpg"
+
+        }
+    ]
+}
