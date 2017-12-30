@@ -56,6 +56,8 @@ export class RegistrationPage extends MenuPage {
     reg_mobile = 'input[name="phone_number"]';
     reg_kakao = 'input[name="kakaotalk_id"]';
     reg_btnSubmit = '.button-md-primary';   
+    reg_btnTimezoneOK = ".select-timezone>.alert-wrapper>div:nth-child(4)>Button:nth-child(2)";
+    reg_btnTimezoneCancel = ".select-timezone>.alert-wrapper>div:nth-child(4)>Button:nth-child(1)";
     reg_btnTimezone = 'ion-select[name="timezone"]';
     reg_timezone( selector = ".select-timezone", timezone ) {
         return tzQuery( selector, timezone );
@@ -281,7 +283,8 @@ export function schedGenerator() : ISchedule {
         if ( timezone < -11 || timezone > 12 ) throw new Error('Timezone only ranges from -11 to +12');
         let utc = 12; // 0 + 12.
         let _timezone = utc + timezone;
-        let radio_group = '.alert-radio-group'
+        // `${selector}>${children}`;
+        let radio_group = '.alert-wrapper>div>.alert-radio-group>button'
         let query = `${selector}>${radio_group}:nth-child(${_timezone})`;
         // console.log( query );
         return query;

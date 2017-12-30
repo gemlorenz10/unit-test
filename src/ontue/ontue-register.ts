@@ -21,9 +21,9 @@ export class OntueRegister extends PuppeteerExtension {
         await this.alertCapture(['.ion-alert'], null, 1);
         // Register all info that are in text file
         await this.fillUpForm().catch( e => { this.fatal(e.code, e) } );
-        await this.page.reload();
+        // await this.page.reload();
         
-        process.exit(0);
+        this.exitProgram(0)
     }
 
 
@@ -68,6 +68,8 @@ export class OntueRegister extends PuppeteerExtension {
         await this.click( register_page.reg_btnTimezone, 'select timezone');
         await this.waitInCase(.3);
         await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , 'submit timezone'); // click ok
+        await this.click( register_page.reg_btnTimezoneOK, 'click ok' );
+        // await this.click( register_page.reg_btnTimezoneCancel, 'click cancel' );
         // submit
         await this.waitInCase(.2);
         await this.click('.button-md-primary', 'Submit form!');
@@ -84,6 +86,13 @@ export class OntueRegister extends PuppeteerExtension {
         await this.alertSuccess(['.alert-wrapper>.alert-message:contains("registered")'], user.email+' Registered', 1);
         await this.alertCapture(['.alert-head'], null, 1);
 
+    }
+
+    test(){
+        let user = this.person
+        let q = register_page.reg_timezone('.select-timezone', user.timezone);
+        console.log(user)
+        console.log(q);
     }
 }
 
