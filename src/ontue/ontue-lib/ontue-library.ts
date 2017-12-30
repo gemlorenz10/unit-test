@@ -57,7 +57,10 @@ export class RegistrationPage extends MenuPage {
     reg_kakao = 'input[name="kakaotalk_id"]';
     // reg_timezone = '.select-timezone';
     reg_btnSubmit = '.button-md-primary';   
-
+    ret_btntimezone = '';
+    reg_timezone( selector, timezone ) {
+        return tzQuery( selector, timezone );
+    }
     
     constructor(){
         super()
