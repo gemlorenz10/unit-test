@@ -1,66 +1,66 @@
 ﻿import { IUserInfo, ISchedule } from './ontue-lib/interface';
-import { SchedulePage, LoginPage, getUserData, schedGenerator } from './ontue-lib/ontue-declarations';
+import { SchedulePage, LoginPage, getUserData, schedGenerator, getUserJson } from './ontue-lib/ontue-library';
 import { PuppeteerExtension } from './../puppeteer-extension';
 import { OntueLogin } from './ontue-login'
+import * as user_list from '../../data/user-data.json';
 
 const schedPage = new SchedulePage;
-
+let schedule: ISchedule = schedGenerator();
 export class OntueSchedule extends OntueLogin{
-    async main() { 
-        try{
-            await this.start('https://ontue.com');
-        
-            await this.waitInCase(1);
-            await this.submitLogin( getUserData()[0] ).then(a=>{ this.success('Login finish.') });
-            await this.waitInCase(1);
-            await this.addSched();
-        }catch(e){
-            this.error(e.code, e.message);
-        }
 
-        process.exit(0);
+    constructor( private userInfo ){
+        super( userInfo )
+    }
+    async main() { 
+        await this.start('https://ontue.com', false).catch( e => { this.fatal( e.code, e ) } );
+        await this.waitInCase(1);
+        await this.submitLogin( this.userInfo[0] ).then(a=>{ this.success('Login finish.') });
+        await this.waitInCase(1);
+        await this.addSched();
+
+        this.exitProgram(0);
     }
 
     async addSched() {
         // navigate to add schedule form
         await this.page.click( schedPage.scheduleEdit ).then(a=>{ this.success('go to scheduler.') });
-        let elem = await this.waitAppear( [schedPage.btnAddSchedule, schedPage.tbSchedule], 5 );
-        if (elem == -1 ) this.error('timeout', 'Scheduler load exceeds timeout!');
+        await this.waitAppear( [schedPage.btnAddSchedule], null, 2 )
+            .then( a => { this.success(a) } )
+            .catch( e => { this.fatal( e.code, e.message ) } );
         await this.page.click( schedPage.btnAddSchedule ).then( a=>{ this.success('Open add schedule form.') } );
         await this.waitInCase(2);
         // fill up form
-        let schedule: ISchedule = schedGenerator();
         await this.type( schedPage.beginHour, schedule.beginHour );
         await this.type( schedPage.beginMinute, schedule.beginMin );
         await this.type( schedPage.classDuration, schedule.duration );
         await this.type( schedPage.classPoint, schedule.point );
         // choose days in a week.
-        let i;
-        for( i = 0; i <= schedule.weekDays.length - 1;) {
-            await this.page.click( schedPage.weekDay( schedule.weekDays[i] ) );
-            i++;
-        }
+        await this._selectDays();
         await this.type( schedPage.preReserve, schedule.preRe );
         await this.page.click( schedPage.btnSubmit );
         await this.waitInCase(2);
-        await this.checkAlert();
+        await this._checkAlert();
     }
 
-
-    private async checkAlert( alertWrapper = '.alert-wrapper' ) {
-        let alert = await this.waitAppear([alertWrapper], 1);
-        if ( alert === -1 ) await this.warn('no-alert','No alert! There should be an alert box.');
+    /**
+     * Check alert sequence for add-schedule
+     * @param alertWrapper 
+     */
+    private async _checkAlert( alertWrapper = '.ion-alert' ) {
         
-        let success = await this.waitAppear( [`${alertWrapper}>.alert-head>div:contains('Create Success')`], 1);
-        if ( success > -1 ) await this.success('Schedule Created.');
+        await this.alertSuccess([`.alert-head>div:contains('Create Success')`], 'Schedule Created!');
+        await this.alertSuccess([`.alert-head>h3:contains('-40911')`], 'Schedule already exists!');
+        await this.alertCapture(['.ion-alert'], null, 1);
+   }
 
-        let existing = await this.waitAppear([`${alertWrapper}>.alert-head>div:contains('-40911')`], 1);
-        if ( existing > -1 ) await this.success('Schedule already exists!');
-
-        await this.waitInCase(3);
-        await this.page.keyboard.press('Enter').then( a=>{ this.success('press enter.') } );
-
+   private async _selectDays( days = schedule.weekDays  ) {
+    let i;
+    for( i = 0; i <= days.length - 1;) {
+        await this.click( schedPage.weekDay( days[i] ), `${days[i]} Selected` ).catch( e => { this.fatal( e.code, e ) } );
+        i++;
+    }
    }
     
 }
- (new OntueSchedule).main();
+
+ (new OntueSchedule( getUserJson( user_list ))).main();

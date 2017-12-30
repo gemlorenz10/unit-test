@@ -7,7 +7,7 @@
     nickname: string
     gender:   string
     phone:    string
-    kakaotalk:string
+    kakao:    string
     photo:    string
 }
 
@@ -16,7 +16,7 @@ export interface ISchedule {
     beginMin:   string
     duration:   string
     point:      string
-    weekDays:   string[]
+    weekDayList:string[]
     preRe:      string
 
 }

@@ -1,5 +1,6 @@
 ﻿import * as path from 'path';
 import * as fs from 'fs';
+import * as userJson from '../../../data/user-data.json'
 import { IUserInfo, ISchedule } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 
@@ -55,15 +56,16 @@ export class RegistrationPage extends HeaderElements {
     mobile = 'input[name="phone_number"]';
     kakao = 'input[name="kakaotalk_id"]';
     timezone = 'ion-select[name="timezone"]';
-    btnSubmit = '.button-md-primary';
+    btnSubmit = '.button-md-primary';   
 
     
     constructor(){
         super()
     }
 
-    ionicRadio( value ) {
-        return `input[value="${value}"]`;
+    genderRadio( gender ) {
+        let new_gender = gender.trim().toUpperCase()
+        return `input[value="${new_gender}"]`;
     }
 
 }
@@ -110,17 +112,29 @@ class IntroPage {
     content = 'intro-page';
 }
 
-export function getUserJson( json ): IUserInfo {
-    let re = (<any>json).user_data
-    return re;
+/**
+ * Extracts user_data[] in a json file.
+ * Json must have entry for user_data;
+ * @param json 
+ */
+let user_json = userJson
+export function getUserJson( json = user_json ): IUserInfo[] {
+    let data = (<any>json).user_data
+    if ( !data ) throw new Error(`"user_data" key not found in specified json file.`);
+    let user_list = []
+
+    data.forEach(e => {
+        user_list.push( makeUserInfo(e, '8') );
+    });
+
+    return user_list;
 }
 
- 
-    /**
-    * Returns the contents and image file to upload.
-    * @param textFile - path to text file to read
-    * @param imgFile - path to image to upload
-    */
+/**
+* Returns the contents and image file to upload.
+* @param textFile - path to text file to read
+* @param imgFile - path to image to upload
+*/
 export function getUserData( type?, textFile = path.join( __dirname, '..','..', 'data', 'register-data.txt')) :IUserInfo[]{
         let content = fs.readFileSync( textFile ).toString();
         let extract = content.split('\n');
@@ -142,24 +156,26 @@ export function getUserData( type?, textFile = path.join( __dirname, '..','..', 
         return users;
     }
 
+
 /**
  * For get_data, to returns object for user information.
  * @param data 
  * @param timezone 
  */
-function makeUserInfo( data: IUserInfo, timezone ): IUserInfo{
+function makeUserInfo( data, timezone ): IUserInfo{
     return {
-        type:      data[0].trim(),
+        type:      data.type.trim(),
         timezone: `#alert-input-0-${ timezone }`, //'-11 Pacific/Midway',
-        email:     data[1].trim(),
-        password:  data[2].trim(),
-        name:      data[3].trim(),
-        nickname:  data[4].trim(),
-        gender:    data[5].trim().toUpperCase(),
-        phone:     data[6].trim(),
-        kakaotalk: data[7].trim(),
-        photo:     data[8].trim()
+        email:     data.email.trim(),
+        password:  data.password.trim(),
+        name:      data.name.trim(),
+        nickname:  data.nickname.trim(),
+        gender:    data.gender.trim().toUpperCase(),
+        phone:     data.phone.trim(),
+        kakao:     data.kakao.trim(),
+        photo:     data.photo.trim()
     }
+
 }
 
 /**
@@ -245,7 +261,7 @@ export function schedGenerator() : ISchedule {
         beginMin: _beginMin.toString(),
         duration: _duration.toString(),
         point: _point.toString(),
-        weekDays: _weekDays,
+        weekDayList: _weekDays,
         preRe: _preRe
     }
 }

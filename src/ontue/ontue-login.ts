@@ -1,13 +1,13 @@
 ﻿import { IUserInfo } from './ontue-lib/interface';
 import * as path from 'path';
-import { LoginPage, getUserData  } from './ontue-lib/ontue-declarations';
+import { LoginPage, getUserData  } from './ontue-lib/ontue-library';
 import { PuppeteerExtension } from '../puppeteer-extension';
 const loginPage = new LoginPage;
 // const puppeteer = require('puppeteer');
 
 export class OntueLogin extends PuppeteerExtension{
-    private user =  getUserData()
-    constructor(){
+    // private user =  getUserData()
+    constructor( private user : IUserInfo ){
         super()
 
     }
@@ -15,10 +15,12 @@ export class OntueLogin extends PuppeteerExtension{
      * Opens the browser and logs the use in. Sequence "start -> login".
      * @param user 
      */
-    async main( user ) {
-        await this.start('https://ontue.com', false);
+    async main() {
+        await this.start('https://ontue.com', false).catch( e => this.fatal( e.code, e.message ) );
         await this.waitInCase(2);
-        await this.submitLogin(user, loginPage);
+        await this.submitLogin(this.user, loginPage).catch( e => this.fatal( e.code, e.message ) );
+
+        process.exit(0);
     }
 
      /**
@@ -37,10 +39,10 @@ export class OntueLogin extends PuppeteerExtension{
         await this.type( login.email, user.email).then(a=>this.success('Email entered'));
         await this.type( login.password, user.password).then(a=>this.success('Password entered'));
         await this.page.click( login.btnSubmit ).then( a=>this.success('Attempt to login. Click submit.') );
-        // CHECK ALERT
-        let xPass = await this.waitAppear([login.wrongPassword], 2);
-        if (xPass > -1 ) await this.success('Password incorrect!');
-        else await this.success('Password Correct!, Login Success!');
+        // CHECK if wrong password.
+        await this.waitAppear([login.wrongPassword], 2)
+            .then( a => { this.success('Password Incorrect!') } )
+            .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
     }
 }
 
