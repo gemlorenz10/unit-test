@@ -36,34 +36,34 @@ export class OntueRegister extends PuppeteerExtension {
 
         // NAVIGATE TO REGISTRATION
 
-        await this.waitAppear(['ion-row.row', '.ion-md-person-add']);
-        await this.page.click('.header-menu').then(a => this.success('Menu Clicked!'));
+        await this.waitAppear([register_page.head_menu]);
+        await this.page.click(register_page.head_menu).then(a => this.success('Menu Clicked!'));
 
-        await this.open( '.menu-registration', 'page-register' )
+        await this.open( register_page.menu_registration, 'page-register' )
             .then( a => this.success('Register page opened.') )
             .catch( e => this.fatal(e, 'Failed to open register page'));
 
         // FILL UP REGISTRATION FORM
 
         // upload image
-        let profile_pic = await this.page.$('.profile-user>input[type="file"]');//.then(a=>this.success('Uploading image.'));
+        let profile_pic = await this.page.$(register_page.reg_profilePic);//.then(a=>this.success('Uploading image.'));
         let photo_url = path.resolve(__dirname, '../../data/picture', user.photo);
         await this.upload(photo_url, profile_pic);
 
         // type
         await this.waitInCase(.1);
-        await this.click(`input[value="${user.type}"]`, 'Select Type.');
+        await this.click( register_page.reg_radio( user.type ) , 'Select Type.');
         await this.waitInCase(.2);
-        await this.type('input[name="email"]', user.email);
-        await this.type('input[name="password"]', user.password);
-        await this.type('input[name="name"]', user.name);
-        await this.type('input[name="nickname"]', user.nickname);
-        await this.type('input[name="phone_number"]', user.phone);
-        await this.type('input[name="kakaotalk_id"]', user.kakao);
+        await this.type(register_page.reg_email, user.email);
+        await this.type(register_page.reg_password, user.password);
+        await this.type(register_page.reg_name, user.name);
+        await this.type(register_page.reg_nickName, user.nickname);
+        await this.type(register_page.reg_mobile, user.phone);
+        await this.type(register_page.reg_kakao, user.kakao);
 
         // gender
         await this.waitInCase(.1);
-        await this.click( register_page.genderRadio( user.gender ), 'Select Gender.' );
+        await this.click( register_page.reg_radio( user.gender ), 'Select Gender.' );
 
         //timezone
         await this.waitInCase(.1);

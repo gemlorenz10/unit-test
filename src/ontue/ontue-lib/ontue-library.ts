@@ -63,9 +63,9 @@ export class RegistrationPage extends MenuPage {
         super()
     }
 
-    reg_genderRadio( gender ) {
-        let new_gender = gender.trim().toUpperCase()
-        return `input[value="${new_gender}"]`;
+    reg_radio( value ) {
+        let re = value.trim().toUpperCase()
+        return `input[value="${re}"]`;
     }
 
 }
