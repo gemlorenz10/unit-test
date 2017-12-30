@@ -31,16 +31,16 @@ export class OntueLogin extends PuppeteerExtension{
 
         // console.log(user);
         // GO TO LOGIN
-        await this.page.click( login.menu).then( a=> this.success('Go to Menus') );
+        await this.page.click( login.menu_login ).then( a=> this.success('Go to Menus') );
         await this.waitInCase(1);
-        await this.page.click( login.login).then( a=> this.success('Go to Login.') );
+        await this.page.click( login.menu_login).then( a=> this.success('Go to Login.') );
         await this.waitInCase(1);
-        await this.waitAppear( [login.email], 3 );
-        await this.type( login.email, user.email).then(a=>this.success('Email entered'));
-        await this.type( login.password, user.password).then(a=>this.success('Password entered'));
-        await this.page.click( login.btnSubmit ).then( a=>this.success('Attempt to login. Click submit.') );
+        await this.waitAppear( [login.login_email], 3 );
+        await this.type( login.login_email, user.email).then(a=>this.success('Email entered'));
+        await this.type( login.login_password, user.password).then(a=>this.success('Password entered'));
+        await this.page.click( login.login_btnSubmit ).then( a=>this.success('Attempt to login. Click submit.') );
         // CHECK if wrong password.
-        await this.waitAppear([login.wrongPassword], 2)
+        await this.waitAppear([login.login_wrongPassword], 2)
             .then( a => { this.success('Password Incorrect!') } )
             .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
     }

@@ -23,21 +23,21 @@ export class OntueSchedule extends OntueLogin{
 
     async addSched() {
         // navigate to add schedule form
-        await this.page.click( schedPage.scheduleEdit ).then(a=>{ this.success('go to scheduler.') });
-        await this.waitAppear( [schedPage.btnAddSchedule], null, 2 )
+        await this.page.click( schedPage.head_scheduleEdit ).then(a=>{ this.success('go to scheduler.') });
+        await this.waitAppear( [schedPage.sched_btnAddSchedule], null, 2 )
             .then( a => { this.success(a) } )
             .catch( e => { this.fatal( e.code, e.message ) } );
-        await this.page.click( schedPage.btnAddSchedule ).then( a=>{ this.success('Open add schedule form.') } );
+        await this.page.click( schedPage.sched_btnAddSchedule ).then( a=>{ this.success('Open add schedule form.') } );
         await this.waitInCase(2);
         // fill up form
-        await this.type( schedPage.beginHour, schedule.beginHour );
-        await this.type( schedPage.beginMinute, schedule.beginMin );
-        await this.type( schedPage.classDuration, schedule.duration );
-        await this.type( schedPage.classPoint, schedule.point );
+        await this.type( schedPage.sched_beginHour, schedule.beginHour );
+        await this.type( schedPage.sched_beginMinute, schedule.beginMin );
+        await this.type( schedPage.sched_classDuration, schedule.duration );
+        await this.type( schedPage.sched_classPoint, schedule.point );
         // choose days in a week.
         await this._selectDays();
-        await this.type( schedPage.preReserve, schedule.preRe );
-        await this.page.click( schedPage.btnSubmit );
+        await this.type( schedPage.sched_preReserve, schedule.preRe );
+        await this.page.click( schedPage.sched_btnSubmit );
         await this.waitInCase(2);
         await this._checkAlert();
     }
@@ -53,10 +53,10 @@ export class OntueSchedule extends OntueLogin{
         await this.alertCapture(['.ion-alert'], null, 1);
    }
 
-   private async _selectDays( days = schedule.weekDays  ) {
+   private async _selectDays( days = schedule.weekDayList  ) {
     let i;
     for( i = 0; i <= days.length - 1;) {
-        await this.click( schedPage.weekDay( days[i] ), `${days[i]} Selected` ).catch( e => { this.fatal( e.code, e ) } );
+        await this.click( schedPage.sched_weekDay( days[i] ), `${days[i]} Selected` ).catch( e => { this.fatal( e.code, e ) } );
         i++;
     }
    }

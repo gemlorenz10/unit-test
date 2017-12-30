@@ -8,17 +8,17 @@ import { PuppeteerExtension } from '../../puppeteer-extension';
  * Ontue elements queries for Header navbar
  */
 export class HeaderElements{
-    home = ".header-home";
-    scheduleEdit = ".header-schedule-edit";
-    teacherList = ".header-teacher-list";
-    reservation = ".header-reservation";
-    pastReservation = ".header-past-reservation";
-    message = ".header-message";
-    curriculum = ".header-curriculum";
-    freeClass = ".header-free-class";
-    forum = ".header-forum"
-    classComments = ".header-class-comment";
-    menu = ".header-menu";
+    head_home = ".header-home";
+    head_scheduleEdit = ".header-schedule-edit";
+    head_teacherList = ".header-teacher-list";
+    head_reservation = ".header-reservation";
+    head_pastReservation = ".header-past-reservation";
+    head_message = ".header-message";
+    head_curriculum = ".header-curriculum";
+    head_freeClass = ".header-free-class";
+    head_forum = ".header-forum"
+    head_classComments = ".header-class-comment";
+    head_menu = ".header-menu";
     constructor(){
     }
 
@@ -28,15 +28,15 @@ export class HeaderElements{
  * Ontue elements queries for Menu
  */
 export class MenuPage extends HeaderElements {
-    settingsPayment = ".menu-settings-payment-info";
-    teacherList = ".menu-teacher-list";
-    reservation = ".menu-reservation";
-    pastLong = ".menu-past-long";
-    reservationToday = ".menu-reservation-today";
-    forum = ".menu-forum";
-    policy = ".menu-policy";
-    login = ".menu-login";
-    registration = ".menu-registration";
+    menu_settingsPayment = ".menu-settings-payment-info";
+    menu_teacherList = ".menu-teacher-list";
+    menu_reservation = ".menu-reservation";
+    menu_pastLong = ".menu-past-long";
+    menu_reservationToday = ".menu-reservation-today";
+    menu_forum = ".menu-forum";
+    menu_policy = ".menu-policy";
+    menu_login = ".menu-login";
+    menu_registration = ".menu-registration";
 
     
     constructor(){
@@ -47,23 +47,23 @@ export class MenuPage extends HeaderElements {
 /**
  * Ontue elements queries for Registration page
  */
-export class RegistrationPage extends HeaderElements {
-    profilePic = '.profile-user>input[type="file"]';
-    email = 'input[name="email"]';
-    password = 'input[name="password"]';
-    name = 'input[name="name"]';
-    nickName = 'input[name="nickname"]';
-    mobile = 'input[name="phone_number"]';
-    kakao = 'input[name="kakaotalk_id"]';
-    timezone = 'ion-select[name="timezone"]';
-    btnSubmit = '.button-md-primary';   
+export class RegistrationPage extends MenuPage {
+    reg_profilePic = '.profile-user>input[type="file"]';
+    reg_email = 'input[name="email"]';
+    reg_password = 'input[name="password"]';
+    reg_name = 'input[name="name"]';
+    reg_nickName = 'input[name="nickname"]';
+    reg_mobile = 'input[name="phone_number"]';
+    reg_kakao = 'input[name="kakaotalk_id"]';
+    reg_timezone = 'ion-select[name="timezone"]';
+    reg_btnSubmit = '.button-md-primary';   
 
     
     constructor(){
         super()
     }
 
-    genderRadio( gender ) {
+    reg_genderRadio( gender ) {
         let new_gender = gender.trim().toUpperCase()
         return `input[value="${new_gender}"]`;
     }
@@ -73,12 +73,11 @@ export class RegistrationPage extends HeaderElements {
 /**
  * Ontue element queries for login page.
  */
-export class LoginPage extends HeaderElements {
-    login = ".menu-login";
-    email = 'input[name="email"]';
-    password = 'input[name="password"]';
-    btnSubmit = 'button[type="submit"]';
-    wrongPassword = 'div:contains("-42054")';
+export class LoginPage extends  MenuPage {
+    login_email = 'input[name="email"]';
+    login_password = 'input[name="password"]';
+    login_btnSubmit = 'button[type="submit"]';
+    login_wrongPassword = 'div:contains("-42054")';
 
     constructor(){
         super()
@@ -88,21 +87,21 @@ export class LoginPage extends HeaderElements {
 /**
  * Ontue element queries for schedule page
  */
-export class SchedulePage extends HeaderElements {
-    btnAddSchedule = '.add-schedule';
-    beginHour = 'input[name="class_begin_hour"]';
-    beginMinute = 'input[name="class_begin_minute"]';
-    classDuration = 'input[name="duration"]';
-    classPoint = 'input[name="point"]';
-    preReserve = 'input[name="prere"]';
-    btnSubmit = 'button[type="submit"]';
-    btnTimezone = '.update-tz';
-    tbSchedule = '.schedule'
+export class SchedulePage extends MenuPage {
+    sched_btnAddSchedule = '.add-schedule';
+    sched_beginHour = 'input[name="class_begin_hour"]';
+    sched_beginMinute = 'input[name="class_begin_minute"]';
+    sched_classDuration = 'input[name="duration"]';
+    sched_classPoint = 'input[name="point"]';
+    sched_preReserve = 'input[name="prere"]';
+    sched_btnSubmit = 'button[type="submit"]';
+    sched_btnTimezone = '.update-tz';
+    sched_tbSchedule = '.schedule'
     constructor(){
         super()
     }
     // returns query for week based on parameter week
-    weekDay( week ) {
+    sched_weekDay( week ) {
         return `input[name="${week}"]`;
     }    
 }
