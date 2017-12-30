@@ -5,10 +5,9 @@ import { OntueLogin } from './ontue-login'
 import * as user_list from '../../data/user-data.json';
 
 const schedPage = new SchedulePage;
-let schedule: ISchedule = schedGenerator();
 export class OntueSchedule extends OntueLogin{
 
-    constructor( private userInfo ){
+    constructor( private userInfo, private schedule ){
         super( userInfo )
     }
     async main() { 
@@ -30,13 +29,13 @@ export class OntueSchedule extends OntueLogin{
         await this.page.click( schedPage.sched_btnAddSchedule ).then( a=>{ this.success('Open add schedule form.') } );
         await this.waitInCase(2);
         // fill up form
-        await this.type( schedPage.sched_beginHour, schedule.beginHour );
-        await this.type( schedPage.sched_beginMinute, schedule.beginMin );
-        await this.type( schedPage.sched_classDuration, schedule.duration );
-        await this.type( schedPage.sched_classPoint, schedule.point );
+        await this.type( schedPage.sched_beginHour, this.schedule.beginHour );
+        await this.type( schedPage.sched_beginMinute, this.schedule.beginMin );
+        await this.type( schedPage.sched_classDuration, this.schedule.duration );
+        await this.type( schedPage.sched_classPoint, this.schedule.point );
         // choose days in a week.
         await this._selectDays();
-        await this.type( schedPage.sched_preReserve, schedule.preRe );
+        await this.type( schedPage.sched_preReserve, this.schedule.preRe );
         await this.page.click( schedPage.sched_btnSubmit );
         await this.waitInCase(2);
         await this._checkAlert();
@@ -63,4 +62,5 @@ export class OntueSchedule extends OntueLogin{
     
 }
 
- (new OntueSchedule( getUserJson( user_list ))).main();
+let schedule: ISchedule = schedGenerator();
+ ( new OntueSchedule( getUserJson( user_list ), schedule) ).main();

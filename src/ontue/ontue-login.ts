@@ -1,6 +1,6 @@
 ﻿import { IUserInfo } from './ontue-lib/interface';
 import * as path from 'path';
-import { LoginPage, getUserData  } from './ontue-lib/ontue-library';
+import { LoginPage, getUserData, getUserJson  } from './ontue-lib/ontue-library';
 import { PuppeteerExtension } from '../puppeteer-extension';
 const loginPage = new LoginPage;
 // const puppeteer = require('puppeteer');
@@ -46,6 +46,6 @@ export class OntueLogin extends PuppeteerExtension{
     }
 }
 
-// ( new OntueLogin() ).main( ontue.getUserData()[8] ).then( a=>{  } );
+( new OntueLogin( getUserJson()[0] ) ).main().then( a=> a );
 
 // process.exit(0);

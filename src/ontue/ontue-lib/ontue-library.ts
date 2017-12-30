@@ -273,12 +273,13 @@ export function schedGenerator() : ISchedule {
 }
     /**
      * Returns query selector for timezone.
+     * 
      * @param timezone
      * @param selector - timezone parent/main selector.
      */
     export function tzQuery( selector: string, timezone: number ) {
         if ( timezone < -11 || timezone > 12 ) throw new Error('Timezone only ranges from -11 to +12');
-        let utc = 12;
+        let utc = 12; // 0 + 12.
         let _timezone = utc + timezone;
         let radio_group = '.alert-radio-group'
         let query = `${selector}>${radio_group}:nth-child(${_timezone})`;

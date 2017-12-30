@@ -5,18 +5,15 @@ import * as path from 'path';
 import * as userData from '../../data/user-data.json';
 let register_page = new RegistrationPage();
 
-
 export class OntueRegister extends PuppeteerExtension {
 
     // get account information to a text
-    private _person_list: IUserInfo[] = getUserJson( userData );
-    private _person: IUserInfo = this._person_list[this._person_list.length - 1]; // register the last person
-
-    constructor() {
+    constructor( private person: IUserInfo ) {
         super()
+
     }
 
-    async register(user: IUserInfo = this._person) {
+    async register(user: IUserInfo = this.person) {
         console.log(user);
         await this.start('https://ontue.com', false).catch( e => this.fatal(e, 'failed to open ontue.com') );
         //check alert
@@ -32,7 +29,7 @@ export class OntueRegister extends PuppeteerExtension {
     /**
      * Will fill up the form.
      */
-    async fillUpForm(user: IUserInfo = this._person) {
+    async fillUpForm(user: IUserInfo = this.person) {
 
         // NAVIGATE TO REGISTRATION
 
@@ -90,4 +87,6 @@ export class OntueRegister extends PuppeteerExtension {
     }
 }
 
-(new OntueRegister()).register();
+
+let person_list: IUserInfo[] = getUserJson( userData );
+(new OntueRegister( person_list[0] )).register();
