@@ -1,0 +1,12 @@
+﻿{
+    "schedule":[
+        {
+            "beginHour":"13",
+            "beginMin":"0",
+            "duration":"25",
+            "point":"5000",
+            "weekDayList":[],
+            "preReserve":""
+        }
+    ]
+}

@@ -9,7 +9,19 @@
             "gender":"f",
             "phone":"064347986",
             "kakao":"Eden123",
-            "photo_url":"../../data/picture/eden.jpg"
+            "photo":"eden.jpg"
+
+        },
+        {
+            "type": "S",
+            "email":"eljei@gmail.com",
+            "password":"secret",
+            "name":"eljei Ontue",
+            "nickname":"Eden",
+            "gender":"f",
+            "phone":"165432188",
+            "kakao":"eljei125",
+            "photo":"eljei.jpg"
 
         }
     ]
