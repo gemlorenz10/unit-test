@@ -10,7 +10,8 @@
             "phone":"064347986",
             "kakao":"Eden123",
             "photo":"eden.jpg",
-            "timezone": -2
+            "timezone": -2,
+            "birthdate":"12/10/1993"
 
         },
         {
@@ -18,12 +19,13 @@
             "email":"eljei@gmail.com",
             "password":"secret",
             "name":"eljei Ontue",
-            "nickname":"Eden",
+            "nickname":"Eljei",
             "gender":"f",
             "phone":"165432188",
             "kakao":"eljei125",
             "photo":"eljei.jpg",
-            "timezone": 8
+            "timezone": 8,
+            "birthdate":"12/10/1993"
 
         }
     ]

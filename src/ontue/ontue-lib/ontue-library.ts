@@ -181,7 +181,8 @@ function makeUserInfo( data ): IUserInfo{
         gender:    data.gender.trim().toUpperCase(),
         phone:     data.phone.trim(),
         kakao:     data.kakao.trim(),
-        photo:     data.photo.trim()
+        photo:     data.photo.trim(),
+        birthdate: data.birthdate.trim()
     }
 
 }

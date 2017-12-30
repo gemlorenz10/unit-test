@@ -9,6 +9,7 @@
     phone:    string
     kakao:    string
     photo:    string
+    birthdate: string
 }
 
 export interface ISchedule {

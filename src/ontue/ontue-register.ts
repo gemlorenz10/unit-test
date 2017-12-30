@@ -63,13 +63,17 @@ export class OntueRegister extends PuppeteerExtension {
         await this.waitInCase(.1);
         await this.click( register_page.reg_radio( user.gender ), 'Select Gender.' );
 
-        //timezone
+        // timezone
         await this.waitInCase(.1);
         await this.click( register_page.reg_btnTimezone, 'select timezone');
         await this.waitInCase(.3);
         await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , 'submit timezone'); // click ok
         await this.click( register_page.reg_btnTimezoneOK, 'click ok' );
         // await this.click( register_page.reg_btnTimezoneCancel, 'click cancel' );
+        
+        // birthdate
+        
+        
         // submit
         await this.waitInCase(.2);
         await this.click('.button-md-primary', 'Submit form!');
