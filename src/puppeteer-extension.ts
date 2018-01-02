@@ -163,14 +163,18 @@ export abstract class PuppeteerExtension{
                 if ($html.find(selectors[i]).length > 0) return msg ;
             }
         }
-        throw { code: 'selector-not-found', message: "Selectors not found." };
+        throw { code: 'selector-not-found', message: `Selectors ${selectors} not found.` };
     }
 
     async click( selector: string, message? ) {
         let msg = ( !message ) ? `Click: ${selector}` : message
-        await this.page.waitFor(selector);
+        await this.waitAppear([selector], `Selector not found. ${selector}`)
+            .then( a => a )
+            .catch( e => this.fatal( e.code, e.message ) );
         await this.waitInCase(1);
-        await this.page.click( selector ).then( a => { this.success( msg ) } );
+        await this.page.click( selector )
+            .then( a => { this.success( msg ) } )
+            .catch( e => this.fatal( e.code, e.message ) );
     }
 
     async open( selector: string, expect: string ) {
@@ -187,18 +191,10 @@ export abstract class PuppeteerExtension{
      * 
      * @param selector <string> Selector to be disappears.
      * @param timeout timeout. defualt 30 seconds.
-     * @return true if disappeared.
-     *          false otherwise.
+     * @return message if selector disappeared.
+     *          Throw { code, message } otherwise.
      * 
      * @code
-     *     let re = await page.waitDisappear( passwordField );
-            if ( re ) {
-                console.log("You are NOT in login page");
-            }
-            else {
-                console.log("You are STILL in login page");
-            }
-            await page.waitFor( 'body' );
      * @endcode
      */
     async waitDisappear(selector: string, timeout = 30) {
@@ -207,9 +203,9 @@ export abstract class PuppeteerExtension{
         for (let i = 0; i < maxWaitCount; i++) {
             await this.page.waitFor(100);
             $html = await this.jQuery();
-            if ($html.find(selector).length === 0) return true;
+            if ($html.find(selector).length === 0) return `${ selector } disappeared!`;
         }
-        return false;
+        throw { code: "selector-did-not-disappear", message :`${ selector } did not disappear after timeout "${timeout}"`};
     }
 
     /**
@@ -245,10 +241,11 @@ export abstract class PuppeteerExtension{
      * @param str 
      */
     async type( selector, str, delay = 60 ) {
-        
+        await this.waitInCase(1);
+        await this.waitAppear( [selector], `Can't type! Missing: ${selector}`, 2).catch( e => { this.fatal( e.code, e.message ); } );
         await this.deletePrevious( selector );
         await this.page.type(selector, str, { delay: delay })
-            .then(a=>{ this.success('Type in ' + selector) })
+            .then(a=>{ this.success(`Type ${str} in ${selector}`) })
             .catch( e => { this.fatal(e.code, e) } );
     }
 
@@ -326,6 +323,13 @@ export abstract class PuppeteerExtension{
                 await this.page.keyboard.press('Enter').then( a=>{this.success('Press Enter.')} );
             }).catch( e => e );
 
+        let i;
+        for ( i of selector_list ) {
+            await this.waitDisappear(i, 15000)
+                .then( a => { this.success(a) } )
+                .catch( e => this.error(e.code, e.message) );
+        }
+    
     }
 
     exitProgram( code: number ) {

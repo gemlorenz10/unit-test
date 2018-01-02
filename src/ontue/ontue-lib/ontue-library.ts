@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import { IUserInfo, ISchedule } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 
+
+export let path_to_images = '../../picture';
 /**
  * Ontue elements queries for Header navbar
  */
@@ -55,6 +57,7 @@ export class RegistrationPage extends MenuPage {
     reg_btnTimezoneOK = ".select-timezone>.alert-wrapper>div:nth-child(4)>Button:nth-child(2)";
     reg_btnTimezoneCancel = ".select-timezone>.alert-wrapper>div:nth-child(4)>Button:nth-child(1)";
     reg_btnTimezone = 'ion-select[name="timezone"]';
+    reg_birthdate = 'ion-datetime[name="birthday"]';
     reg_timezone( selector = ".select-timezone", timezone ) {
         return tzQuery( selector, timezone );
     }
@@ -111,155 +114,19 @@ export class SchedulePage extends MenuPage {
     }    
 }
 
-class IntroPage {
-    btnSkip = '';
-    content = 'intro-page';
-}
-
-// /**
-//  * Extracts user_data[] in a json file.
-//  * Json must have entry for user_data;
-//  * @param json 
-//  */
-// let user_json = userJson
-// export function getUserJson( json = user_json ): IUserInfo[] {
-//     return (<any>json).user_data;
-
-//     // let data = (<any>json).user_data
-//     // if ( !data ) throw new Error(`"user_data" key not found in specified json file.`);
-//     // let user_list = []
-
-//     // data.forEach(e => {
-//     //     user_list.push( e );
-//     // });
-
-//     // return user_list;
-// }
-
-
-
-// /**
-//  * For get_data, to returns object for user information.
-//  * @param data 
-//  * @param timezone 
-//  */
-// function makeUserInfo( data ): IUserInfo{
-//     return {
-//         type:      data.type.trim(),
-//         timezone:  data.timezone, //'-11 Pacific/Midway',
-//         email:     data.email.trim(),
-//         password:  data.password.trim(),
-//         name:      data.name.trim(),
-//         nickname:  data.nickname.trim(),
-//         gender:    data.gender.trim().toUpperCase(),
-//         phone:     data.phone.trim(),
-//         kakao:     data.kakao.trim(),
-//         photo:     data.photo.trim(),
-//         birthdate: data.birthdate.trim()
-//     }
-
-// }
-
 /**
- * Get a random integer
- * @param min 
- * @param max 
+ * Returns query selector for timezone.
+ * 
+ * @param timezone
+ * @param selector - timezone parent/main selector.
  */
-export function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+export function tzQuery( selector: string, timezone: number ) {
+    if ( timezone < -11 || timezone > 12 ) throw new Error('Timezone only ranges from -11 to +12');
+    let utc = 12; // 0 + 12.
+    let _timezone = utc + timezone;
+    // `${selector}>${children}`;
+    let radio_group = '.alert-wrapper>div>.alert-radio-group>button'
+    let query = `${selector}>${radio_group}:nth-child(${_timezone})`;
+    // console.log( query );
+    return query;
 }
-
-
-/**
- * Returns series of weekdays randomly as an array. Returns 7 days of the week when all is set to true.
- * @param all - Returns all weeks when all is set to true.
- */
-export function getWeekDays( numOfDays?, all : boolean = false ){
-    if ( numOfDays > 7 ) throw { message: 'Max number of weeks is 7...!' };
-    let weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    let numberOfDays = (numOfDays)? numOfDays : this.getRandomInt(1,7); // number of days to add.
-    let i, index, included, reserveDays=[], day;        
-    if ( !all ){
-        for ( i = 1; i <= numberOfDays; i++ ){
-            do { // check if random week is already included then get random week again.
-                index = this.getRandomInt(0,6);
-                day = weekDays[index];
-                included = reserveDays.indexOf( day ); 
-            }
-            while( included > -1 )
-    
-            reserveDays.push( day );
-        }
-        return reserveDays;
-    }else{ // if all is requested return weekdays1
-        return weekDays;
-    }
-}
-
-
-/**
- * Returns weeks mon - fri
- */
-export function getMonToFri(){
-    return ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
-}
-
-
-/**
- * Returns student if its reserved, empty string if not.
- * @param student - Returns the student if its reserve.
- */
-export function getPreReserve( student ) {
-    // 1- 5 is reserve while 6-10 is not reserve
-    let re = this.getRandomInt( 3, 10 ); // not reserve is favorable
-    let reserve = ( re < 6 )? student : '';
-    return reserve;
-}
-
-/**
- * Generates schedule information. Manually edit if needed.
- */
-export function schedGenerator() : ISchedule {
-    let _beginHour, _beginMin, _duration, _point, _weekDays = [], _preRe;
-    _beginHour = 13;
-    _beginMin = 0;
-    _duration = 25;
-    _point = '5000'
-    _weekDays = this.getMonToFri();
-    _preRe = '';
-    
-    //Randomize
-    // _beginHour = ontue.getRandomInt(1,24);
-    // _beginMin = ontue.getRandomInt(0,59);
-    // _duration = ontue.getRandomInt(0,60);
-    // _point = ontue.getRandomInt(400,8000);
-    // _weekDays = ontue.getWeekDays( 6, true );
-    // _preRe = ontue.getPreReserve('gem');
-    
-    return {
-        beginHour: _beginHour.toString(),
-        beginMin: _beginMin.toString(),
-        duration: _duration.toString(),
-        point: _point.toString(),
-        weekDayList: _weekDays,
-        preRe: _preRe
-    }
-}
-    /**
-     * Returns query selector for timezone.
-     * 
-     * @param timezone
-     * @param selector - timezone parent/main selector.
-     */
-    export function tzQuery( selector: string, timezone: number ) {
-        if ( timezone < -11 || timezone > 12 ) throw new Error('Timezone only ranges from -11 to +12');
-        let utc = 12; // 0 + 12.
-        let _timezone = utc + timezone;
-        // `${selector}>${children}`;
-        let radio_group = '.alert-wrapper>div>.alert-radio-group>button'
-        let query = `${selector}>${radio_group}:nth-child(${_timezone})`;
-        // console.log( query );
-        return query;
-    }
