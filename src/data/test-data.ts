@@ -60,7 +60,7 @@ export let schedule = [
         "beginMin":"0",
         "duration":"25",
         "point":"5000",
-        "weekDayList":[],
+        "weekDayList":['monday','tuesday','wednesday','thursday','friday'],
         "preReserve":""
     }
 ]

@@ -321,15 +321,15 @@ export abstract class PuppeteerExtension{
                 this.success( a );        
                 await this.waitInCase(1);
                 await this.page.keyboard.press('Enter').then( a=>{this.success('Press Enter.')} );
-            }).catch( e => e );
 
-        let i;
-        for ( i of selector_list ) {
-            await this.waitDisappear(i, 15000)
-                .then( a => { this.success(a) } )
-                .catch( e => this.error(e.code, e.message) );
-        }
-    
+                let i;
+                for ( i of selector_list ) {
+                    await this.waitDisappear(i, 15000)
+                        .then( a => { this.success(a) } )
+                        .catch( e => this.error(e.code, e.message) );
+                }
+
+            }).catch( e => e );    
     }
 
     exitProgram( code: number ) {

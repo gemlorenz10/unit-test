@@ -20,16 +20,17 @@ export class OntueLogin extends PuppeteerExtension{
     async main() {
         await this.start('https://ontue.com', false).catch( e => this.fatal( e.code, e.message ) );
 
-        await this.submitLogin(this.user, loginPage).catch( e => this.fatal( e.code, e.message ) );
+        await this.submitLogin().catch( e => this.fatal( e.code, e.message ) );
 
         this.exitProgram(0);
     }
 
      /**
      * Submits login credentials of user. Can use in other tasks.
-     * @param user 
      */
-    async submitLogin(user:IUserInfo, login: LoginPage = loginPage) {
+    async submitLogin() {
+        let user:IUserInfo = this.user;
+        let login: LoginPage = loginPage
         // GO TO LOGIN
         await this.click( login.head_menu, 'Click Menu from head.' );
         await this.click( login.menu_login, 'Click Login menu.');
@@ -43,6 +44,6 @@ export class OntueLogin extends PuppeteerExtension{
     }
 }
 
-( new OntueLogin( user_data[0] ) ).main().then( a=> a );
+// ( new OntueLogin( user_data[0] ) ).main().then( a=> a );
 
 // process.exit(0);

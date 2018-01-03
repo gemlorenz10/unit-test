@@ -13,11 +13,11 @@
 }
 
 export interface ISchedule {
-    beginHour:  string
-    beginMin:   string
-    duration:   string
-    point:      string
-    weekDayList:string[]
-    preRe:      string
+    beginHour:      string
+    beginMin:       string
+    duration:       string
+    point:          string
+    weekDayList:    string[]
+    preReserve:     string
 
 }
