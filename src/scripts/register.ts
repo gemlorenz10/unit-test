@@ -1,11 +1,11 @@
-﻿import { RegistrationPage, path_to_images } from './ontue-lib/ontue-library';
-import { IUserInfo } from './ontue-lib/interface';
+﻿import { RegistrationPage, path_to_images } from './lib/library';
+import { IUserInfo } from './lib/interface';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import * as path from 'path';
 import { user_data } from './../data/test-data';
 let register_page = new RegistrationPage();
 
-export class OntueRegister extends PuppeteerExtension {
+export class Register extends PuppeteerExtension {
 
     // get account information to a text
     constructor( private person: IUserInfo ) {
@@ -85,4 +85,4 @@ export class OntueRegister extends PuppeteerExtension {
 
 }
 
-(new OntueRegister( user_data[ user_data.length - 1 ] )).register();
+(new Register( user_data[ user_data.length - 1 ] )).register();

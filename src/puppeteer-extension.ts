@@ -1,8 +1,8 @@
-﻿import { IUserInfo } from './ontue/ontue-lib/interface';
+﻿import { IUserInfo } from './scripts/lib/interface';
 const puppeteer = require('puppeteer');
 import { Page, Browser } from 'puppeteer';
 import { userInfo } from 'os';
-import { LoginPage } from './ontue/ontue-lib/ontue-library';
+import { LoginPage, browserOption } from './scripts/lib/library';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -270,11 +270,19 @@ export abstract class PuppeteerExtension{
  * @param website - url of the page you want to open.
  * @param headless - True if you want to show headless browser, false if not.
  */
-    async start( website: string, headless: boolean = true ) {
-        await this.init( headless );
-        await this.page.setViewport({height: 900, width: 800});
-        if ( !headless ) await this.chrome();
-        console.log('Headless? :', headless)
+    async start( website: string, option) {
+        let _headless = option.headless;
+        let _vp = (option.viewport) ? option.viewport : { height:900, width: 800 };
+        
+        await this.init( _headless );
+        
+        await this.page.setViewport({
+            height: _vp.height, 
+            width: _vp.width
+        });
+        
+        if ( !_headless ) await this.chrome();
+        console.log('Headless? :', _headless)
         await this.page.goto( website )//.then(a=>this.success('Go to ontue.com'));
     }
 

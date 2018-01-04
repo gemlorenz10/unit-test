@@ -3,8 +3,17 @@ import * as fs from 'fs';
 import { IUserInfo, ISchedule } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 
-
+export let teacher_domain = 'https://ontue.com';
+export let student_domain = 'https://katalkenglish.com';
 export let path_to_images = '../../picture';
+
+export let browserOption = {
+    headless : false,
+    viewport : {
+        height : 900,
+        width : 800
+    }
+}
 /**
  * Ontue elements queries for Header navbar
  */

@@ -1,13 +1,13 @@
-﻿import { IUserInfo } from './ontue-lib/interface';
+﻿import { IUserInfo } from './lib/interface';
 import * as path from 'path';
-import { LoginPage  } from './ontue-lib/ontue-library';
+import { LoginPage  } from './lib/library';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import { user_data } from './../data/test-data';
 
 const loginPage = new LoginPage;
 // const puppeteer = require('puppeteer');
 
-export class OntueLogin extends PuppeteerExtension{
+export class Login extends PuppeteerExtension{
     // private user =  getUserData()
     constructor( private user : IUserInfo ){
         super()
@@ -15,7 +15,6 @@ export class OntueLogin extends PuppeteerExtension{
     }
     /**
      * Opens the browser and logs the use in. Sequence "start -> login".
-     * @param user 
      */
     async main() {
         await this.start('https://ontue.com', false).catch( e => this.fatal( e.code, e.message ) );

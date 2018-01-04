@@ -1,17 +1,17 @@
-﻿import { IUserInfo, ISchedule } from './ontue-lib/interface';
-import { SchedulePage, LoginPage } from './ontue-lib/ontue-library';
+﻿import { IUserInfo, ISchedule } from './lib/interface';
+import { SchedulePage, LoginPage, browserOption } from './lib/library';
 import { PuppeteerExtension } from './../puppeteer-extension';
-import { OntueLogin } from './ontue-login'
+import { Login } from './login'
 import { user_data, schedule } from './../data/test-data';
 
 const schedPage = new SchedulePage;
-export class OntueSchedule extends OntueLogin{
+export class OntueSchedule extends Login{
 
     constructor( private userInfo: IUserInfo, private schedule: ISchedule ){
         super( userInfo )
     }
     async main() { 
-        await this.start('https://ontue.com', false).catch( e => { this.fatal( e.code, e ) } );
+        await this.start('https://ontue.com', browserOption).catch( e => { this.fatal( e.code, e ) } );
 
         await this.submitLogin();
 
@@ -58,5 +58,7 @@ export class OntueSchedule extends OntueLogin{
     }
     
 }
-
- ( new OntueSchedule( user_data[0], schedule[0]) ).main();
+let eden = user_data[0]; // teacher
+let emma = user_data[2]; // teacher
+let eljei = user_data[1]; // student
+ ( new OntueSchedule( emma, schedule[0]) ).main();
