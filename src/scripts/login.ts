@@ -1,15 +1,12 @@
-﻿import { IUserInfo } from './lib/interface';
-import * as path from 'path';
-import { LoginPage  } from './lib/library';
+﻿import { teacher_domain, student_domain } from './lib/global-library';
+import { IUserInfo } from './lib/interface';
+import { OntueLoginPage } from './lib/ontue-library';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import { user_data } from './../data/test-data';
-
-const loginPage = new LoginPage;
-// const puppeteer = require('puppeteer');
+import { app_pages } from './lib/katalk-library';
 
 export class Login extends PuppeteerExtension{
-    // private user =  getUserData()
-    constructor( private user : IUserInfo ){
+    constructor( private user : IUserInfo, private loginPage ){
         super()
 
     }
@@ -17,7 +14,8 @@ export class Login extends PuppeteerExtension{
      * Opens the browser and logs the use in. Sequence "start -> login".
      */
     async main() {
-        await this.start('https://ontue.com', false).catch( e => this.fatal( e.code, e.message ) );
+        let website = ( this.user.type.toUpperCase() === 'S' )? student_domain : teacher_domain;
+        await this.start(website, false).catch( e => this.fatal( e.code, e.message ) );
 
         await this.submitLogin().catch( e => this.fatal( e.code, e.message ) );
 
@@ -28,8 +26,8 @@ export class Login extends PuppeteerExtension{
      * Submits login credentials of user. Can use in other tasks.
      */
     async submitLogin() {
-        let user:IUserInfo = this.user;
-        let login: LoginPage = loginPage
+        let user = this.user;
+        let login = this.loginPage
         // GO TO LOGIN
         await this.click( login.head_menu, 'Click Menu from head.' );
         await this.click( login.menu_login, 'Click Login menu.');
@@ -37,9 +35,12 @@ export class Login extends PuppeteerExtension{
         await this.type( login.login_password, user.password);
         await this.click( login.login_btnSubmit, 'Attemp to login. Click submit!' );
         // CHECK if wrong password.
-        await this.waitAppear([login.login_wrongPassword], 2)
+        await this.waitAppear([login.login_wrongPassword], null, 1)
             .then( a => { this.success('Password Incorrect!') } )
             .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
+        await this.waitAppear([app_pages.home])
+            .then( a =>  this.success('Success home page found!')  )
+            .catch( e => this.fatal( e.code, e.message ) );
     }
 }
 
