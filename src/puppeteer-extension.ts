@@ -2,7 +2,7 @@
 const puppeteer = require('puppeteer');
 import { Page, Browser } from 'puppeteer';
 import { userInfo } from 'os';
-import { LoginPage, browserOption } from './scripts/lib/library';
+import { browserOption } from './scripts/lib/global-library';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -146,6 +146,7 @@ export abstract class PuppeteerExtension{
      * Throws an object = { code: 'selector-not-found', message: "Selectors not found." } when selector was not found.
      * @return
      * @code
+     * await this.waitAppear([selectors], 'message', timeout?).then(a=a);
      * @endcode
      * 
      * @code
@@ -153,19 +154,37 @@ export abstract class PuppeteerExtension{
      */
     async waitAppear(selectors: Array<string>, message?, timeout = 10):Promise<string> {
         let $html = null;
-        let msg;
+        let msg, reMsg = [];
         const maxWaitCount = timeout * 1000 / 100;
         for (let i = 0; i < maxWaitCount; i++) {
             await this.page.waitFor(100);
             $html = await this.jQuery();
             for (let i = 0; i < selectors.length; i++) {
                 msg = ( message ) ? message : `Selector "${selectors[i]}" appeared!`
-                if ($html.find(selectors[i]).length > 0) return msg ;
+                if ($html.find(selectors[i]).length > 0) return msg;
+                // else return;
             }
         }
         throw { code: 'selector-not-found', message: `Selectors ${selectors} not found.` };
     }
 
+    /**
+     * Strictly checks all selectors provided.
+     * @param selectors 
+     */
+    async strictWaitAppear( selector_list:Array<string>, message?, timeout = 1 ) {
+        let selector
+        for ( selector of selector_list ) {
+            this.waitAppear( selector );
+        }
+        // throw { code: 'selector-not-found', message: `Selectors ${selectors} not found.` };
+    }
+
+    /**
+     * Does click from puppeteer with proper handling.
+     * @param selector 
+     * @param message 
+     */
     async click( selector: string, message? ) {
         let msg = ( !message ) ? `Click: ${selector}` : message
         await this.waitAppear([selector], `Selector not found. ${selector}`)
@@ -176,10 +195,26 @@ export abstract class PuppeteerExtension{
             .then( a => { this.success( msg ) } )
             .catch( e => this.fatal( e.code, e.message ) );
     }
+    
+    /**
+     * For radio buttons
+     */
+    async choose( parent_selector, value ) {
+        let e = `input[value="${value}"]`;
+        await this.click( `${parent_selector}>${e}` );
+    }
 
-    async open( selector: string, expect: string ) {
+
+    /**
+     * Click selector then waits for expect.
+     * @param selector 
+     * @param expect 
+     */
+    async open( selector: string, expect?: string[] ) {
+        // await this.waitAppear([selector]);
         await this.click( selector );
-        await this.waitAppear([ expect ]);
+        if( expect ) await this.waitAppear(expect, null).then( a => this.success( a )).catch( e => this.error( e.code, e.message ) );
+        if( !expect ) this.success('Not expecting any selector');
     }
     
     /**
@@ -283,7 +318,7 @@ export abstract class PuppeteerExtension{
         
         if ( !_headless ) await this.chrome();
         console.log('Headless? :', _headless)
-        await this.page.goto( website )//.then(a=>this.success('Go to ontue.com'));
+        await this.page.goto( website );
     }
 
     /**
@@ -344,7 +379,48 @@ export abstract class PuppeteerExtension{
         console.log('Program finish. Process will exit ', code);
         process.exit( code );
     }
-    
+
+    extractText() {
+
+    }
+    /**
+     * Displays its child elements.
+     * @param selector 
+     * @param label 
+     */
+    async displayChild( selector, label ) {
+        await this._getChild( selector )
+            .then( a => this.success(`${label}: ${a}`) )
+            .catch( e => this.error( e.code, e.message ) );
+    }
+
+    /**
+     * Returns the lenght of selectors
+     * @param selector 
+     * @param label 
+     */
+    async countSelector( selector, label ) {
+        await this.getCount( selector ) 
+                .then( a => this.success(`${label}: ${a}`) )
+                .catch( e => this.error(e.code, e.message) );
+    }
+
+    private async _getChild(selector) {
+        const html = await this.html();
+        const $html = cheerio.load(html)(selector);
+        let re = $html.html();
+        if ( !re ) throw { code: 'error-get-content', message: `Invalid Selector? Selector's content: ${re}` }
+        return re
+    }
+
+    async getCount(selector) {
+        const $html = await this.jQuery();
+        const re = $html.find(selector).length;
+        if( re === 0 ) throw { code: 'selector-not-found', message: `${selector} not found in DOM!` };
+        return re;
+
+    }
+
 }
 
 /**
@@ -354,3 +430,4 @@ export abstract class PuppeteerExtension{
 //     code: string,
 //     message: string
 // }
+
