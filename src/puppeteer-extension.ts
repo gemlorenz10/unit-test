@@ -68,7 +68,7 @@ export abstract class PuppeteerExtension{
             return;
         }
 
-        this.capture( code, 'ERROR' );
+        await this.capture( code, 'ERROR' );
         
     }
 
@@ -186,14 +186,14 @@ export abstract class PuppeteerExtension{
      * @param message 
      */
     async click( selector: string, message? ) {
-        let msg = ( !message ) ? `Click: ${selector}` : message
+        let msg = ( !message ) ? `Click: ${selector}` : `${message} -> click: ${selector}`
         await this.waitAppear([selector], `Selector not found. ${selector}`)
             .then( a => a )
-            .catch( e => this.fatal( e.code, e.message ) );
+            .catch( async e => await this.fatal( e.code, e.message ) );
         await this.waitInCase(1);
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
-            .catch( e => this.fatal( e.code, e.message ) );
+            .catch( async e => await this.fatal( e.code, e.message ) );
     }
     
     /**
@@ -213,8 +213,10 @@ export abstract class PuppeteerExtension{
     async open( selector: string, expect?: string[] ) {
         // await this.waitAppear([selector]);
         await this.click( selector );
-        if( expect ) await this.waitAppear(expect, null).then( a => this.success( a )).catch( e => this.error( e.code, e.message ) );
-        if( !expect ) this.success('Not expecting any selector');
+        if( expect ) await this.waitAppear(expect, null)
+                                .then( a => this.success( a ))
+                                .catch( async e => await this.error( `open${expect}-fail`, e.message ) );
+        if( expect === null ) this.success('Not expecting any selector');
     }
     
     /**
@@ -275,13 +277,17 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param str 
      */
-    async type( selector, str, delay = 60 ) {
+    async type( selector, str, message?, delay = 60 ) {
+        let _message = ( message ) 
+                    ? `${message} -> ${str}` 
+                    : `Type ${str} in ${selector}`;
+        
         await this.waitInCase(1);
-        await this.waitAppear( [selector], `Can't type! Missing: ${selector}`, 2).catch( e => { this.fatal( e.code, e.message ); } );
+        await this.waitAppear( [selector], message, 2).catch( async e => { await this.fatal( e.code, e.message ); } );
         await this.deletePrevious( selector );
         await this.page.type(selector, str, { delay: delay })
-            .then(a=>{ this.success(`Type ${str} in ${selector}`) })
-            .catch( e => { this.fatal(e.code, e) } );
+            .then(a=>{ this.success( _message ) })
+            .catch( async e => { await this.fatal(e.code, e) } );
     }
 
     /**
@@ -331,7 +337,7 @@ export abstract class PuppeteerExtension{
         console.log(filePath);
         await inputElement.uploadFile( filePath )
             .then(a => this.success('Image Uploaded'))
-            .catch( e => { this.fatal(e.code, e) } );
+            .catch( async e => { await this.fatal(e.code, e) } );
     }
 
     /**
@@ -369,7 +375,7 @@ export abstract class PuppeteerExtension{
                 for ( i of selector_list ) {
                     await this.waitDisappear(i, 15000)
                         .then( a => { this.success(a) } )
-                        .catch( e => this.error(e.code, e.message) );
+                        .catch( async e => await this.error(e.code, e.message) );
                 }
 
             }).catch( e => e );    
@@ -391,7 +397,7 @@ export abstract class PuppeteerExtension{
     async displayChild( selector, label ) {
         await this._getChild( selector )
             .then( a => this.success(`${label}: ${a}`) )
-            .catch( e => this.error( e.code, e.message ) );
+            .catch( async e => await this.error( e.code, e.message ) );
     }
 
     /**
@@ -402,7 +408,7 @@ export abstract class PuppeteerExtension{
     async countSelector( selector, label ) {
         await this.getCount( selector ) 
                 .then( a => this.success(`${label}: ${a}`) )
-                .catch( e => this.error(e.code, e.message) );
+                .catch( async e => await this.error(e.code, e.message) );
     }
 
     private async _getChild(selector) {
