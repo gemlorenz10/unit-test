@@ -7,8 +7,8 @@ export let path_to_images = '../../picture';
 export let browserOption = {
     headless : false,
     viewport : {
-        height : 900,
-        width : 800
+        height : 1024,
+        width : 1366
     }
 }
 /**
