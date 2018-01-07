@@ -28,7 +28,7 @@ export class OntueSchedule extends Login {
     async addSched() {
         // // navigate to add schedule form
         // await this.click( this.schedulePage.head_scheduleEdit, 'Click schedule in header' );
-        await this.waitAppear( [this.schedulePage.sched_btnAddSchedule], null, 5 )
+        await this.waitAppear( [this.schedulePage.sched_btnAddSchedule] )
             .then( a => { this.success(a) } )
             .catch( async e => { await this.fatal( e.code, e.message ) } );
         await this.click( this.schedulePage.sched_btnAddSchedule, 'Open add schedule form.' )
