@@ -1,4 +1,4 @@
-﻿import { teacher_domain, student_domain } from './lib/global-library';
+﻿import { teacher_domain, student_domain, browserOption } from './lib/global-library';
 import { IUserInfo } from './lib/interface';
 import { OntueLoginPage } from './lib/ontue-library';
 import { PuppeteerExtension } from '../puppeteer-extension';
@@ -17,7 +17,7 @@ export class Login extends PuppeteerExtension {
      */
     async main() {
         let website = ( this._user.type.toUpperCase() === 'S' )? student_domain : teacher_domain;
-        await this.start(website, false).catch( async e => await this.fatal( e.code, e.message ) );
+        await this.start(website, browserOption).catch( async e => await this.fatal( e.code, e.message ) );
 
         await this.submitLogin().catch( async e => await this.fatal( e.code, e.message ) );
 
@@ -46,6 +46,6 @@ export class Login extends PuppeteerExtension {
     }
 }
 
-// ( new OntueLogin( user_data[0] ) ).main().then( a=> a );
+( new Login( user_data[0], new OntueLoginPage ) ).main().then( a=> a );
 
 // process.exit(0);
