@@ -1,26 +1,26 @@
 ﻿import { KatalkRegistrationPage } from './lib/katalk-library';
 import { OntueRegistrationPage } from './lib/ontue-library';
 import { path_to_images, browserOption } from './lib/global-library';
-import { IUserInfo } from './lib/interface';
+import { IUserInfo, IScript } from './lib/interface';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import * as path from 'path';
 import { user_data } from './../data/test-data';
 
-export class Register extends PuppeteerExtension {
+export class Register extends PuppeteerExtension implements IScript {
 
     // get account information to a text
     constructor( private person: IUserInfo, private registerPage ) {
         super()
     }
 
-    async register() {
+    async main() {
         let user = this.person
         console.log(user);
-        await this.start('https://ontue.com', browserOption).catch( e => this.fatal(e, 'failed to open ontue.com') );
+        await this.start('https://ontue.com', browserOption).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
         //check alert
         await this.alertCapture(['.ion-alert'], null, 1);
         // Register all info that are in text file
-        await this.fillUpForm().catch( e => { this.fatal(e.code, e) } );
+        await this.fillUpForm().catch( async e => { await this.fatal(e.code, e) } );
         // await this.page.reload();
         
         this.exitProgram(0);
@@ -39,7 +39,7 @@ export class Register extends PuppeteerExtension {
         await this.click(register_page.head_menu, 'Click Menu.');
         await this.open( register_page.menu_registration, [register_page.page] )
             .then( a => this.success('Register page opened.') )
-            .catch( e => this.fatal(e, 'Failed to open register page'));
+            .catch( async e => await this.fatal(e, 'Failed to open register page'));
 
         // FILL UP REGISTRATION FORM
 
@@ -87,4 +87,4 @@ export class Register extends PuppeteerExtension {
 }
 let katalk = new KatalkRegistrationPage();
 let ontue = new OntueRegistrationPage();
-(new Register( user_data[ user_data.length - 1 ], katalk)).register();
+(new Register( user_data[ user_data.length - 1 ], katalk)).main();

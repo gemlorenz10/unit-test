@@ -23,25 +23,105 @@ export class OntueHeaderElements{
     constructor(){
     }
 }
-/**
- * Ontue elements queries for Menu
- */
+
+
 export class OntueMenuPage extends OntueHeaderElements {
-    menu_settingsPayment = ".menu-settings-payment-info";
+    menu_page = "menu-page";
+    menu_help = '.menu-help';
+    menu_profile = '.menu-profile';
+    menu_message = '.menu-message';
+    menu_setting = '.menu-settings'
+    menu_qna = ".menu-qna"
     menu_teacherList = ".menu-teacher-list";
-    menu_reservation = ".menu-reservation";
-    menu_pastLong = ".menu-past-long";
-    menu_reservationToday = ".menu-reservation-today";
-    menu_forum = ".menu-forum";
+    menu_reserve = ".menu-schedule-table";
+    menu_classComment = ".menu-class-comments"
+    menu_paymentLong = ".menu-payment";
+    menu_paymentHistory = ".menu-payment-history";
+    menu_reservationLong = ".menu-future-sessions";
+    menu_pastLong = ".menu-past-sessions";
+    menu_availableSession = ".menu-today-sessions";
     menu_policy = ".menu-policy";
+    menu_changePassword = ".menu-password-change"
+    menu_logout = ".menu-logout";
     menu_login = ".menu-login";
     menu_registration = ".menu-registration";
+    menu_settingsPayment = ".menu-settings-payment-info";
     
+    menuListLoggedIn() {
+        return [
+            // this.menu_page,
+            this.menu_help,
+            this.menu_profile,
+            this.menu_message,
+            this.menu_setting,
+            // this.menu_settingsPayment,
+            this.menu_qna,
+            this.menu_teacherList,
+            this.menu_reserve,
+            this.menu_classComment,
+            this.menu_paymentLong,
+            this.menu_paymentHistory,
+            this.menu_reservationLong,
+            this.menu_pastLong,
+            this.menu_availableSession,
+            this.menu_policy,
+            this.menu_changePassword,
+            // this.menu_forum,
+            this.menu_logout,
+            // this.menu_login,
+            // this.menu_registration
+        ]
+    }
+
+    menuList() {
+        return [
+            // this.menu_page,
+            this.menu_help,
+            this.menu_login,
+            this.menu_registration,
+            // this.menu_profile,
+            this.menu_setting,
+            // this.menu_settingsPayment,
+            this.menu_qna,
+            this.menu_teacherList,
+            this.menu_reserve,
+            this.menu_classComment,
+            this.menu_paymentLong,
+            this.menu_paymentHistory,
+            this.menu_reservationLong,
+            this.menu_pastLong,
+            this.menu_availableSession,
+            this.menu_policy,
+            // this.menu_changePassword,
+            // this.menu_forum
+            // this.menu_logout,
+        ]
+    }
+
     constructor(){
         super()
     }
 
 }
+/**
+ * Ontue elements queries for Menu
+ */
+// export class OntueMenuPage extends OntueHeaderElements {
+//     menu_settingsPayment = ".menu-settings-payment-info";
+//     menu_teacherList = ".menu-teacher-list";
+//     menu_reservation = ".menu-reservation";
+//     menu_pastLong = ".menu-past-long";
+//     menu_reservationToday = ".menu-reservation-today";
+//     menu_forum = ".menu-forum";
+//     menu_policy = ".menu-policy";
+//     menu_login = ".menu-login";
+//     menu_registration = ".menu-registration";
+    
+//     constructor(){
+//         super()
+//     }
+
+// }
 /**
  * Ontue elements queries for Registration page
  */

@@ -1,5 +1,4 @@
-﻿// import { app_pages } from 'scripts/lib/katalk-library';
-import * as path from 'path';
+﻿import * as path from 'path';
 import * as fs from 'fs';
 import { IUserInfo, ISchedule } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
@@ -7,18 +6,18 @@ import { tzQuery } from './global-library';
 
 export let path_to_images = '../../picture';
 
-export let app_pages = {
+export let app_page_list = {
     home : 'page-home',
     menu : 'menu-page',
     // in menus
     help : 'help-page',
     login : 'login-page',
     register : 'register-page',
-    settings : 'page-settings',
+    setting : 'page-settings',
     qna : null, // teacher list showing
     teacher_list : 'teacher-list-page',
     reserve : 'schedule-table-page',
-    class_comments : null, // teacher list showing
+    class_comment : null, // teacher list showing
     payment : 'payment-page',
     payment_history : 'page-payment-history',
     reservation : 'session-future-page',
@@ -30,8 +29,9 @@ export let app_pages = {
     profile : 'register-page',
     message : 'message-page',
     change_password : 'password-change',
-    logout : this.home //expects home page when logged-out.
+    logout : 'page-home' //expects home page when logged-out.
 }
+
 
 /**
  * Ontue elements queries for Header navbar
@@ -56,7 +56,7 @@ export class KatalkHeaderElements{
  */
 
  export class KatalkHomePage extends KatalkHeaderElements {
-    home_page = app_pages.home;
+    home_page = app_page_list.home;
     home_intro = 'intro-component'
     home_intro_slider_section = 'intro-component>section:nth-child(1)';
     home_intro_text_section = 'intro-component>section:nth-child(2)';
@@ -79,7 +79,7 @@ export class KatalkHeaderElements{
  }
 
 export class KatalkMenuPage extends KatalkHeaderElements {
-    menu_page = "menu-page";
+    menu_page = app_page_list.menu;
     menu_help = '.menu-help';
     menu_profile = '.menu-profile';
     menu_message = '.menu-message';
@@ -102,52 +102,41 @@ export class KatalkMenuPage extends KatalkHeaderElements {
     
     menuListLoggedIn() {
         return [
-            // this.menu_page,
-            this.menu_help,
-            this.menu_profile,
-            this.menu_message,
-            this.menu_setting,
-            // this.menu_settingsPayment,
-            this.menu_qna,
-            this.menu_teacherList,
-            this.menu_reserve,
-            this.menu_classComment,
-            this.menu_paymentLong,
-            this.menu_paymentHistory,
-            this.menu_reservationLong,
-            this.menu_pastLong,
-            this.menu_availableSession,
-            this.menu_policy,
-            this.menu_changePassword,
-            // this.menu_forum,
-            this.menu_logout,
-            // this.menu_login,
-            // this.menu_registration
+            { menu : this.menu_help,                expect : app_page_list.help },
+            { menu : this.menu_profile,             expect : app_page_list.profile },
+            { menu : this.menu_message,             expect : app_page_list.message },
+            { menu : this.menu_setting,             expect : app_page_list.setting },
+            { menu : this.menu_qna,                 expect : app_page_list.qna },
+            { menu : this.menu_teacherList,         expect : app_page_list.teacher_list },
+            { menu : this.menu_reserve,             expect : app_page_list.reserve },
+            { menu : this.menu_classComment,        expect : app_page_list.class_comment },
+            { menu : this.menu_paymentLong,         expect : app_page_list.payment },
+            { menu : this.menu_paymentHistory,      expect : app_page_list.payment_history },
+            { menu : this.menu_reservationLong,     expect : app_page_list.reservation },
+            { menu : this.menu_pastLong,            expect : app_page_list.past_session },
+            { menu : this.menu_availableSession,    expect : app_page_list.available_session },
+            { menu : this.menu_policy,              expect : app_page_list.policy },
+            { menu : this.menu_changePassword,      expect : app_page_list.change_password },
+            { menu : this.menu_logout,              expect : app_page_list.logout }  
         ]
     }
 
     menuList() {
         return [
-            // this.menu_page,
-            this.menu_help,
-            this.menu_login,
-            this.menu_registration,
-            // this.menu_profile,
-            this.menu_setting,
-            // this.menu_settingsPayment,
-            this.menu_qna,
-            this.menu_teacherList,
-            this.menu_reserve,
-            this.menu_classComment,
-            this.menu_paymentLong,
-            this.menu_paymentHistory,
-            this.menu_reservationLong,
-            this.menu_pastLong,
-            this.menu_availableSession,
-            this.menu_policy,
-            // this.menu_changePassword,
-            // this.menu_forum
-            // this.menu_logout,
+            { menu : this.menu_help,                expect : app_page_list.help },
+            { menu : this.menu_login,               expect : app_page_list.login },
+            { menu : this.menu_registration,        expect : app_page_list.register },
+            { menu : this.menu_setting,             expect : app_page_list.setting },
+            { menu : this.menu_qna,                 expect : app_page_list.qna },
+            { menu : this.menu_teacherList,         expect : app_page_list.teacher_list },
+            { menu : this.menu_reserve,             expect : app_page_list.reserve },
+            { menu : this.menu_classComment,        expect : app_page_list.class_comment },
+            { menu : this.menu_paymentLong,         expect : app_page_list.payment },
+            { menu : this.menu_paymentHistory,      expect : app_page_list.payment_history },
+            { menu : this.menu_reservationLong,     expect : app_page_list.reservation },
+            { menu : this.menu_pastLong,            expect : app_page_list.past_session },
+            { menu : this.menu_availableSession,    expect : app_page_list.available_session },
+            { menu : this.menu_policy,              expect : app_page_list.policy }
         ]
     }
 
@@ -228,7 +217,7 @@ export class KatalkLoginPage extends  KatalkMenuPage {
 
 
 export class KatalkReservationListPage extends KatalkHeaderElements {
-    rv_list_page = app_pages.reservation;
+    rv_list_page = app_page_list.reservation;
     rv_login_first_toast = 'ion-toast>error-42205';
     // page header
     rv_header = `${this.rv_list_page}>ion-content`;

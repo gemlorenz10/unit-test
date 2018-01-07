@@ -1,18 +1,19 @@
 ﻿import { KatalkTeacherListPage, KatalkLoginPage } from './../lib/katalk-library';
 import { browserOption, student_domain } from '../lib/global-library';
 import { Login } from "../login";
+import { IScript } from 'scripts/lib/interface';
 let teacher_list_page = new KatalkTeacherListPage;
 /**
  * Dont put user info if you dont want to login.
  */
-export class KatalkTeacherList extends Login {
+export class KatalkTeacherList extends Login implements IScript{
     constructor( private teacherListUser, private katalkLoginPage ) {
         super( teacherListUser, katalkLoginPage )
     }
 
     async main() {
         // console.log( student_domain )
-        await this.start( student_domain, browserOption ).catch(e=>this.fatal( e.code, e.message ) );
+        await this.start( student_domain, browserOption ).catch( async e => await this.fatal( e.code, e.message ) );
         if ( this.teacherListUser ) await this.submitLogin();
         await this.click(teacher_list_page.head_teacher_list);
         await this.countTeacherList();

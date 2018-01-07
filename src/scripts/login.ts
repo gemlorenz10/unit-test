@@ -1,23 +1,26 @@
 ﻿import { teacher_domain, student_domain } from './lib/global-library';
-import { IUserInfo } from './lib/interface';
+import { IUserInfo, IScript } from './lib/interface';
 import { OntueLoginPage } from './lib/ontue-library';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import { user_data } from './../data/test-data';
-import { app_pages } from './lib/katalk-library';
+import { app_page_list } from './lib/katalk-library';
 
-export class Login extends PuppeteerExtension{
-    constructor( private user : IUserInfo, private loginPage ){
+export class Login extends PuppeteerExtension implements IScript{
+    private loginPage;
+    private user;
+    constructor( private loginUser : IUserInfo, private pageLoginExtendMenu ){
         super()
-
+        this.loginPage = pageLoginExtendMenu;
+        this.user = loginUser;
     }
     /**
      * Opens the browser and logs the use in. Sequence "start -> login".
      */
     async main() {
         let website = ( this.user.type.toUpperCase() === 'S' )? student_domain : teacher_domain;
-        await this.start(website, false).catch( e => this.fatal( e.code, e.message ) );
+        await this.start(website, false).catch( async e => await this.fatal( e.code, e.message ) );
 
-        await this.submitLogin().catch( e => this.fatal( e.code, e.message ) );
+        await this.submitLogin().catch( async e => await this.fatal( e.code, e.message ) );
 
         this.exitProgram(0);
     }
@@ -38,9 +41,9 @@ export class Login extends PuppeteerExtension{
         await this.waitAppear([login.login_wrongPassword], null, 1)
             .then( a => { this.success('Password Incorrect!') } )
             .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
-        await this.waitAppear([app_pages.home])
+        await this.waitAppear([app_page_list.home])
             .then( a =>  this.success('Success home page found!')  )
-            .catch( e => this.fatal( e.code, e.message ) );
+            .catch( async e => await this.fatal( e.code, e.message ) );
     }
 }
 

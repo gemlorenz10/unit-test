@@ -1,22 +1,24 @@
-﻿import { KatalkLoginPage } from './../lib/katalk-library';
+﻿import { IUserInfo } from './../lib/interface';
+import { KatalkLoginPage } from './../lib/katalk-library';
 import { browserOption, student_domain } from '../lib/global-library';
 import { KatalkHomePage } from "../lib/katalk-library";
 import { PuppeteerExtension } from "../../puppeteer-extension";
 import { Login } from '../login';
+import { IScript } from 'scripts/lib/interface';
 let homepage = new KatalkHomePage;
-class KatalkHome extends Login {
+class KatalkHome extends Login implements IScript {
 
-    constructor( private katalkUserInfo, private katalkLoginPage ) {
+    constructor( private katalkUserInfo: IUserInfo, private katalkLoginPage ) {
         super( katalkUserInfo, katalkLoginPage )
     }
     async main() {
         // console.log( student_domain )
-        await this.start( student_domain, browserOption ).catch( e => this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
+        await this.start( student_domain, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
         if ( this.katalkUserInfo ) await this.submitLogin();
         await this.open( homepage.head_home, [ homepage.home_intro ] )
-        await this.checkStat().catch( e => this.error( e.code, e.message ) );
-        await this.checkStudentComment().catch( e => this.error( e.code, e.message ) );
-        await this.checkTeacherList().catch( e => this.error( e.code, e.message ) );
+        await this.checkStat().catch(async e => await this.error( e.code, e.message ) );
+        await this.checkStudentComment().catch( async e => await this.error( e.code, e.message ) );
+        await this.checkTeacherList().catch( async e => await this.error( e.code, e.message ) );
     }
 
     async checkSlider() {
