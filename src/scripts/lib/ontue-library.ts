@@ -217,6 +217,7 @@ export class OntueRegistrationPage extends OntueMenuPage {
  * Ontue element queries for login page.
  */
 export class OntueLoginPage extends  OntueMenuPage {
+    login_page = ontue_page_list.login;
     login_email = 'input[name="email"]';
     login_password = 'input[name="password"]';
     login_btnSubmit = 'button[type="submit"]';
