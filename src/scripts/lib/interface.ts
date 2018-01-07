@@ -21,10 +21,3 @@ export interface ISchedule {
     preReserve:     string
 
 }
-
-interface IScriptConstructor {
-    new ( _user: IUserInfo, _page_login_extending_menu ) : IScript
-}
-export interface IScript {
-    main(): void
-}

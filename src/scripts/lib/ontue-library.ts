@@ -1,16 +1,53 @@
-﻿import * as path from 'path';
+﻿import { teacher_domain } from './global-library';
+import * as path from 'path';
 import * as fs from 'fs';
 import { IUserInfo, ISchedule } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 import { tzQuery } from '../lib/global-library';
 
 
+let ontue_page_list = {
+    // head
+    home : 'page-home',
+    menu : 'menu-page',
+    dayoff : 'teacher-dayoff-page',
+    free_class : null,
+    forum : null,
+    schedule : 'page-schedule',
+    curriculum : null,
+    // in menus
+    help : 'help-page',
+    login : 'login-page',
+    register : 'register-page',
+    setting : 'page-settings',
+    qna : null, // teacher list showing
+    teacher_list : 'teacher-list-page',
+    reserve : 'schedule-table-page',
+    class_comment : null, // teacher list showing
+    payment : 'payment-page',
+    payment_history : 'page-payment-history',
+    reservation : 'session-future-page',
+    past_session: 'session-past-page',
+    available_session: null, // wrong page name toast
+    policy : 'policy-page',
+
+    // logged in
+    profile : 'register-page',
+    message : 'message-page',
+    cv_page : 'page-teacher-curriculum-vitae',
+    change_password : 'password-change',
+    logout : 'page-home' //expects home page when logged-out.
+}
+
 /**
  * Ontue elements queries for Header navbar
  */
 export class OntueHeaderElements{
+    domain = teacher_domain;
+    home = ontue_page_list.home; 
     head_home = ".header-home";
     head_scheduleEdit = ".header-schedule-edit";
+    head_dayoff = ".header-dayoff"
     head_teacherList = ".header-teacher-list";
     head_reservation = ".header-reservation";
     head_pastReservation = ".header-past-reservation";
@@ -22,7 +59,46 @@ export class OntueHeaderElements{
     head_menu = ".header-menu";
     constructor(){
     }
-}
+    /**
+     * Returns list of available head menu when logged in and expected element
+     */
+    headExpectListLogin() {
+        return [
+            { menu : this.head_home,            expect : ontue_page_list.home },
+            { menu : this.head_scheduleEdit,    expect : ontue_page_list.schedule },
+            { menu : this.head_dayoff,          expect : ontue_page_list.dayoff },
+            { menu : this.head_teacherList,     expect : ontue_page_list.teacher_list },
+            { menu : this.head_reservation,     expect : ontue_page_list.reservation },
+            { menu : this.head_pastReservation, expect : ontue_page_list.past_session },
+            { menu : this.head_message,         expect : ontue_page_list.message },
+            { menu : this.head_curriculum,      expect : ontue_page_list.curriculum },
+            { menu : this.head_freeClass,       expect : ontue_page_list.free_class },
+            { menu : this.head_forum,           expect : ontue_page_list.forum },
+            { menu : this.head_classComments,   expect : ontue_page_list.class_comment },
+            { menu : this.head_menu,            expect : ontue_page_list.menu }
+        ];
+    }
+   /**
+     * Returns list of available head menu and expected element
+     */
+    headExpectList() {
+        return [
+            { menu : this.head_home,            expect : ontue_page_list.home },
+            // { menu : this.head_scheduleEdit,    expect : ontue_page_list.login },
+            // { menu : this.head_dayoff,          expect : ontue_page_list.dayoff },
+            { menu : this.head_teacherList,     expect : ontue_page_list.teacher_list },
+            { menu : this.head_reservation,     expect : ontue_page_list.reservation },
+            { menu : this.head_pastReservation, expect : ontue_page_list.past_session },
+            { menu : this.head_message,         expect : ontue_page_list.message },
+            { menu : this.head_curriculum,      expect : ontue_page_list.curriculum },
+            { menu : this.head_freeClass,       expect : ontue_page_list.free_class },
+            { menu : this.head_forum,           expect : ontue_page_list.forum },
+            { menu : this.head_classComments,   expect : ontue_page_list.class_comment },
+            { menu : this.head_menu,            expect : ontue_page_list.menu }
+        ];
+    }
+    
+}   
 
 
 export class OntueMenuPage extends OntueHeaderElements {
@@ -44,57 +120,53 @@ export class OntueMenuPage extends OntueHeaderElements {
     menu_changePassword = ".menu-password-change"
     menu_logout = ".menu-logout";
     menu_login = ".menu-login";
+    menu_cv = ".menu-curriculum-vitae"
     menu_registration = ".menu-registration";
     menu_settingsPayment = ".menu-settings-payment-info";
     
-    menuListLoggedIn() {
+    /**
+     * Returns list of available menu in side bar when logged in.
+     */
+    menuExpectListLogin() {
         return [
-            // this.menu_page,
-            this.menu_help,
-            this.menu_profile,
-            this.menu_message,
-            this.menu_setting,
-            // this.menu_settingsPayment,
-            this.menu_qna,
-            this.menu_teacherList,
-            this.menu_reserve,
-            this.menu_classComment,
-            this.menu_paymentLong,
-            this.menu_paymentHistory,
-            this.menu_reservationLong,
-            this.menu_pastLong,
-            this.menu_availableSession,
-            this.menu_policy,
-            this.menu_changePassword,
-            // this.menu_forum,
-            this.menu_logout,
-            // this.menu_login,
-            // this.menu_registration
+            { menu : this.menu_help,                expect : ontue_page_list.help },
+            { menu : this.menu_profile,             expect : ontue_page_list.profile },
+            { menu : this.menu_message,             expect : ontue_page_list.message },
+            { menu : this.menu_setting,             expect : ontue_page_list.setting },
+            { menu : this.menu_qna,                 expect : ontue_page_list.qna },
+            { menu : this.menu_teacherList,         expect : ontue_page_list.teacher_list },
+            { menu : this.menu_reserve,             expect : ontue_page_list.reserve },
+            { menu : this.menu_classComment,        expect : ontue_page_list.class_comment },
+            { menu : this.menu_paymentLong,         expect : ontue_page_list.payment },
+            { menu : this.menu_paymentHistory,      expect : ontue_page_list.payment_history },
+            { menu : this.menu_reservationLong,     expect : ontue_page_list.reservation },
+            { menu : this.menu_pastLong,            expect : ontue_page_list.past_session },
+            { menu : this.menu_availableSession,    expect : ontue_page_list.available_session },
+            { menu : this.menu_cv,                  expect : ontue_page_list.cv_page },  
+            { menu : this.menu_policy,              expect : ontue_page_list.policy },
+            { menu : this.menu_changePassword,      expect : ontue_page_list.change_password },
+            { menu : this.menu_logout,              expect : ontue_page_list.logout }  
         ]
     }
-
-    menuList() {
+   /**
+     * Returns list of available menu in side bar.
+     */
+    menuExpectList() {
         return [
-            // this.menu_page,
-            this.menu_help,
-            this.menu_login,
-            this.menu_registration,
-            // this.menu_profile,
-            this.menu_setting,
-            // this.menu_settingsPayment,
-            this.menu_qna,
-            this.menu_teacherList,
-            this.menu_reserve,
-            this.menu_classComment,
-            this.menu_paymentLong,
-            this.menu_paymentHistory,
-            this.menu_reservationLong,
-            this.menu_pastLong,
-            this.menu_availableSession,
-            this.menu_policy,
-            // this.menu_changePassword,
-            // this.menu_forum
-            // this.menu_logout,
+            { menu : this.menu_help,                expect : ontue_page_list.help },
+            { menu : this.menu_login,               expect : ontue_page_list.login },
+            { menu : this.menu_registration,        expect : ontue_page_list.register },
+            { menu : this.menu_setting,             expect : ontue_page_list.setting },
+            { menu : this.menu_qna,                 expect : ontue_page_list.qna },
+            { menu : this.menu_teacherList,         expect : ontue_page_list.teacher_list },
+            { menu : this.menu_reserve,             expect : ontue_page_list.reserve },
+            { menu : this.menu_classComment,        expect : ontue_page_list.class_comment },
+            { menu : this.menu_paymentLong,         expect : ontue_page_list.payment },
+            { menu : this.menu_paymentHistory,      expect : ontue_page_list.payment_history },
+            { menu : this.menu_reservationLong,     expect : ontue_page_list.reservation },
+            { menu : this.menu_pastLong,            expect : ontue_page_list.past_session },
+            { menu : this.menu_availableSession,    expect : ontue_page_list.available_session },
+            { menu : this.menu_policy,              expect : ontue_page_list.policy }
         ]
     }
 
@@ -103,25 +175,7 @@ export class OntueMenuPage extends OntueHeaderElements {
     }
 
 }
-/**
- * Ontue elements queries for Menu
- */
-// export class OntueMenuPage extends OntueHeaderElements {
-//     menu_settingsPayment = ".menu-settings-payment-info";
-//     menu_teacherList = ".menu-teacher-list";
-//     menu_reservation = ".menu-reservation";
-//     menu_pastLong = ".menu-past-long";
-//     menu_reservationToday = ".menu-reservation-today";
-//     menu_forum = ".menu-forum";
-//     menu_policy = ".menu-policy";
-//     menu_login = ".menu-login";
-//     menu_registration = ".menu-registration";
-    
-//     constructor(){
-//         super()
-//     }
 
-// }
 /**
  * Ontue elements queries for Registration page
  */
@@ -176,7 +230,8 @@ export class OntueLoginPage extends  OntueMenuPage {
 /**
  * Ontue element queries for schedule page
  */
-export class OntueSchedulePage extends OntueMenuPage {
+export class OntueSchedulePage extends OntueLoginPage {
+    sched_page = ontue_page_list.schedule;
     sched_btnAddSchedule = '.add-schedule';
     sched_beginHour = 'input[name="class_begin_hour"]';
     sched_beginMinute = 'input[name="class_begin_minute"]';
@@ -185,12 +240,40 @@ export class OntueSchedulePage extends OntueMenuPage {
     sched_preReserve = 'input[name="prere"]';
     sched_btnSubmit = 'button[type="submit"]';
     sched_btnTimezone = '.update-tz';
-    sched_tbSchedule = '.schedule'
+
+    //table
+
+    sched_table = 'table.schedule-edit'
+    sched_table_row = `${this.sched_table}>tbody>tr`;
+    sched_td_number = `td:nth-child(1)`;
+    sched_td_time = `td:nth-child(2)`;
+    sched_td_sunday = `td:nth-child(3)`;
+    sched_td_monday = `td:nth-child(4)`;
+    sched_td_tuesday = `td:nth-child(5)`;
+    sched_td_wednesday = `td:nth-child(6)`;
+    sched_td_thrusday = `td:nth-child(7)`;
+    sched_td_friday = `td:nth-child(8)`;
+    sched_td_saturday = `td:nth-child(9)`;
+    // sched_td_action = `td:nth-child(10)`;
+    // action buttons
+    sched_action_delete =`td.delete>button`;
+    sched_action_edit =`td.edit>button`;
+
+    sched_alert = `ion-alert>.alert-wrapper`;
+    sched_alert_title = `${this.sched_alert}>.alert-head>.alert-title`;
+    sched_alert_accept = `${this.sched_alert}>.alert-button-group>button:nth-child(1)`;
+    sched_alert_cancel = `${this.sched_alert}>.alert-button-group>button:nth-child(2)`;
+
     constructor(){
         super()
     }
+
+    getSchedRow( childCount ){
+       let re = this.sched_table_row + `:nth-child(${childCount})`;
+       return re;
+    }
     // returns query for week based on parameter week
-    sched_weekDay( week ) {
+    getweekDay( week ) {
         return `input[name="${week}"]`;
     }    
 }

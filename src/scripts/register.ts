@@ -1,12 +1,12 @@
 ﻿import { KatalkRegistrationPage } from './lib/katalk-library';
 import { OntueRegistrationPage } from './lib/ontue-library';
 import { path_to_images, browserOption } from './lib/global-library';
-import { IUserInfo, IScript } from './lib/interface';
+import { IUserInfo } from './lib/interface';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import * as path from 'path';
 import { user_data } from './../data/test-data';
 
-export class Register extends PuppeteerExtension implements IScript {
+export class Register extends PuppeteerExtension {
 
     // get account information to a text
     constructor( private person: IUserInfo, private registerPage ) {

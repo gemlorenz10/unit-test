@@ -1,55 +1,70 @@
 ﻿import { IUserInfo } from './lib/interface';
-import { student_domain, browserOption } from 'scripts/lib/global-library';
+import { browserOption } from './lib/global-library';
 import { Login } from "./login";
 import { KatalkMenuPage, KatalkLoginPage } from "./lib/katalk-library";
 import { user_data } from '../data/test-data';
-import { OntueLoginPage } from 'scripts/lib/ontue-library';
-import { IScript } from 'scripts/lib/interface';
+import { OntueLoginPage } from './lib/ontue-library';
 
 /**
  * Pass Page LoginPage thats extending MenuPage in the Constructor
  */
-class Menu extends Login implements IScript {
-    private _menu_page;
-    private _user;
+class Menu extends Login {
+    private menu_page;
+    private menu_user;
     constructor( private _menuUser: IUserInfo, private _pageLoginExtendMenu ) {
         super( _menuUser, _pageLoginExtendMenu )
-        this._menu_page = _pageLoginExtendMenu;
-        this._user = _menuUser;
+        this.menu_page = _pageLoginExtendMenu;
+        this.menu_user = _menuUser;
     }
+    /**
+     * Starts a browser then run automation.
+     */
     async main() {
-        // console.log( student_domain )
-        await this.start( student_domain, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
-        if ( this._user ) await this.submitLogin();
-        await this.checkMenuList();
+        console.log('TEST :', this.menu_page.domain );
+        await this.start( this.menu_page.domain, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${this.menu_page.domain}!`) );
+        if ( this.menu_user ) await this.submitLogin();
+        // await this.checkMenuList();
+        await this.checkHeadMenu();
 
-        // this.exitProgram(0);
+        this.exitProgram(0);
     }
 
     /**
-     * Tests all the menu available.
+     * Tests menu in the menu list page
      *
      */
     async checkMenuList() {
         let re;
-        let menu_list = ( this._user )
-                            ? this._menu_page.menuListLoggedIn()
-                            : this._menu_page.menuList();
+        let menu_list = ( this.menu_user )
+                        ? this.menu_page.menuExpectListLogin()
+                        : this.menu_page.menuExpectList();
 
         for ( re of  menu_list) {
             console.log('TEST:',re);
-            await this.open(this._menu_page.head_menu, [re.menu]);
+            await this.open(this.menu_page.head_menu, [re.menu]);
             await this.open(re.menu, [re.expect]);
         }
-
     }
 
-    private async _expectList() {
+    /**
+     * Tests the menu in the header section
+     */
+    async checkHeadMenu() {
+        let re;
+        let head_list = ( this.menu_user )
+                        ? this.menu_page.headExpectListLogin()
+                        : this.menu_page.headExpectList();
 
+        for ( re of  head_list) {
+            console.log('TEST:',re);
+            await this.open(this.menu_page.head_menu, [re.menu]);
+            await this.open(re.menu, [re.expect]);
+        }
     }
 }
 
-let user = user_data[1]; // note that it should be a student because we are in katalkenglish.
+// Test
+let user = user_data[2]; // note that it should be a student because we are in katalkenglish.
 let katalk = new KatalkLoginPage; // extends menu
 let ontue = new OntueLoginPage;
-( new Menu( user, katalk ) ).main();
+( new Menu( user, ontue ) ).main();

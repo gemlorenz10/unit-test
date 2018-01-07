@@ -1,11 +1,14 @@
 ﻿import { IUserInfo } from './scripts/lib/interface';
 const puppeteer = require('puppeteer');
+// require('console.table');
+import 'console.table'
 import { Page, Browser } from 'puppeteer';
 import { userInfo } from 'os';
 import { browserOption } from './scripts/lib/global-library';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
 import * as fs from 'fs';
+import { request } from 'http';
 
 export abstract class PuppeteerExtension{
     browser: Browser;
@@ -58,7 +61,11 @@ export abstract class PuppeteerExtension{
     }
     
 
-
+    /**
+     * Warn level error captures screen
+     * @param code 
+     * @param msg 
+     */
     async error(code, msg) {
         if (!code) code = 'error';
         console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}`);
@@ -71,7 +78,11 @@ export abstract class PuppeteerExtension{
         await this.capture( code, 'ERROR' );
         
     }
-
+    /**
+     * warn level fatal - exits the scripts
+     * @param code 
+     * @param msg 
+     */
     async fatal(code, msg) {
         if ( !code ) code = 'fatal'
         await this.error(code, msg);
@@ -81,11 +92,20 @@ export abstract class PuppeteerExtension{
         process.exit(1);
     }
 
+    /**
+     * warn level warning
+     * @param code 
+     * @param msg 
+     */
     async warn( code, msg ) {
         console.log(`WARN: ${msg}`);
         await this.capture( code, 'WARN' );
     }
-
+    /**
+     * Captures the page and logs message with level/severity
+     * @param file 
+     * @param level 
+     */
     async capture( file = 'capture', level? ) {
         const dir = path.join(process.cwd(), 'screenshots');
         const filename = `${file}.png`
@@ -186,11 +206,11 @@ export abstract class PuppeteerExtension{
      * @param message 
      */
     async click( selector: string, message? ) {
-        let msg = ( !message ) ? `Click: ${selector}` : `${message} -> click: ${selector}`
+        let msg = ( !message ) ? `Click: ${selector}` : message
         await this.waitAppear([selector], `Selector not found. ${selector}`)
             .then( a => a )
             .catch( async e => await this.fatal( e.code, e.message ) );
-        await this.waitInCase(1);
+        // await this.waitInCase(1);
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
             .catch( async e => await this.fatal( e.code, e.message ) );
@@ -211,12 +231,13 @@ export abstract class PuppeteerExtension{
      * @param expect 
      */
     async open( selector: string, expect?: string[] ) {
-        // await this.waitAppear([selector]);
+        await this.waitAppear([selector]);
         await this.click( selector );
-        if( expect ) await this.waitAppear(expect, null)
+        if( !expect ) this.success('Not expecting any selector');
+        if( expect[0] == '0' ) this.success('Not expecting any selector');
+        if( expect ) await this.waitAppear(expect, null, 2)
                                 .then( a => this.success( a ))
                                 .catch( async e => await this.error( `open${expect}-fail`, e.message ) );
-        if( expect === null ) this.success('Not expecting any selector');
     }
     
     /**
@@ -363,7 +384,7 @@ export abstract class PuppeteerExtension{
      * @param message - null if not necessary
      * @param timeout 
      */
-    async alertSuccess(selector_list = [],  message, timeout = 5) {
+    async alertSuccess(selector_list = [],  message, timeout = 3) {
         if (message === null || undefined) message = 'Success! closing alert.';
         await this.waitAppear(selector_list, message, timeout)
             .then( async a => { 
@@ -381,27 +402,42 @@ export abstract class PuppeteerExtension{
             }).catch( e => e );    
     }
 
+    /**
+     * Finds an alert then press ok. If no alert just pass.
+     */
+    async alertAccept( alertSelector, acceptSelector, message?, timeout = 3 ) {
+        if (message === null || undefined) message = 'Press ok/accept to continue.';
+        await this.waitAppear([alertSelector], message, timeout)
+            .then( async a => { 
+                this.success( a );        
+                await this.waitInCase(1);
+                await this.click( acceptSelector, message );
+                await this.waitDisappear(alertSelector, 15000).catch( e => this.fatal(e.code, 'Alert did not close.  -> '+ alertSelector) );
+            }).catch( e => e );
+    }
+
+    /**
+     * Exits/closes the script
+     * @param code 
+     */
     exitProgram( code: number ) {
         console.log('Program finish. Process will exit ', code);
         process.exit( code );
     }
 
-    extractText() {
-
-    }
     /**
      * Displays its child elements.
      * @param selector 
      * @param label 
      */
     async displayChild( selector, label ) {
-        await this._getChild( selector )
+        await this.getChildDom( selector )
             .then( a => this.success(`${label}: ${a}`) )
             .catch( async e => await this.error( e.code, e.message ) );
     }
 
     /**
-     * Returns the lenght of selectors
+     * Returns the lenght of selectors with promise handle
      * @param selector 
      * @param label 
      */
@@ -410,15 +446,21 @@ export abstract class PuppeteerExtension{
                 .then( a => this.success(`${label}: ${a}`) )
                 .catch( async e => await this.error(e.code, e.message) );
     }
-
-    private async _getChild(selector) {
+    /**
+     * Returns selectors child DOM.
+     * @param selector 
+     */
+    async getChildDom(selector) {
         const html = await this.html();
         const $html = cheerio.load(html)(selector);
         let re = $html.html();
         if ( !re ) throw { code: 'error-get-content', message: `Invalid Selector? Selector's content: ${re}` }
         return re
     }
-
+    /**
+     * Counts the selector
+     * @param selector 
+     */
     async getCount(selector) {
         const $html = await this.jQuery();
         const re = $html.find(selector).length;
@@ -428,12 +470,3 @@ export abstract class PuppeteerExtension{
     }
 
 }
-
-/**
- * Form of data that Puppeteer-extension error handlers accepts.
- */
-// export interface IUserException {
-//     code: string,
-//     message: string
-// }
-

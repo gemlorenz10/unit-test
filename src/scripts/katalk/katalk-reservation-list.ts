@@ -1,10 +1,9 @@
 ﻿import { student_domain, browserOption } from './../lib/global-library';
 import { Login } from "../login";
 import { KatalkReservationListPage } from '../lib/katalk-library';
-import { IScript } from 'scripts/lib/interface';
 
 let reserve_list = new KatalkReservationListPage;
-class KatalkReservationList extends Login implements IScript {
+class KatalkReservationList extends Login {
 
     constructor( private katalkUserInfo, private katalkLoginPage ) {
         super( katalkUserInfo, katalkLoginPage )

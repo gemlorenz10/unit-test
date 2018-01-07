@@ -1,12 +1,11 @@
 ﻿import { KatalkTeacherListPage, KatalkLoginPage } from './../lib/katalk-library';
 import { browserOption, student_domain } from '../lib/global-library';
 import { Login } from "../login";
-import { IScript } from 'scripts/lib/interface';
 let teacher_list_page = new KatalkTeacherListPage;
 /**
  * Dont put user info if you dont want to login.
  */
-export class KatalkTeacherList extends Login implements IScript{
+export class KatalkTeacherList extends Login {
     constructor( private teacherListUser, private katalkLoginPage ) {
         super( teacherListUser, katalkLoginPage )
     }

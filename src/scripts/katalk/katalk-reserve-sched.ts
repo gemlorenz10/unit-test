@@ -1,12 +1,12 @@
 ﻿import { browserOption, student_domain } from '../lib/global-library';
 import { user_data } from '../../data/test-data';
 import { KatalkHeaderElements, KatalkLoginPage } from '../lib/katalk-library';
-import { IUserInfo, ISchedule, IScript } from '../lib/interface';
+import { IUserInfo, ISchedule } from '../lib/interface';
 import { Login } from "../login";
 
 let head = new KatalkHeaderElements()
 let login_page = new KatalkLoginPage;
-export class SearchSchedule extends Login implements IScript{
+export class SearchSchedule extends Login {
     constructor( private student: IUserInfo, private schedule ) {
         super( student, login_page )
     }
