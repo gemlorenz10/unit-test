@@ -46,6 +46,6 @@ export class Login extends PuppeteerExtension {
     }
 }
 
-( new Login( user_data[0], new OntueLoginPage ) ).main().then( a=> a );
+// ( new Login( user_data[0], new OntueLoginPage ) ).main().then( a=> a );
 
 // process.exit(0);
