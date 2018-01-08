@@ -233,6 +233,7 @@ export class OntueLoginPage extends  OntueMenuPage {
  */
 export class OntueSchedulePage extends OntueLoginPage {
     sched_page = ontue_page_list.schedule;
+    sched_form = 'add-schedule';
     sched_btnAddSchedule = '.add-schedule';
     sched_beginHour = 'input[name="class_begin_hour"]';
     sched_beginMinute = 'input[name="class_begin_minute"]';
@@ -274,7 +275,7 @@ export class OntueSchedulePage extends OntueLoginPage {
        return re;
     }
     // returns query for week based on parameter week
-    getweekDay( week ) {
+    getWeekDay( week ) {
         return `input[name="${week}"]`;
     }    
 }
