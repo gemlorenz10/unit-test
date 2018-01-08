@@ -182,7 +182,6 @@ export abstract class PuppeteerExtension{
             for (let i = 0; i < selectors.length; i++) {
                 msg = ( message ) ? message : `Selector "${selectors[i]}" appeared!`
                 if ($html.find(selectors[i]).length > 0) return msg;
-                // else return;
             }
         }
         throw { code: 'selector-not-found', message: `Selectors ${selectors} not found.` };
@@ -230,15 +229,18 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param expect 
      */
-    async open( selector: string, expect?: string[] ) {
-        await this.waitAppear([selector]);
+    async open( selector: string, expect?: string[], message? ) {
+        if ( message ) this.success(message);
+        await this.page.waitFor(500);
         await this.click( selector );
         if( !expect ) this.success('Not expecting any selector');
         if( expect[0] == '0' ) this.success('Not expecting any selector');
-        if( expect ) await this.waitAppear(expect, null, 2)
+        if( expect ) await this.waitAppear(expect, null)
                                 .then( a => this.success( a ))
                                 .catch( async e => await this.error( `open${expect}-fail`, e.message ) );
+        await this.page.waitFor(500);
     }
+    
     
     /**
      * Waits until the selector disappears.
@@ -346,6 +348,8 @@ export abstract class PuppeteerExtension{
         if ( !_headless ) await this.chrome();
         console.log('Headless? :', _headless)
         await this.page.goto( website );
+        await this.page.waitFor(500);
+        // await this.page.reload({waitUntil:'networkidle0'});
     }
 
     /**
