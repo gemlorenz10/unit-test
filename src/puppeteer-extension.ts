@@ -209,7 +209,7 @@ export abstract class PuppeteerExtension{
         await this.waitAppear([selector], `Selector not found. ${selector}`)
             .then( a => a )
             .catch( async e => await this.fatal( e.code, e.message ) );
-        // await this.waitInCase(1);
+        await this.page.waitFor(500);
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
             .catch( async e => await this.fatal( e.code, e.message ) );
@@ -305,7 +305,7 @@ export abstract class PuppeteerExtension{
                     ? `${message} -> ${str}` 
                     : `Type ${str} in ${selector}`;
         
-        await this.waitInCase(1);
+        await this.page.waitFor(500);
         await this.waitAppear( [selector], message, 2).catch( async e => { await this.fatal( e.code, e.message ); } );
         await this.deletePrevious( selector );
         await this.page.type(selector, str, { delay: delay })
