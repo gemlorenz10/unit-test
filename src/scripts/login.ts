@@ -31,7 +31,7 @@ export class Login extends PuppeteerExtension {
         let user = this._user;
         let login = this._page
         // GO TO LOGIN
-        await this.click( login.head_menu, 'Click Menu from head.' );
+        await this.open( login.head_menu, [login.menu_login], 'Open login page.' );
         await this.click( login.menu_login, 'Click Login menu.');
         await this.type( login.login_email, user.email);
         await this.type( login.login_password, user.password);
