@@ -1,19 +1,22 @@
-﻿import { student_domain, browserOption } from './../lib/global-library';
+﻿import { ReserveSchedule } from './katalk-reserve-sched';
+import { student_domain, browserOption } from './../lib/global-library';
 import { Login } from "../login";
 import { KatalkReservationListPage } from '../lib/katalk-library';
 
 let reserve_list = new KatalkReservationListPage;
 class KatalkReservationList extends Login {
 
-    constructor( private katalkUserInfo, private katalkLoginPage ) {
-        super( katalkUserInfo, katalkLoginPage )
+    constructor( private katalkUserInfo, private katalkReservePage ) {
+        super( katalkUserInfo, katalkReservePage )
     }
     async main() {
         console.log('Test: ', student_domain )
-        await this.start( student_domain, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
+        await this.start( this.katalkReservePage.domain, browserOption, this.katalkReservePage.sitename ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
         if ( this.katalkUserInfo ) await this.submitLogin();
         await this.open( reserve_list.head_reservation );
         await this.checkUserPoint()
+
+        await this.exitProgram(0);
     }
 
     async checkUserPoint() {

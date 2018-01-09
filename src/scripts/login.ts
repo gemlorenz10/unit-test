@@ -17,11 +17,11 @@ export class Login extends PuppeteerExtension {
      */
     async main() {
         let website = ( this._user.type.toUpperCase() === 'S' )? student_domain : teacher_domain;
-        await this.start(website, browserOption).catch( async e => await this.fatal( e.code, e.message ) );
+        await this.start(website, browserOption, this._page.sitename).catch( async e => await this.fatal( e.code, e.message ) );
 
         await this.submitLogin().catch( async e => await this.fatal( e.code, e.message ) );
 
-        this.exitProgram(0);
+        await this.exitProgram(0);
     }
 
      /**

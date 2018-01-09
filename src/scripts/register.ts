@@ -16,14 +16,14 @@ export class Register extends PuppeteerExtension {
     async main() {
         let user = this.person
         console.log(user);
-        await this.start('https://ontue.com', browserOption).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
+        await this.start( this.registerPage.domain, browserOption, this.registerPage.sitename ).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
         //check alert
         await this.alertCapture(['.ion-alert'], null, 1);
         // Register all info that are in text file
         await this.fillUpForm().catch( async e => { await this.fatal(e.code, e) } );
         // await this.page.reload();
         
-        this.exitProgram(0);
+        await this.exitProgram(0);
     }
 
 

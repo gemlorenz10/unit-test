@@ -1,25 +1,24 @@
 ﻿import { browserOption, student_domain } from '../lib/global-library';
 import { user_data } from '../../data/test-data';
-import { KatalkHeaderElements, KatalkLoginPage } from '../lib/katalk-library';
+import { KatalkHeaderElements, KatalkLoginPage, KatalkReservationListPage } from '../lib/katalk-library';
 import { IUserInfo, ISchedule } from '../lib/interface';
 import { Login } from "../login";
 
-let head = new KatalkHeaderElements()
-let login_page = new KatalkLoginPage;
-export class SearchSchedule extends Login {
-    constructor( private student: IUserInfo, private schedule ) {
-        super( student, login_page )
+
+export class ReserveSchedule extends Login {
+    constructor( private student: IUserInfo, private schedule, private reservePage: KatalkReservationListPage ) {
+        super( student, reservePage )
     }
 
     async main() {
-        await this.start( student_domain, browserOption ).catch( e=> this.fatal(e.code, e.message) );
+        await this.start( this.reservePage.domain, browserOption, this.reservePage.sitename ).catch( e=> this.fatal(e.code, e.message) );
         await this.submitLogin().catch( e=> this.fatal(e.code, e.message) );
         await this.openScheduler().catch( e=> this.fatal(e.code, e.message) );
         await this._getSchedule();
-        // this.exitProgram(0)
+        await this.exitProgram(0)
     }
     async openScheduler() {
-        await this.click(head.head_reserve);
+        await this.click(this.reservePage.head_reserve);
         await this.click('.page-body>.grid>.row>.col:nth-child(1)');
     }
 
@@ -49,6 +48,7 @@ export class SearchSchedule extends Login {
 }
 let student, _schedule
 student = user_data[1];
+let katalk = new KatalkReservationListPage;
 // _schedule = eden_schedule;
-let s = new SearchSchedule(student, _schedule);
+let s = new ReserveSchedule(student, _schedule, katalk);
 s.main();

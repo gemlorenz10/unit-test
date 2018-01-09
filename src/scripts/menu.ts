@@ -21,12 +21,12 @@ class Menu extends Login {
      */
     async main() {
         console.log('TEST :', this.menu_page.domain );
-        await this.start( this.menu_page.domain, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${this.menu_page.domain}!`) );
+        await this.start( this.menu_page.domain, browserOption, this.menu_page.sitename ).catch( async e => await this.fatal('fail-webpage', `Can't open ${this.menu_page.domain}!`) );
         if ( this.menu_user ) await this.submitLogin();
-        // await this.checkMenuList();
-        await this.checkHeadMenu();
+        await this.checkMenuList();
+        // await this.checkHeadMenu();
 
-        this.exitProgram(0);
+        await this.exitProgram(0);
     }
 
     /**

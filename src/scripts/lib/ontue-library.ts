@@ -43,6 +43,7 @@ let ontue_page_list = {
  * Ontue elements queries for Header navbar
  */
 export class OntueHeaderElements{
+    sitename = 'ontue'
     domain = teacher_domain;
     home = ontue_page_list.home; 
     head_home = ".header-home";

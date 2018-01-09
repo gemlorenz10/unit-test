@@ -38,6 +38,7 @@ let katalk_page_list = {
  * Ontue elements queries for Header navbar
  */
 export class KatalkHeaderElements{
+    sitename = 'katalk';
     domain = student_domain;
     home = katalk_page_list.home; 
     head_home = ".header-home";
@@ -162,6 +163,8 @@ export class KatalkMenuPage extends KatalkHeaderElements {
         ]
     }
 
+    
+
     menuList() {
         return [
             { menu : this.menu_help,                expect : katalk_page_list.help },
@@ -186,6 +189,21 @@ export class KatalkMenuPage extends KatalkHeaderElements {
     }
 
 }
+
+/**
+ * Katalk element queries for login page.
+ */
+export class KatalkLoginPage  extends  KatalkMenuPage {
+    login_email = 'input[name="email"]';
+    login_password = 'input[name="password"]';
+    login_btnSubmit = 'button[type="submit"]';
+    login_wrongPassword = 'div:contains("-42054")';
+
+    constructor(){
+        super()
+    }
+}
+
 /**
  * Ontue elements queries for Registration page
  */
@@ -222,7 +240,7 @@ export class KatalkRegistrationPage extends KatalkMenuPage {
 
 }
 
-export class KatalkTeacherListPage extends KatalkHeaderElements {
+export class KatalkTeacherListPage extends KatalkLoginPage {
     list_page = 'teacher-list-page';
     // sections
     list_section_header = `${this.list_page}>ion-content>div>.page>.page-header`;
@@ -242,22 +260,10 @@ export class KatalkTeacherListPage extends KatalkHeaderElements {
 
 }
 
-/**
- * Katalk element queries for login page.
- */
-export class KatalkLoginPage extends  KatalkMenuPage {
-    login_email = 'input[name="email"]';
-    login_password = 'input[name="password"]';
-    login_btnSubmit = 'button[type="submit"]';
-    login_wrongPassword = 'div:contains("-42054")';
-
-    constructor(){
-        super()
-    }
-}
 
 
-export class KatalkReservationListPage extends KatalkHeaderElements {
+
+export class KatalkReservationListPage extends KatalkLoginPage {
     rv_list_page = katalk_page_list.reservation;
     rv_login_first_toast = 'ion-toast>error-42205';
     // page header

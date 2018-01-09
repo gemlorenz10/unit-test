@@ -4,26 +4,30 @@ import { browserOption, student_domain } from '../lib/global-library';
 import { KatalkHomePage } from "../lib/katalk-library";
 import { PuppeteerExtension } from "../../puppeteer-extension";
 import { Login } from '../login';
-let homepage = new KatalkHomePage;
+
 class KatalkHome extends Login {
 
-    constructor( private katalkUserInfo: IUserInfo, private katalkLoginPage ) {
-        super( katalkUserInfo, katalkLoginPage )
+    constructor( private katalkUserInfo: IUserInfo, private katalkHomePage ) {
+        super( katalkUserInfo, katalkHomePage )
     }
     async main() {
+        let homepage = this.katalkHomePage;
         // console.log( student_domain )
-        await this.start( student_domain, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
+        await this.start( homepage.domain, browserOption, homepage.sitename ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
         if ( this.katalkUserInfo ) await this.submitLogin();
         await this.open( homepage.head_home, [ homepage.home_intro ] )
         await this.checkStat().catch(async e => await this.error( e.code, e.message ) );
         await this.checkStudentComment().catch( async e => await this.error( e.code, e.message ) );
         await this.checkTeacherList().catch( async e => await this.error( e.code, e.message ) );
+
+        await this.exitProgram(0);
     }
 
     async checkSlider() {
     }
 
     async checkStudentComment() {
+        let homepage = this.katalkHomePage;
         await this.waitInCase(1);
         await this.waitAppear([homepage.home_student_comment_list]);
         await this.countSelector( homepage.home_student_comment, 'Comments' );
@@ -38,6 +42,7 @@ class KatalkHome extends Login {
     }
 
     async checkTeacherList() {
+        let homepage = this.katalkHomePage;
         await this.waitAppear([homepage.home_teacher_list, 
                                 homepage.home_teacher_pointer]);
 
@@ -45,6 +50,7 @@ class KatalkHome extends Login {
     }
 
     async checkStat() {
+        let homepage = this.katalkHomePage;
         await this.waitAppear([homepage.home_stat_teacher,
                                 homepage.home_stat_reservation,
                                 homepage.home_stat_leveltest]);
@@ -62,5 +68,5 @@ class KatalkHome extends Login {
     //     .catch( e => this.error('selector-not-found','Selectors not found!') )
     // }
 }
-let katalk = new KatalkLoginPage;
+let katalk = new KatalkHomePage;
 ( new KatalkHome( null, katalk ) ).main();

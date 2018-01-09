@@ -1,5 +1,5 @@
 ﻿import { KatalkTeacherListPage, KatalkLoginPage } from './../lib/katalk-library';
-import { browserOption, student_domain } from '../lib/global-library';
+import { browserOption } from '../lib/global-library';
 import { Login } from "../login";
 let teacher_list_page = new KatalkTeacherListPage;
 /**
@@ -12,10 +12,12 @@ export class KatalkTeacherList extends Login {
 
     async main() {
         // console.log( student_domain )
-        await this.start( student_domain, browserOption ).catch( async e => await this.fatal( e.code, e.message ) );
+        await this.start( this.katalkLoginPage.domain, browserOption, this.katalkLoginPage.sitename ).catch( async e => await this.fatal( e.code, e.message ) );
         if ( this.teacherListUser ) await this.submitLogin();
         await this.click(teacher_list_page.head_teacher_list);
         await this.countTeacherList();
+
+        await this.exitProgram(0);
     }
 
     async countTeacherList( recommended: boolean = true ) {
