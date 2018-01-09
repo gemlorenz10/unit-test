@@ -12,7 +12,7 @@ export class OntueSchedule extends Login {
         super( userInfo, schedulePage )
     }
     async main() { 
-        await this.start('https://ontue.com', browserOption).catch( async e => { await this.fatal( e.code, e ) } );
+        await this.start(this.schedulePage.domain, browserOption, 'ontue').catch( async e => { await this.fatal( e.code, e ) } );
 
         await this.submitLogin();
         await this.open( this.schedulePage.head_scheduleEdit, [this.schedulePage.sched_page] );
@@ -20,16 +20,12 @@ export class OntueSchedule extends Login {
         await this.editSched(2);
         // await this.deleteSched(3);
 
-        // this.exitProgram(0);
+        // await this.exitProgram(0);
     }
 
     async addSched() {
-        // // navigate to add schedule form
-        // await this.click( this.schedulePage.head_scheduleEdit, 'Click schedule in header' );
-        await this.waitAppear( [this.schedulePage.sched_btnAddSchedule] )
-            .then( a => { this.success(a) } )
-            .catch( async e => { await this.fatal( e.code, e.message ) } );
-        await this.click( this.schedulePage.sched_btnAddSchedule, 'Open add schedule form.' )
+        // open add schedule form
+        await this.open( this.schedulePage.sched_btnAddSchedule, [this.schedulePage.sched_btnTimezone], 'Open add schedule form.' );
         await this._fillUpForm();
         await this._checkAlert();
     }
@@ -60,13 +56,13 @@ export class OntueSchedule extends Login {
      * @param row
      */
     async editSched( row: number ) {
-        await this.click( this._queryTable( row, this.schedulePage.sched_action_edit ), 'Edit a schedule.' );
+        await this.open( this._queryTable( row, this.schedulePage.sched_action_edit ), [this.schedulePage.sched_btnTimezone],'Edit a schedule.' );
         await this._fillUpForm( 'edit' );
     }
     
     /**
-     * fills up the schedule form.
-     * @param action - Action can either add or edit.
+     * fills up the schedule form. Accepts action as 'add' or 'edit'. default is add.
+     * @param action - Action can either 'add' or 'edit'.
      */
     private async _fillUpForm( action: string = 'add' ) {
         await this.waitInCase(.5);
