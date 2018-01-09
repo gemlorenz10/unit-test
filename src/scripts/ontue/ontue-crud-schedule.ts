@@ -20,7 +20,9 @@ export class OntueSchedule extends Login {
         await this.editSched(2);
         // await this.deleteSched(3);
 
-        // await this.exitProgram(0);
+        this.activitySummary();
+        
+        await this.exitProgram(0);
     }
 
     async addSched() {
@@ -66,7 +68,7 @@ export class OntueSchedule extends Login {
      */
     private async _fillUpForm( action: string = 'add' ) {
         await this.waitInCase(.5);
-        await this.waitAppear([this.schedulePage.sched_form], 'Schedule form appeared!');
+        await this.waitAppear([this.schedulePage.sched_form], { success_message : 'Schedule form appeared!'});
         // fill up form
         await this.type( this.schedulePage.sched_beginHour, this.schedule.beginHour, `Input begin hour` );
         await this.type( this.schedulePage.sched_beginMinute, this.schedule.beginMin, `Input begin minute`);

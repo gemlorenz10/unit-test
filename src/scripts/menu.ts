@@ -26,6 +26,7 @@ class Menu extends Login {
         await this.checkMenuList();
         // await this.checkHeadMenu();
 
+        this.activitySummary();
         await this.exitProgram(0);
     }
 
@@ -41,8 +42,8 @@ class Menu extends Login {
 
         for ( re of  menu_list) {
             console.log('TEST:',re);
-            await this.open(this.menu_page.head_menu, [re.menu]);
-            await this.open(re.menu, [re.expect]);
+            await this.open(this.menu_page.head_menu, [re.menu], null, `Page failed to open when clicking -> ${this.menu_page.head_menu}`);
+            await this.open(re.menu, [re.expect], null, `Page failed to open when clicking -> ${re.menu}`);
         }
     }
 
@@ -57,8 +58,8 @@ class Menu extends Login {
 
         for ( re of  head_list) {
             console.log('TEST:',re);
-            await this.open(this.menu_page.head_menu, [re.menu]);
-            await this.open(re.menu, [re.expect]);
+            await this.open(this.menu_page.head_menu, [re.menu], null, `Page failed to open when clicking -> ${this.menu_page.head_menu}`);
+            await this.open(re.menu, [re.expect], null, `Page failed to open when clicking -> ${re.menu}`);
         }
     }
 }

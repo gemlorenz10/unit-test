@@ -21,6 +21,8 @@ export class Login extends PuppeteerExtension {
 
         await this.submitLogin().catch( async e => await this.fatal( e.code, e.message ) );
 
+
+        await this.activitySummary()
         await this.exitProgram(0);
     }
 
@@ -32,15 +34,15 @@ export class Login extends PuppeteerExtension {
         let login = this._page
         // GO TO LOGIN
         await this.open( login.head_menu, [login.menu_login], 'Open login page.' );
-        await this.click( login.menu_login, 'Click Login menu.');
+        await this.open( login.menu_login, [login.login_page], 'Click Login menu.');
         await this.type( login.login_email, user.email);
         await this.type( login.login_password, user.password);
         await this.click( login.login_btnSubmit, 'Attemp to login. Click submit!' );
         // CHECK if wrong password.
-        await this.waitAppear([login.login_wrongPassword], null, 1)
+        await this.waitAppear([login.login_wrongPassword], {timeout:2})
             .then( a => { this.success('Password Incorrect!') } )
             .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
-        await this.waitAppear([login.home])
+        await this.waitAppear([login.home], {timeout:2})
             .then( a =>  this.success('Success home page found!')  )
             .catch( async e => await this.fatal( e.code, e.message ) );
     }
