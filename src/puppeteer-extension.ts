@@ -32,6 +32,42 @@ export abstract class PuppeteerExtension{
         this.page = await this.browser.newPage().catch(e => console.log('ERROR: failed to create chromium browser. ' + e.message) );
     }
 
+    /**
+     * Starts the program by opening the browser. A headless browser means the browser will work on background and will not show up.
+     * @param website - url of the page you want to open.
+     * @param headless - True if you want to show headless browser, false if not.
+     */
+    async start( website: string, option, sitename:string ) {
+        let _headless = option.headless;
+        let _vp = (option.viewport) ? option.viewport : { height:900, width: 800 };
+        let error_log_file = path.join(__dirname, '../site-error-logs', `${sitename}.log`)
+        
+        await this.init( _headless );
+        
+        await this.page.setViewport({
+            height: _vp.height, 
+            width: _vp.width
+        });
+        
+        if ( !_headless ) await this.chrome();
+        console.log('Headless? :', _headless)
+        
+        // Listen for console error in remote browser.
+        let  i, args;
+        this.page.on('console', async msg => {
+            if ( msg.type === 'error' ){
+                for ( i = 0; i < msg.args.length - 1 ; ++i ){
+                    const jsonArgs = await msg.args[i]._remoteObject.value;
+                    console.log(  `${sitename.toUpperCase()}#${[i]}: `, jsonArgs )
+                }
+            }
+        });
+        
+        await this.page.goto( website );
+        await this.page.waitFor(1000);
+    }
+
+    // SET USER AGENT ON BROWSER
     async firefox() {
         await this.page.setUserAgent(this.ua.firefox);
     }
@@ -44,6 +80,8 @@ export abstract class PuppeteerExtension{
     async safari() {
         await this.page.setUserAgent(this.ua.safari);
     }
+
+    // SELECT LANGUAGE
     async english() {
 
         await this.page.setExtraHTTPHeaders({
@@ -60,7 +98,7 @@ export abstract class PuppeteerExtension{
         });
     }
     
-
+    // ERROR HANDLING
     /**
      * Warn level error captures screen
      * @param code 
@@ -122,6 +160,7 @@ export abstract class PuppeteerExtension{
     success(msg){
         console.log('OK: ', msg);
     }
+    // END ERROR HANDLING
 
     /**
      * Put the program to sleep at a given time in seconds.
@@ -134,7 +173,7 @@ export abstract class PuppeteerExtension{
         console.log(`===>>> Wake up on: ` + (new Date).toLocaleString());
     }
 
-
+    // INTERACTING TO BROWSER
     /**
      * 현재 페이지의 HTML 을 cheeario 객체로 리턴한다.
      * 
@@ -328,42 +367,6 @@ export abstract class PuppeteerExtension{
         await this.page.keyboard.press('Backspace');
     }
 
-
-/**
- * Starts the program by opening the browser. A headless browser means the browser will work on background and will not show up.
- * @param website - url of the page you want to open.
- * @param headless - True if you want to show headless browser, false if not.
- */
-    async start( website: string, option, sitename:string ) {
-        let _headless = option.headless;
-        let _vp = (option.viewport) ? option.viewport : { height:900, width: 800 };
-        let error_log_file = path.join(__dirname, '../site-error-logs', `${sitename}.log`)
-        
-        await this.init( _headless );
-        
-        await this.page.setViewport({
-            height: _vp.height, 
-            width: _vp.width
-        });
-        
-        if ( !_headless ) await this.chrome();
-        console.log('Headless? :', _headless)
-        // Listen for console error in remote browser.
-        let  i, args;
-        this.page.on('console', async msg => {
-            if ( msg.type === 'error' ){
-                for ( i = 0; i < msg.args.length - 1 ; ++i ){
-                    const jsonArgs = await msg.args[i]._remoteObject.value;
-                    console.log(  `${sitename.toUpperCase()}: `, jsonArgs )
-                }
-            }
-        });
-        
-        // open website then wait
-        await this.page.goto( website );
-        await this.page.waitFor(500);
-    }
-
     /**
      * uploads file
      * @param filePath
@@ -436,7 +439,8 @@ export abstract class PuppeteerExtension{
      * Exits/closes the script
      * @param code 
      */
-    exitProgram( code: number ) {
+    async exitProgram( code: number ) {
+        await this.browser.close();
         console.log('Program finish. Process will exit ', code);
         process.exit( code );
     }
