@@ -334,9 +334,10 @@ export abstract class PuppeteerExtension{
  * @param website - url of the page you want to open.
  * @param headless - True if you want to show headless browser, false if not.
  */
-    async start( website: string, option) {
+    async start( website: string, option, sitename:string ) {
         let _headless = option.headless;
         let _vp = (option.viewport) ? option.viewport : { height:900, width: 800 };
+        let error_log_file = path.join(__dirname, '../site-error-logs', `${sitename}.log`)
         
         await this.init( _headless );
         
@@ -347,9 +348,20 @@ export abstract class PuppeteerExtension{
         
         if ( !_headless ) await this.chrome();
         console.log('Headless? :', _headless)
+        // Listen for console error in remote browser.
+        let  i, args;
+        this.page.on('console', async msg => {
+            if ( msg.type === 'error' ){
+                for ( i = 0; i < msg.args.length - 1 ; ++i ){
+                    const jsonArgs = await msg.args[i]._remoteObject.value;
+                    console.log(  `${sitename.toUpperCase()}: `, jsonArgs )
+                }
+            }
+        });
+        
+        // open website then wait
         await this.page.goto( website );
         await this.page.waitFor(500);
-        // await this.page.reload({waitUntil:'networkidle0'});
     }
 
     /**
