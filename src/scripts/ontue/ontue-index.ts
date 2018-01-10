@@ -8,7 +8,7 @@ let schedule = schedule_data[0]
 let sched_page = new OntueSchedulePage()
 let schedule_test = new OntueSchedule( eden, sched_page, schedule  );
 
-setTimeout(function(){
-    schedule_test.main();
+setTimeout(async function(){
+    await schedule_test.main();
 }, 5000);
 
