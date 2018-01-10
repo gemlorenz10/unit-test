@@ -30,7 +30,7 @@ export abstract class PuppeteerExtension{
         success: [],
         js_error: [],
         browser_error: [],
-        activity_error: []
+        test_error: []
     };
 
     constructor() {
@@ -78,8 +78,8 @@ export abstract class PuppeteerExtension{
         this.event.on('success', e => {
             this.report.success.push(e);
         });
-        this.event.on('activity-error', e => {
-            this.report.activity_error.push(e);
+        this.event.on('tester-error', e => {
+            this.report.test_error.push(e);
         });
         
 
@@ -139,7 +139,7 @@ export abstract class PuppeteerExtension{
      */
     async error(code, msg) {
         if (!code) code = 'error';
-        this.event.emit('activity-error', { code: code, message: msg })
+        this.event.emit('tester-error', { code: code, message: msg })
         console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}`);
 
         if ( ! this.page ) {
@@ -157,9 +157,12 @@ export abstract class PuppeteerExtension{
      */
     async fatal(code, msg) {
         if ( !code ) code = 'fatal'
+        
         await this.error(code, msg);
+        
         console.log("FATAL:", msg);
         console.log("Going to exit since it is fatal error.");
+        
         this.activitySummary();
         this.exitProgram(1);
     }
@@ -207,8 +210,8 @@ export abstract class PuppeteerExtension{
             fs.appendFileSync(path.join(_path, date + 'js-error.log'), `${time}::${e.code}->${e.message}` + '\n');
         } );
 
-        this.report.activity_error.forEach( e => {
-            fs.appendFileSync(path.join(_path, date + 'activity-error.log'), `${time}::${e.code}: ${e.message}` + '\n');
+        this.report.test_error.forEach( e => {
+            fs.appendFileSync(path.join(_path, date + 'tester-error.log'), `${time}::${e.code}: ${e.message}` + '\n');
         } );
 
         this.report.browser_error.forEach( e => {
@@ -216,14 +219,14 @@ export abstract class PuppeteerExtension{
         } );
 
 
-        console.log( 'Successful Activities: ', this.report.success.length );
+        console.log( 'Successful Tests: ', this.report.success.length );
+        console.log( 'Failed Tests: ', this.report.test_error.length );
         console.log( 'Website(JS) Errors: ', this.report.js_error.length );
-        console.log( 'Failed Activities: ', this.report.activity_error.length );
-        console.log( 'Browser Errors: ', this.report.browser_error.length );
+        // console.log( 'Browser Errors: ', this.report.browser_error.length );
 
         // Clear array after reporting.
         this.report.success = [];
-        this.report.activity_error = [];
+        this.report.test_error = [];
         this.report.browser_error = [];
         this.report.js_error = [];
 
@@ -468,7 +471,7 @@ export abstract class PuppeteerExtension{
      */
     async upload( filePath, inputElement ) {
         
-        console.log(filePath);
+        console.log('UPLOAD: ',filePath);
         this.page.waitFor(500);
         await inputElement.uploadFile( filePath )
             .then(a => this.success('Image Uploaded'))

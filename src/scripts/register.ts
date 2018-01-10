@@ -21,7 +21,6 @@ export class Register extends PuppeteerExtension {
         await this.alertCapture(['.ion-alert'], null, 1);
         // Register all info that are in text file
         await this.fillUpForm().catch( async e => { await this.fatal(e.code, e.message) } );
-        // await this.page.reload();
         
         this.activitySummary()
         await this.exitProgram(0);
