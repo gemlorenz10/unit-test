@@ -54,12 +54,12 @@
     }
 ];
 
-export let schedule = [
+export let schedule_data = [
     {
         "beginHour":"13",
-        "beginMin":"0",
+        "beginMin":"30",
         "duration":"25",
-        "point":"5000",
+        "point":"4000",
         "weekDayList":['monday','tuesday','wednesday','thursday','friday'],
         "preReserve":""
     }

@@ -100,6 +100,18 @@ export abstract class PuppeteerExtension{
         await this.page.waitFor(1000);
     }
 
+    async endScript() {
+        
+        this.report = {
+            success: [],
+            js_error: [],
+            browser_error: [],
+            test_error: []
+        };
+        await this.browser.close();
+        
+    }
+
     // SET USER AGENT ON BROWSER
     async firefox() {
         await this.page.setUserAgent(this.ua.firefox);
@@ -296,7 +308,7 @@ export abstract class PuppeteerExtension{
     async waitAppear(selectors: Array<string>, option? ):Promise<string> {
         // set defaults -> success message is set inside a for loop to get selector.
         let _option = option || {};
-        let timeout = _option.timeout || 10;
+        let timeout = _option.timeout || 5;
         let err = _option.error_message || 'Selectors not found';
         
         let $html = null;
@@ -361,7 +373,7 @@ export abstract class PuppeteerExtension{
      */
     async open( selector: string, expect?: string[], message?, error_message? ) {
         // if ( message ) this.success(message);
-        let _err_message =  (error_message)? error_message : `Failed to open page. -> ${expect[0]} Page not found`;
+        let _err_message =  (error_message)? error_message : `Failed to open page. -> ${expect[0]} Page/Selector not found`;
         let msg = ( message )? message : 'Open a page.'
 
         await this.page.waitFor(500);
@@ -372,9 +384,8 @@ export abstract class PuppeteerExtension{
         await this.page.waitFor(500);
         if( expect ) await this.waitAppear(expect, {error_message : _err_message})
                                 .then( a => this.success( a ))
-                                .catch( async e => await this.error( `open${expect[0]}-fail`, e.message ) );
-        
-        await this.page.waitFor(500);
+                                .catch( async e => await this.error( `page-open-failed`, e.message ) );
+        // await this.page.waitFor(500);
     
     }
     
@@ -512,11 +523,15 @@ export abstract class PuppeteerExtension{
                 let i;
                 for ( i of selector_list ) {
                     await this.waitDisappear(i, 1)
-                        .then( a => { this.success(a) } )
+                        .then( a => { 
+                            this.success(a) 
+                            
+                        } )
                         .catch( async e => await this.error(e.code, e.message) );
                 }
 
-            }).catch( e => e );    
+            }).catch( e => e );   
+        await this.page.waitFor(500); 
     }
 
     /**
@@ -529,7 +544,7 @@ export abstract class PuppeteerExtension{
                 this.success( a );        
                 await this.waitInCase(1);
                 await this.click( acceptSelector, message );
-                await this.waitDisappear(alertSelector, 15000).catch( e => this.fatal(e.code, 'Alert did not close.  -> '+ alertSelector) );
+                await this.waitDisappear(alertSelector, 5).catch( e => this.fatal(e.code, 'Alert did not close within timeout.  -> '+ alertSelector) );
             }).catch( e => e );
     }
 
