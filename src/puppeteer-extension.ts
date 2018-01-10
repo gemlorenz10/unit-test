@@ -1,15 +1,16 @@
-﻿import { IUserInfo } from './scripts/lib/interface';
-const puppeteer = require('puppeteer');
-// require('console.table');
-import 'console.table'
+﻿import { IUserInfo, IWaitAppearOption } from './scripts/lib/interface';
+// import { request } from 'http';
+import { EventEmitter } from 'events';
 import { Page, Browser } from 'puppeteer';
 import { userInfo } from 'os';
 import { browserOption } from './scripts/lib/global-library';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
 import * as fs from 'fs';
-import { request } from 'http';
-import { EventEmitter } from 'events';
+import 'console.table';
+import { error } from 'util';
+const puppeteer = require('puppeteer');
+
 
 export abstract class PuppeteerExtension{
     event = new EventEmitter;
@@ -35,7 +36,11 @@ export abstract class PuppeteerExtension{
     constructor() {
     }
 
-
+    /**
+     * Starts new instance of a browser and page.
+     * @param headless 
+     * @param devtools 
+     */
     protected async init( headless = true, devtools = true ) {
         if ( headless ) devtools = false;
         let option = { headless: headless, devtools: devtools };
@@ -52,7 +57,7 @@ export abstract class PuppeteerExtension{
         let _headless = option.headless;
         let _vp = (option.viewport) ? option.viewport : { height:900, width: 800 };
         let error_log_file = path.join(__dirname, '../site-error-logs', `${sitename}.log`)
-        
+        console.log('Start testing....')
         await this.init( _headless );
         
         await this.page.setViewport({
@@ -153,10 +158,10 @@ export abstract class PuppeteerExtension{
     async fatal(code, msg) {
         if ( !code ) code = 'fatal'
         await this.error(code, msg);
-        console.log("FATAL:", msg)
+        console.log("FATAL:", msg);
         console.log("Going to exit since it is fatal error.");
         this.activitySummary();
-        // process.exit(1);
+        this.exitProgram(1);
     }
 
     /**
@@ -168,6 +173,7 @@ export abstract class PuppeteerExtension{
         console.log(`WARN: ${msg}`);
         await this.capture( code, 'WARN' );
     }
+
     /**
      * Captures the page and logs message with level/severity
      * @param file 
@@ -184,6 +190,45 @@ export abstract class PuppeteerExtension{
     }
 
     /**
+     * Displays the activity summary of the test.
+     * Then writes a log file for errors.
+     * Logs in memory( Array ) are deleted after console.log()
+     */
+    activitySummary( reference? ) {
+        let d = new Date;
+        let date = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
+        let time = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        let _path = path.join(__dirname, '../logs')
+        let i, key;
+        if ( !fs.existsSync(_path) ) fs.mkdirSync(_path);
+
+        // write message in file.
+        this.report.js_error.forEach( e => {
+            fs.appendFileSync(path.join(_path, date + 'js-error.log'), `${time}::${e.code}->${e.message}` + '\n');
+        } );
+
+        this.report.activity_error.forEach( e => {
+            fs.appendFileSync(path.join(_path, date + 'activity-error.log'), `${time}::${e.code}: ${e.message}` + '\n');
+        } );
+
+        this.report.browser_error.forEach( e => {
+            fs.appendFileSync(path.join(_path, date + 'browser-error.log'), `${time}::${e.code}: ${e.message}` + '\n');
+        } );
+
+
+        console.log( 'Successful Activities: ', this.report.success.length );
+        console.log( 'Website(JS) Errors: ', this.report.js_error.length );
+        console.log( 'Failed Activities: ', this.report.activity_error.length );
+        console.log( 'Browser Errors: ', this.report.browser_error.length );
+
+        // Clear array after reporting.
+        this.report.success = [];
+        this.report.activity_error = [];
+        this.report.browser_error = [];
+        this.report.js_error = [];
+
+    }
+    /**
      * Ads OK: to message.
      * @param msg 
      */
@@ -193,6 +238,7 @@ export abstract class PuppeteerExtension{
     }
     // END ERROR HANDLING
 
+    // INTERACTING TO BROWSER
     /**
      * Put the program to sleep at a given time in seconds.
      * @param sec 
@@ -203,8 +249,6 @@ export abstract class PuppeteerExtension{
         await this.page.waitFor(sec * 1000);
         console.log(`===>>> Wake up on: ` + (new Date).toLocaleString());
     }
-
-    // INTERACTING TO BROWSER
     /**
      * 현재 페이지의 HTML 을 cheeario 객체로 리턴한다.
      * 
@@ -230,7 +274,6 @@ export abstract class PuppeteerExtension{
         return html;
     }
 
-
     /**
      * Returns a message: string when a selector was found. 
      * Throws an object = { code: 'selector-not-found', message: "Selectors not found." } when selector was not found.
@@ -248,26 +291,28 @@ export abstract class PuppeteerExtension{
      * @endcode
      */
     async waitAppear(selectors: Array<string>, option? ):Promise<string> {
-        // set defaults
-        let timeout = (option.timeout) ? option.timeout : 10;
-        let err = (option.error_message)?option.error_message : `Selectors not found.` 
+        // set defaults -> success message is set inside a for loop to get selector.
+        let _option = option || {};
+        let timeout = _option.timeout || 10;
+        let err = _option.error_message || 'Selectors not found';
         
         let $html = null;
-        let msg, reMsg = [];        
+        let reMsg = [], msg;
         const maxWaitCount = timeout * 1000 / 100;
+
         for (let i = 0; i < maxWaitCount; i++) {
             
             await this.page.waitFor(100);
             $html = await this.jQuery();
             
             for (let i = 0; i < selectors.length; i++) {
-                msg = ( option.success_message === '' ) ? option.success_message : `Selector "${selectors[i]}" appeared!`
+                msg = _option.success_message || `Selector "${selectors[i]}" appeared!`;
                 if ($html.find(selectors[i]).length > 0) return msg;
             }
 
         }
 
-        throw { code: 'selector-not-found', message: err};
+        throw { code: 'selector-not-found', message: err };
     }
 
     /**
@@ -306,7 +351,6 @@ export abstract class PuppeteerExtension{
         await this.click( `${parent_selector}>${e}` );
     }
 
-
     /**
      * Click selector then waits for expect.
      * @param selector 
@@ -330,7 +374,6 @@ export abstract class PuppeteerExtension{
         await this.page.waitFor(500);
     
     }
-    
     
     /**
      * Waits until the selector disappears.
@@ -426,9 +469,10 @@ export abstract class PuppeteerExtension{
     async upload( filePath, inputElement ) {
         
         console.log(filePath);
+        this.page.waitFor(500);
         await inputElement.uploadFile( filePath )
             .then(a => this.success('Image Uploaded'))
-            .catch( async e => { await this.fatal(e.code, e) } );
+            .catch( async e => { await this.fatal('error-uploading-file', e) } );
     }
 
     /**
@@ -459,12 +503,12 @@ export abstract class PuppeteerExtension{
         await this.waitAppear(selector_list,  { success_message:message, timeout:timeout })
             .then( async a => { 
                 this.success( a );        
-                await this.waitInCase(1);
-                await this.page.keyboard.press('Enter').then( a=>{this.success('Press Enter.')} );
+                await this.page.waitFor(500);
+                await this.page.keyboard.press('Enter').then( a=>{this.success('Press Enter to close alert box')} );
 
                 let i;
                 for ( i of selector_list ) {
-                    await this.waitDisappear(i, 15000)
+                    await this.waitDisappear(i, 1)
                         .then( a => { this.success(a) } )
                         .catch( async e => await this.error(e.code, e.message) );
                 }
@@ -496,48 +540,7 @@ export abstract class PuppeteerExtension{
         process.exit( code );
 
     }
-    /**
-     * Displays the activity summary of the test.
-     * Then writes a log file for errors.
-     * Logs in memory( Array ) are deleted after console.log()
-     */
-    async activitySummary() {
-        let d = new Date;
-        let date = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
-        let _path = path.join(__dirname, '../logs')
-        let i, key;
-        if ( !fs.existsSync(_path) ) fs.mkdirSync(_path);
 
-        // write message in file.
-        this.report.js_error.forEach( e => {
-            fs.writeFileSync(path.join(_path, date + 'js-error.log'), `${e.code}: ${e.message}` + '\n');
-        } );
-
-        // this.report.success.forEach( e => {
-        //     fs.appendFileSync(path.join(_path, date + 'success.log'), `${e.code}: ${e.message}` + '\n');
-        // } );
-
-        this.report.activity_error.forEach( e => {
-            fs.writeFileSync(path.join(_path, date + 'activity-error.log'), `${e.code}: ${e.message}` + '\n');
-        } );
-
-        this.report.browser_error.forEach( e => {
-            fs.writeFileSync(path.join(_path, date + 'browser-error.log'), `${e.code}: ${e.message}` + '\n');
-        } );
-
-
-        console.log( 'Successful Activities: ', this.report.success.length );
-        console.log( 'Failed Activities: ', this.report.activity_error.length );
-        console.log( 'Browser Errors: ', this.report.browser_error.length );
-        console.log( 'JS Errors: ', this.report.js_error.length );
-
-        // Clear array after reporting.
-        this.report.success = [];
-        this.report.activity_error = [];
-        this.report.browser_error = [];
-        this.report.js_error = [];
-
-    }
     /**
      * Displays its child elements.
      * @param selector 
@@ -559,6 +562,7 @@ export abstract class PuppeteerExtension{
                 .then( a => this.success(`${label}: ${a}`) )
                 .catch( async e => await this.error(e.code, e.message) );
     }
+
     /**
      * Returns selectors child DOM.
      * @param selector 
@@ -570,6 +574,7 @@ export abstract class PuppeteerExtension{
         if ( !re ) throw { code: 'error-get-content', message: `Invalid Selector? Selector's content: ${re}` }
         return re
     }
+
     /**
      * Counts the selector
      * @param selector 
