@@ -1,5 +1,5 @@
 ﻿import { KatalkRegistrationPage } from './lib/katalk-library';
-import { OntueRegistrationPage } from './lib/ontue-library';
+import { OntueRegistrationPage, OntueLoginPage } from './lib/ontue-library';
 import { path_to_images, browserOption } from './lib/global-library';
 import { IUserInfo } from './lib/interface';
 import { PuppeteerExtension } from '../puppeteer-extension';
@@ -20,9 +20,10 @@ export class Register extends PuppeteerExtension {
         //check alert
         await this.alertCapture(['.ion-alert'], null, 1);
         // Register all info that are in text file
-        await this.fillUpForm().catch( async e => { await this.fatal(e.code, e) } );
+        await this.fillUpForm().catch( async e => { await this.fatal(e.code, e.message) } );
         // await this.page.reload();
         
+        this.activitySummary()
         await this.exitProgram(0);
     }
 
@@ -41,12 +42,13 @@ export class Register extends PuppeteerExtension {
         // FILL UP REGISTRATION FORM
 
         // upload image
-        let profile_pic = await this.page.$(register_page.reg_profilePic);//.then(a=>this.success('Uploading image.'));
-        let photo_url = path.resolve(__dirname, path_to_images , user.photo);
-        await this.upload(photo_url, profile_pic);
-
+        if ( user.photo ){
+            let profile_pic = await this.page.$(register_page.reg_profilePic);//.then(a=>this.success('Uploading image.'));
+            let photo_url = path.resolve(__dirname, path_to_images , user.photo);
+            await this.upload(photo_url, profile_pic);
+        }
         // type
-        await this.click( register_page.reg_radio( user.type ) , 'Select Type.');
+        if ( user.type ) await this.click( register_page.reg_radio( user.type ) , 'Select Type.');
         await this.type(register_page.reg_email, user.email);
         await this.type(register_page.reg_password, user.password);
         await this.type(register_page.reg_name, user.name);
@@ -58,10 +60,11 @@ export class Register extends PuppeteerExtension {
         await this.click( register_page.reg_radio( user.gender ), 'Select Gender.' );
 
         // timezone
-        await this.click( register_page.reg_btnTimezone, 'select timezone');
-        await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , 'submit timezone'); // click ok
-        await this.click( register_page.reg_btnTimezoneOK, 'click ok' );
-        // await this.click( register_page.reg_btnTimezoneCancel, 'click cancel' );
+        if ( user.timezone ){
+            await this.click( register_page.reg_btnTimezone, 'select timezone');
+            await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , 'submit timezone'); // click ok
+            await this.click( register_page.reg_btnTimezoneOK, 'click ok' );
+        }// await this.click( register_page.reg_btnTimezoneCancel, 'click cancel' );
         
         // birthdate
         
@@ -84,4 +87,4 @@ export class Register extends PuppeteerExtension {
 }
 let katalk = new KatalkRegistrationPage();
 let ontue = new OntueRegistrationPage();
-(new Register( user_data[ user_data.length - 1 ], katalk)).main();
+(new Register( user_data[ user_data.length - 2 ], ontue)).main();

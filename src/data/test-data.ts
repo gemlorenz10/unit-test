@@ -14,7 +14,7 @@
 
     },
     {
-        "type": "S",
+        // "type": "S",
         "email": "eljei@gmail.com",
         "password": "secret",
         "name": "eljei Ontue",
@@ -22,8 +22,8 @@
         "gender": "F",
         "phone": "165432188",
         "kakao": "eljei125",
-        "photo": "eljei.jpg",
-        "timezone": 8,
+        // "photo": "eljei.jpg",
+        // "timezone": 8,
         "birthdate": "12/10/1993"
     },
     {
@@ -40,7 +40,7 @@
         "birthdate": "10/25/1994"
     },
     {
-        "type": "S",
+        // "type": "S",
         "email": "fae@gmail.com",
         "password": "secret",
         "name": "Fae Ontue",
@@ -48,8 +48,8 @@
         "gender": "F",
         "phone": "0643687498789",
         "kakao": "Fae_2341",
-        "photo": "fae.jpg",
-        "timezone": -4,
+        // "photo": "fae.jpg",
+        // "timezone": -4,
         "birthdate": "10/10/1990"
     }
 ];
