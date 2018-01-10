@@ -1,4 +1,4 @@
-﻿import { IUserInfo, IWaitAppearOption } from './scripts/lib/interface';
+﻿import { IUserInfo } from './scripts/lib/interface';
 // import { request } from 'http';
 import { EventEmitter } from 'events';
 import { Page, Browser } from 'puppeteer';
