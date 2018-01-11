@@ -207,34 +207,42 @@ export abstract class PuppeteerExtension{
     /**
      * Displays the activity summary of the test.
      * Then writes a log file for errors.
-     * Logs in memory( Array ) are deleted after console.log()
+     * Logs in memory( Array ) are deleted after displaying summary table.
      */
-    activitySummary( reference? ) {
+    activitySummary() {
         let d = new Date;
         let date = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
         let time = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
         let _path = path.join(__dirname, '../logs')
         let i, key;
         if ( !fs.existsSync(_path) ) fs.mkdirSync(_path);
+        let js_log, tester_log, browser_log;
 
         // write message in file.
         this.report.js_error.forEach( e => {
-            fs.appendFileSync(path.join(_path, date + 'js-error.log'), `${time}::${e.code}->${e.message}` + '\n');
+            js_log = path.join(_path, date + 'js-error.log');
+            fs.appendFileSync(js_log, `${time}::${e.code}->${e.message}} SEE: screenshots/${e.code}.png` + '\n');
         } );
 
         this.report.test_error.forEach( e => {
-            fs.appendFileSync(path.join(_path, date + 'tester-error.log'), `${time}::${e.code}: ${e.message}` + '\n');
+            tester_log = path.join(_path, date + 'tester-error.log')
+            fs.appendFileSync(tester_log, `${time}::${e.code}: ${e.message}} SEE: screenshots/${e.code}.png` + '\n');
         } );
 
         this.report.browser_error.forEach( e => {
-            fs.appendFileSync(path.join(_path, date + 'browser-error.log'), `${time}::${e.code}: ${e.message}` + '\n');
+            browser_log = path.join(_path, date + 'browser-error.log')
+            fs.appendFileSync(browser_log, `${time}::${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
+        
         } );
 
+        let success = ['Successful Tests', this.report.success.length, 'N/A' ];
+        let failed = ['Failed Tests', this.report.test_error.length, tester_log ];
+        let website_errors = ['Website(JS) Errors', this.report.js_error.length, js_log ];
+        let browser_errors = ['Browser Errors', this.report.browser_error.length, browser_log];
 
-        console.log( 'Successful Tests: ', this.report.success.length );
-        console.log( 'Failed Tests: ', this.report.test_error.length );
-        console.log( 'Website(JS) Errors: ', this.report.js_error.length );
-        // console.log( 'Browser Errors: ', this.report.browser_error.length );
+        console.log('TEST SUMMARY ------')
+        console.table(['REMARKS','VALUE', 'LOG FILE'], [ success, failed, website_errors, browser_errors ])
+
 
         // Clear array after reporting.
         this.report.success = [];
@@ -371,10 +379,12 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param expect 
      */
-    async open( selector: string, expect?: string[], message?, error_message? ) {
+    async open( selector: string, expect?: string[], option? ) {
         // if ( message ) this.success(message);
-        let _err_message =  (error_message)? error_message : `Failed to open page. -> ${expect[0]} Page/Selector not found`;
-        let msg = ( message )? message : 'Open a page.'
+        // set defaults
+        let _err_message =  option.error_message || `Failed to open page. -> ${expect[0]} Page/Selector not found`;
+        let msg = option.success_message || 'Open a page.';
+        let idx = option.idx || 0;
 
         await this.page.waitFor(500);
         await this.click( selector, `${msg} --> Click: ${selector}` );
@@ -384,7 +394,7 @@ export abstract class PuppeteerExtension{
         await this.page.waitFor(500);
         if( expect ) await this.waitAppear(expect, {error_message : _err_message})
                                 .then( a => this.success( a ))
-                                .catch( async e => await this.error( `page-open-failed`, e.message ) );
+                                .catch( async e => await this.error( `${idx}-page-open-failed`, e.message ) );
         // await this.page.waitFor(500);
     
     }
@@ -523,10 +533,7 @@ export abstract class PuppeteerExtension{
                 let i;
                 for ( i of selector_list ) {
                     await this.waitDisappear(i, 1)
-                        .then( a => { 
-                            this.success(a) 
-                            
-                        } )
+                        .then( a => { this.success(a) })
                         .catch( async e => await this.error(e.code, e.message) );
                 }
 
@@ -549,11 +556,11 @@ export abstract class PuppeteerExtension{
     }
 
     /**
-     * Exits/closes the script
+     * Closes the browser then ends the program.
      * @param code 
      */
     async exitProgram( code: number ) {
-        await this.browser.close();
+        if ( this.browser || this.page ) await this.browser.close();
         console.log('Program finish. Process will exit ', code);
         process.exit( code );
 
