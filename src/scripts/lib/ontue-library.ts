@@ -20,15 +20,15 @@ let ontue_page_list = {
     login : 'login-page',
     register : 'register-page',
     setting : 'page-settings',
-    qna : null, // teacher list showing
+    qna : null,
     teacher_list : 'teacher-list-page',
     reserve : 'schedule-table-page',
-    class_comment : null, // teacher list showing
+    class_comment : null,
     payment : 'payment-page',
     payment_history : 'page-payment-history',
     reservation : 'session-future-page',
     past_session: 'session-past-page',
-    available_session: null, // wrong page name toast
+    available_session: null,
     policy : 'policy-page',
 
     // logged in
