@@ -21,3 +21,15 @@ export interface ISchedule {
     preReserve:     string
 
 }
+
+export interface ISummary {
+    success: Array<any>
+    js_error: Array<any>
+    js_warn: Array<any>
+    browser_error: Array<any>
+    test_error: Array<any>
+}
+
+export interface IScript {
+    main() : void
+}
