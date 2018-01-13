@@ -21,6 +21,7 @@ export class Menu extends Login {
      * Defaults "display_summary": false, end_script : false
      */
     async main( ) {
+        console.log('MENU TEST STARTS...')
         if ( !this.page ) await this.startMenu();
         await this.checkMenuList();
         await this.checkHeadMenu();
