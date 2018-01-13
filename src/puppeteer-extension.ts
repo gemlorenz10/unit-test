@@ -1,9 +1,8 @@
-﻿import { IUserInfo } from './scripts/lib/interface';
+﻿import { IUserInfo, ISummary } from './scripts/lib/interface';
 // import { request } from 'http';
 import { EventEmitter } from 'events';
 import { Page, Browser } from 'puppeteer';
 import { userInfo } from 'os';
-import { browserOption } from './scripts/lib/global-library';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -25,10 +24,17 @@ export abstract class PuppeteerExtension{
 
     };
     
-    // for activitySummary() function
+    /**
+     * Returns the summary activity of tester. Get it after running test.
+     * @code
+     * await instance.main();
+     * let summary = instance.report;
+     * @endcode
+     */
     report = {
         success: [],
         js_error: [],
+        js_warn: [],
         browser_error: [],
         test_error: []
     };
@@ -53,28 +59,34 @@ export abstract class PuppeteerExtension{
      * @param website - url of the page you want to open.
      * @param headless - True if you want to show headless browser, false if not.
      */
-    async start( website: string, option, sitename:string ) {
-        let _headless = option.headless;
-        let _vp = (option.viewport) ? option.viewport : { height:900, width: 800 };
-        let error_log_file = path.join(__dirname, '../site-error-logs', `${sitename}.log`)
+    async start( website: string, sitename:string = 'site', option? ) {
+        let error_log_log_file = path.join(__dirname, '../site-error-logs', `${sitename}.log`)
+        option = option || {};
+        option.headless = option.headless;
+        option.viewport = option.viewport || { height:900, width:800 };
+        
         console.log('Start testing....')
-        await this.init( _headless );
+        await this.init( option.headless );
         
         await this.page.setViewport({
-            height: _vp.height, 
-            width: _vp.width
+            height: option.viewport.height, 
+            width: option.viewport.width
         });
         
-        if ( !_headless ) await this.chrome();
-        console.log('Headless? :', _headless)
-        
+        if ( !option.headless ) await this.chrome();
+        console.log('Headless? :', option.headless)
+        this.event.setMaxListeners(15);
         // Listen for logs and emit them to collect data
         this.event.on('js-error', e => {
             this.report.js_error.push(e);
         });
-        // this.event.on('browser-error', e => {
-        //     this.report.browser_error.push(e);
-        // });
+
+        this.event.on('js-warn', e => {
+            this.report.js_warn.push(e);
+        });
+        this.event.on('browser-error', e => {
+            this.report.browser_error.push(e);
+        });
         this.event.on('success', e => {
             this.report.success.push(e);
         });
@@ -93,8 +105,16 @@ export abstract class PuppeteerExtension{
                     this.event.emit('js-error', {code:'js-error', message : jsonArgs})
                 }
             }
+            if( msg.type === 'warn' ){
+                for ( i = 0; i < msg.args.length - 1 ; ++i ){
+                    const jsonArgs = await msg.args[i]._remoteObject.value;
+                    console.log(  `${sitename.toUpperCase()}#${[i]}: `, jsonArgs );
+                    this.event.emit('js-warn', {code:'js-warn', message : jsonArgs})
+                }
+            }
         });
         
+
         await this.page.goto( website );
         await this.page.reload();
         await this.page.waitFor(1000);
@@ -105,9 +125,11 @@ export abstract class PuppeteerExtension{
         this.report = {
             success: [],
             js_error: [],
+            js_warn: [],
             browser_error: [],
             test_error: []
         };
+        console.log('End script...')
         await this.browser.close();
         
     }
@@ -150,16 +172,16 @@ export abstract class PuppeteerExtension{
      * @param msg 
      */
     async error(code, msg) {
-        if (!code) code = 'error';
-        this.event.emit('tester-error', { code: code, message: msg })
-        console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}`);
-
         if ( ! this.page ) {
             console.log("ERROR: page is falsy. You cannot leave a screenshot.");
             this.event.emit('browser-error', { code:'page-falsy', message:'Page is falsy' })
             return;
         }
-        await this.capture( code, 'ERROR' );
+
+        if (!code) code = 'error';
+        this.event.emit('tester-error', { code: code, message: msg })
+        console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}`);
+        await this.capture( code, 'ERROR' );    
         
     }
     /**
@@ -174,8 +196,6 @@ export abstract class PuppeteerExtension{
         
         console.log("FATAL:", msg);
         console.log("Going to exit since it is fatal error.");
-        
-        this.activitySummary();
         this.exitProgram(1);
     }
 
@@ -205,52 +225,74 @@ export abstract class PuppeteerExtension{
     }
 
     /**
-     * Displays the activity summary of the test.
+     * Display the activity summary of the test.
      * Then writes a log file for errors.
      * Logs in memory( Array ) are deleted after displaying summary table.
      */
-    activitySummary() {
+    activitySummary( report : ISummary = this.report ) {
         let d = new Date;
         let date = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
         let time = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-        let _path = path.join(__dirname, '../logs')
+        let time_replace = time.replace(':','_');
+        let _log_path = path.join(__dirname, '../logs');
         let i, key;
-        if ( !fs.existsSync(_path) ) fs.mkdirSync(_path);
         let js_log, tester_log, browser_log;
 
-        // write message in file.
-        this.report.js_error.forEach( e => {
-            js_log = path.join(_path, date + 'js-error.log');
-            fs.appendFileSync(js_log, `${time}::${e.code}->${e.message}} SEE: screenshots/${e.code}.png` + '\n');
+
+        report.browser_error.forEach( e => {
+            browser_log = path.join(_log_path, date + 'js-warn.log')
+            if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+            fs.appendFileSync(browser_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
         } );
 
-        this.report.test_error.forEach( e => {
-            tester_log = path.join(_path, date + 'tester-error.log')
-            fs.appendFileSync(tester_log, `${time}::${e.code}: ${e.message}} SEE: screenshots/${e.code}.png` + '\n');
+        report.test_error.forEach( e => {
+            tester_log = path.join(_log_path, date + 'tester-error.log')
+            if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+            fs.appendFileSync(tester_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
         } );
 
-        this.report.browser_error.forEach( e => {
-            browser_log = path.join(_path, date + 'browser-error.log')
-            fs.appendFileSync(browser_log, `${time}::${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
+        report.browser_error.forEach( e => {
+            browser_log = path.join(_log_path, date + 'browser-error.log')
+            if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+            fs.appendFileSync(browser_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
         
         } );
 
-        let success = ['Successful Tests', this.report.success.length, 'N/A' ];
-        let failed = ['Failed Tests', this.report.test_error.length, tester_log ];
-        let website_errors = ['Website(JS) Errors', this.report.js_error.length, js_log ];
-        let browser_errors = ['Browser Errors', this.report.browser_error.length, browser_log];
+        let success = ['Successful Tests', report.success.length, 'N/A' ];
+        let failed = ['Failed Tests', report.test_error.length, tester_log ];
+        let website_errors = ['Website(JS) Errors', report.js_error.length, js_log ];
+        let website_warn = ['Website(JS) Warnings', report.js_warn.length, js_log ];
+        let browser_errors = ['Browser Errors', report.browser_error.length, browser_log];
+        let total =  ['Total Tests:', success[1] + failed[1]];
 
+        // return this.report;
         console.log('TEST SUMMARY ------')
-        console.table(['REMARKS','VALUE', 'LOG FILE'], [ success, failed, website_errors, browser_errors ])
-
-
-        // Clear array after reporting.
-        this.report.success = [];
-        this.report.test_error = [];
-        this.report.browser_error = [];
-        this.report.js_error = [];
-
+        console.table(['REMARKS','VALUE', 'LOG FILE'], [ success, failed, website_errors, website_warn, browser_errors, total ]);
+    
     }
+
+    /**
+     * Writes log_list in a log file.
+     * @param log_list 
+     */
+    private writelog( log_list = [], log_type ){
+        // if ( log_type == 'success' ) return;
+        let d = new Date;
+        let date = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
+        let time = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        let time_replace = time.replace(':','_');
+        let _log_path = path.join(__dirname, '../logs');
+          //time_replace + '-' +
+        let _log_file =  date + log_type + '.log';
+      
+        if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+        let log;
+        log_list.forEach( e => {
+            log = path.join(_log_path, _log_file);
+            fs.appendFileSync(log, `${time} > ${e.code}: ${e.message}` + '\n');
+        } );
+    }
+
     /**
      * Ads OK: to message.
      * @param msg 
@@ -315,9 +357,9 @@ export abstract class PuppeteerExtension{
      */
     async waitAppear(selectors: Array<string>, option? ):Promise<string> {
         // set defaults -> success message is set inside a for loop to get selector.
-        let _option = option || {};
-        let timeout = _option.timeout || 5;
-        let err = _option.error_message || 'Selectors not found';
+        option = option || {};
+        let timeout = option.timeout || 5;
+        let err = option.error_message || 'Selectors not found';
         
         let $html = null;
         let reMsg = [], msg;
@@ -329,7 +371,7 @@ export abstract class PuppeteerExtension{
             $html = await this.jQuery();
             
             for (let i = 0; i < selectors.length; i++) {
-                msg = _option.success_message || `Selector "${selectors[i]}" appeared!`;
+                msg = option.success_message || `Selector "${selectors[i]}" appeared!`;
                 if ($html.find(selectors[i]).length > 0) return msg;
             }
 
@@ -338,17 +380,6 @@ export abstract class PuppeteerExtension{
         throw { code: 'selector-not-found', message: err };
     }
 
-    /**
-     * Strictly checks all selectors provided.
-     * @param selectors 
-     */
-    async strictWaitAppear( selector_list:Array<string>, message?, timeout = 1 ) {
-        let selector
-        for ( selector of selector_list ) {
-            this.waitAppear( selector );
-        }
-        // throw { code: 'selector-not-found', message: `Selectors ${selectors} not found.` };
-    }
 
     /**
      * Does click from puppeteer with proper handling.
@@ -359,11 +390,11 @@ export abstract class PuppeteerExtension{
         let msg = ( !message ) ? `Click: ${selector}` : message
         await this.waitAppear([selector], `Selector not found. ${selector}`)
             .then( a => a )
-            .catch( async e => await this.fatal( e.code, e.message ) );
+            .catch( async e => await this.error( e.code, e.message ) );
         await this.page.waitFor(500);
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
-            .catch( async e => await this.fatal( e.code, e.message ) );
+            .catch( async e => await this.error( e.code, e.message ) );
     }
     
     /**
@@ -376,26 +407,26 @@ export abstract class PuppeteerExtension{
 
     /**
      * Click selector then waits for expect.
+     * options { success_message, error_message, idx }
      * @param selector 
      * @param expect 
+     * 
      */
     async open( selector: string, expect?: string[], option? ) {
         // if ( message ) this.success(message);
         // set defaults
-        let _err_message =  option.error_message || `Failed to open page. -> ${expect[0]} Page/Selector not found`;
+        option = option || {};
+        let err =  option.error_message || `Failed to open page. -> ${expect[0]} Page/Selector not found`;
         let msg = option.success_message || 'Open a page.';
         let idx = option.idx || 0;
 
         await this.page.waitFor(500);
         await this.click( selector, `${msg} --> Click: ${selector}` );
-        
         if( !expect ) this.success('Not expecting any selector');
-        
-        await this.page.waitFor(500);
-        if( expect ) await this.waitAppear(expect, {error_message : _err_message})
+        if( expect ) await this.waitAppear(expect, {error_message : err})
                                 .then( a => this.success( a ))
                                 .catch( async e => await this.error( `${idx}-page-open-failed`, e.message ) );
-        // await this.page.waitFor(500);
+        await this.page.waitFor(500);
     
     }
     
@@ -457,17 +488,15 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param str 
      */
-    async type( selector, str, message?, delay = 100 ) {
-        let _message = ( message ) 
-                    ? `${message} -> ${str}` 
-                    : `Type ${str} in ${selector}`;
-        
+    async type( selector, str, message?, delay = 10 ) {
+
+        message = (message)? `${message} -> ${str}` : `Type ${str} in ${selector}`;
+        let wait_option = { success_message : message, error_message : `Cannot find text field ${selector}`, idx : 'type' };
         await this.page.waitFor(500);
-        await this.waitAppear( [selector], { success_message : message } ).catch( async e => { await this.fatal( e.code, e.message ); } );
+        await this.waitAppear( [selector], wait_option );
         await this.deletePrevious( selector );
         await this.page.type(selector, str, { delay: delay })
-            .then(a=>{ this.success( _message ) })
-            .catch( async e => { await this.fatal(e.code, e) } );
+            .then(a=>{ this.success( message ) });
     }
 
     /**
@@ -493,7 +522,7 @@ export abstract class PuppeteerExtension{
     async upload( filePath, inputElement ) {
         
         console.log('UPLOAD: ',filePath);
-        this.page.waitFor(500);
+        await this.page.waitFor(500);
         await inputElement.uploadFile( filePath )
             .then(a => this.success('Image Uploaded'))
             .catch( async e => { await this.fatal('error-uploading-file', e) } );
