@@ -59,22 +59,22 @@ export abstract class PuppeteerExtension{
      * @param website - url of the page you want to open.
      * @param headless - True if you want to show headless browser, false if not.
      */
-    async start( website: string, sitename:string = 'site', option? ) {
+    async start( website: string, sitename:string = 'site', browser_option? ) {
         let error_log_log_file = path.join(__dirname, '../site-error-logs', `${sitename}.log`)
-        option = option || {};
-        option.headless = option.headless;
-        option.viewport = option.viewport || { height:900, width:800 };
+        browser_option = browser_option || {};
+        browser_option.headless = browser_option.headless;
+        browser_option.viewport = browser_option.viewport || { height:900, width:800 };
         
         console.log('Start testing....')
-        await this.init( option.headless );
+        await this.init( browser_option.headless );
         
         await this.page.setViewport({
-            height: option.viewport.height, 
-            width: option.viewport.width
+            height: browser_option.viewport.height, 
+            width: browser_option.viewport.width
         });
         
-        if ( !option.headless ) await this.chrome();
-        console.log('Headless? :', option.headless)
+        if ( !browser_option.headless ) await this.chrome();
+        console.log('Headless? :', browser_option.headless)
         this.event.setMaxListeners(15);
         // Listen for logs and emit them to collect data
         this.event.on('js-error', e => {
@@ -229,7 +229,7 @@ export abstract class PuppeteerExtension{
      * Then writes a log file for errors.
      * Logs in memory( Array ) are deleted after displaying summary table.
      */
-    activitySummary( report : ISummary = this.report ) {
+    activitySummary( report : ISummary = this.report, label = 'TEST SUMMARY ------' ) {
         let d = new Date;
         let date = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
         let time = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
@@ -266,7 +266,7 @@ export abstract class PuppeteerExtension{
         let total =  ['Total Tests:', success[1] + failed[1]];
 
         // return this.report;
-        console.log('TEST SUMMARY ------')
+        console.log(label)
         console.table(['REMARKS','VALUE', 'LOG FILE'], [ success, failed, website_errors, website_warn, browser_errors, total ]);
     
     }
@@ -419,14 +419,15 @@ export abstract class PuppeteerExtension{
         let err =  option.error_message || `Failed to open page. -> ${expect[0]} Page/Selector not found`;
         let msg = option.success_message || 'Open a page.';
         let idx = option.idx || 0;
+        let timeout = option.timeout || 1000; //ms
 
-        await this.page.waitFor(500);
+        await this.page.waitFor(timeout/500);
         await this.click( selector, `${msg} --> Click: ${selector}` );
         if( !expect ) this.success('Not expecting any selector');
         if( expect ) await this.waitAppear(expect, {error_message : err})
                                 .then( a => this.success( a ))
                                 .catch( async e => await this.error( `${idx}-page-open-failed`, e.message ) );
-        await this.page.waitFor(500);
+        await this.waitInCase(timeout/500);
     
     }
     
@@ -634,6 +635,7 @@ export abstract class PuppeteerExtension{
      * @param selector 
      */
     async getCount(selector) {
+        await this.page.waitFor(500);
         const $html = await this.jQuery();
         const re = $html.find(selector).length;
         if( re === 0 ) throw { code: 'selector-not-found', message: `${selector} not found in DOM!` };

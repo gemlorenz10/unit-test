@@ -282,3 +282,27 @@ export class OntueSchedulePage extends OntueLoginPage {
         return `input[name="${week}"]`;
     }    
 }
+
+export class OntueMessagePage extends OntueLoginPage {
+    msg_page = ontue_page_list.message;
+    msg_list = `${this.msg_page}>ion-content>div:nth-child(2)>.page>section.page-body>ion-list`;
+    msg_item = `${this.msg_list}>ion-item`;
+    msg_toolbar = `${this.msg_page}>section.page-desc>div`;
+    msg_btn_inbox = `${this.msg_toolbar}>button:nth-child(1)`;
+    msg_btn_sent = `${this.msg_toolbar}>button:nth-child(2)`;
+    // msg_btn_bottom = `${this.msg_item}:nth-child(11)>div>div>ion-label`
+    // msg_btn_previous = `${this.getBtnButtom}>button:nth-child(1)`
+    // msg_btn_next = `${this.msg_btn_bottom}>button:nth-child(2)`
+
+    getBtnBottom( index ) {
+        return `${this.msg_item}:nth-child(${index})>div>div>ion-label>button`
+    }
+
+    getBtnNext( index ) {
+        return `${this.getBtnBottom( index )}:nth-child(2)`
+    }
+
+    getBtnPrev( index ) {
+        return `${this.getBtnBottom( index )}:nth-child(1)`
+    }
+}

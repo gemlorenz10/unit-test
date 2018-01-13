@@ -1,4 +1,5 @@
-﻿import { Login } from './scripts/login';
+﻿import { OntueMessage } from './scripts/ontue/ontue-message';
+import { Login } from './scripts/login';
 import { ISummary } from './scripts/lib/interface';
 import { OntueSchedule } from './scripts/ontue/ontue-crud-schedule';
 import { Menu } from './scripts/menu';
@@ -20,12 +21,14 @@ let login_page = new OntueLoginPage;
 let register_page = new OntueRegistrationPage;
 let schedule_page = new OntueSchedulePage;
 
-// teachers activities
+// Testers
 let ontue = new Ontue;
 let login_teacher = new Login( teacher_eden, login_page )
 let register_teacher = new Register( teacher_eden, register_page );
 let menu_teacher = new Menu( teacher_eden, login_page );
-let schedule_teacher = new OntueSchedule( teacher_eden, schedule_page, schedule );
+// Ontue Testers
+let schedule_teacher = new OntueSchedule( teacher_eden, schedule );
+let message_teacher = new OntueMessage( teacher_eden );
 
 let super_summary : ISummary= {
     success : [],
@@ -56,12 +59,13 @@ async function run( script ){
 }
 
 (async function(){
-    // await run( register_teacher ).then( a => console.log('ONTUE REGISTRATION TESTING IS DONE.') );
-    // await run( login_teacher ).then( a => console.log('ONTUE LOGIN TESTING IS DONE.') );
+    await run( register_teacher ).then( a => console.log('ONTUE REGISTRATION TESTING IS DONE.') );
+    await run( login_teacher ).then( a => console.log('ONTUE LOGIN TESTING IS DONE.') );
     await run( schedule_teacher ).then( a => console.log('ONTUE SCHEDULER TESTING IS DONE.') );
-    // await run( menu_teacher ).then( a => console.log('ONTUE MENU TESTING IS DONE.') );
+    await run( menu_teacher ).then( a => console.log('ONTUE MENU TESTING IS DONE.') );
+    await run( message_teacher ).then( a => console.log( 'ONTUE MESSAGE TESTING IS DONE.' ) );
 
-    ontue.activitySummary( super_summary );
+    ontue.activitySummary( super_summary, '-------------------------SUPER SUMMARY-----------------------' );
     await ontue.exitProgram(0);
 })().catch( async e => {
     ontue.activitySummary( super_summary );
