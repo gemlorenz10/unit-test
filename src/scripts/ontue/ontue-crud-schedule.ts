@@ -1,4 +1,5 @@
-﻿import { browserOption } from '../lib/global-library';
+﻿// import { browserOption } from './../lib/global-library';
+import { browserOption } from '../lib/global-library';
 import { IUserInfo, ISchedule } from '../lib/interface';
 import { OntueSchedulePage, OntueLoginPage } from '../lib/ontue-library';
 import { PuppeteerExtension } from '../../puppeteer-extension';
@@ -16,24 +17,22 @@ export class OntueSchedule extends Login {
         super( userInfo, schedulePage )
     }
     async main() { 
-        await this.start(this.schedulePage.domain, browserOption, 'ontue').catch( async e => { await this.fatal( e.code, e ) } );
+        console.log('SCHEDULER TESTING STARTS...');
+        await this.start(this.schedulePage.domain, 'ontue', browserOption).catch( async e => { await this.fatal( e.code, e ) } );
 
         await this.submitLogin();
         await this.open( this.schedulePage.head_scheduleEdit, [this.schedulePage.sched_page] );
         
-        await this.addSched().catch( async e => await this.error( e.code, e.code ) );
-        await this.editSched(2).catch( async e => await this.error( e.code, e.code ) );
-        await this.deleteSched(2).catch( async e => await this.error( e.code, e.code ) );
+        await this.addSched().catch( async e => await this.error( e.code, e.message ) );
+        await this.editSched(2).catch( async e => await this.error( e.code, e.message ) );
+        await this.deleteSched(2).catch( async e => await this.error( e.code, e.message ) );
 
-        this.activitySummary();
-        await this.endScript();
-        // await this.exitProgram(0);
     }
 
     async addSched() {
         console.log('TEST: ADD a schedule.');
         // open add schedule form
-        await this.open( this.schedulePage.sched_btnAddSchedule, [this.schedulePage.sched_btnTimezone], 'Open add schedule form.' );
+        await this.open( this.schedulePage.sched_btnAddSchedule, [this.schedulePage.sched_form], 'Open add schedule form.' );
         await this._fillUpForm();
     }
 
@@ -66,8 +65,9 @@ export class OntueSchedule extends Login {
      */
     async editSched( row: number ) {
         console.log('TEST: EDIT a schedule.');
+        let open_option = { error_message : 'Failed to open EDIT form.', success_message: 'Open EDIT form.', idx : 'edit-schedule' }
         await this.waitInCase(.5);
-        await this.open( this._queryTable( row, this.schedulePage.sched_action_edit ), [this.schedulePage.sched_beginHour],'Edit a schedule.' );
+        await this.open( this._queryTable( row, this.schedulePage.sched_action_edit ), [this.schedulePage.sched_form], open_option );
         await this._fillUpForm( 'edit' );
     }
     
@@ -112,7 +112,7 @@ export class OntueSchedule extends Login {
         await this.alertSuccess([``], 'Schedule Created!', 2);
         await this.alertSuccess([`ion-toast.error-40911`], 'Schedule already exists!', 2);
         await this.alertCapture(['.ion-toast'], null, 1);
-        await this.click('.cancel');
+        await this.click( this.schedulePage.sched_form_cancel, 'Close form!' );
     }
 
     private async _selectDays( days = this.schedule.weekDayList  ) {
