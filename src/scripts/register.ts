@@ -15,15 +15,14 @@ export class Register extends PuppeteerExtension {
 
     async main() {
         let user = this.person
+        console.log('REGISTRATION TESTING STARTS...');
         console.log(user);
-        await this.start( this.registerPage.domain, browserOption, this.registerPage.sitename ).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
+        await this.start( this.registerPage.domain, this.registerPage.sitename, browserOption ).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
         //check alert
         await this.alertCapture(['.ion-alert'], null, 1);
         // Register all info that are in text file
         await this.fillUpForm().catch( async e => { await this.fatal(e.code, e.message) } );
-        
-        this.activitySummary()
-        await this.exitProgram(0);
+
     }
 
 
@@ -71,6 +70,8 @@ export class Register extends PuppeteerExtension {
         await this.click('.button-md-primary', 'Submit form!');
 
         await this._checkAlert();
+
+
     }
     /**
      * Checks alert box in register.
@@ -84,6 +85,6 @@ export class Register extends PuppeteerExtension {
     }
 
 }
-let katalk = new KatalkRegistrationPage();
-let ontue = new OntueRegistrationPage();
-(new Register( user_data[ user_data.length - 2 ], ontue)).main();
+// let katalk = new KatalkRegistrationPage();
+// let ontue = new OntueRegistrationPage();
+// (new Register( user_data[ user_data.length - 2 ], ontue)).main();

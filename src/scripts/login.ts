@@ -16,14 +16,10 @@ export class Login extends PuppeteerExtension {
      * Opens the browser and logs the use in. Sequence "start -> login".
      */
     async main() {
+        console.log('LOGIN TESTING STARTS...');
         let website = ( this._user.type.toUpperCase() === 'S' )? student_domain : teacher_domain;
-        await this.start(website, browserOption, this._page.sitename).catch( async e => await this.fatal( e.code, e.message ) );
-
-        await this.submitLogin().catch( async e => await this.fatal( e.code, e.message ) );
-
-
-        await this.activitySummary()
-        await this.exitProgram(0);
+        await this.start(website, this._page.sitename, browserOption);
+        await this.submitLogin();
     }
 
      /**
@@ -33,8 +29,8 @@ export class Login extends PuppeteerExtension {
         let user = this._user;
         let login = this._page
         // GO TO LOGIN
-        await this.open( login.head_menu, [login.menu_login], 'Open login page.' );
-        await this.open( login.menu_login, [login.login_page], 'Click Login menu.');
+        await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login' } );
+        await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login' });
         await this.type( login.login_email, user.email);
         await this.type( login.login_password, user.password);
         await this.click( login.login_btnSubmit, 'Attemp to login. Click submit!' );
@@ -43,8 +39,7 @@ export class Login extends PuppeteerExtension {
             .then( a => { this.success('Password Incorrect!') } )
             .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
         await this.waitAppear([login.home], {timeout:2})
-            .then( a =>  this.success('Success home page found!')  )
-            .catch( async e => await this.fatal( e.code, e.message ) );
+            .then( a =>  this.success('Success home page found!')  );
     }
 }
 
