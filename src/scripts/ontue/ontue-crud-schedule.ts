@@ -13,8 +13,11 @@ import { user_data, schedule_data } from '../../data/test-data';
  */
 export class OntueSchedule extends Login {
 
-    constructor( private userInfo: IUserInfo,  private schedulePage : OntueSchedulePage, private schedule: ISchedule ){
-        super( userInfo, schedulePage )
+    constructor( private scheduleUser: IUserInfo,  
+                 private schedule: ISchedule,         
+                 private schedulePage : OntueSchedulePage = new OntueSchedulePage, ){
+        
+        super( scheduleUser, schedulePage )
     }
     async main() { 
         console.log('SCHEDULER TESTING STARTS...');

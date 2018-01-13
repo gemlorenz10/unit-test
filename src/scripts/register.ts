@@ -9,12 +9,12 @@ import { user_data } from './../data/test-data';
 export class Register extends PuppeteerExtension {
 
     // get account information to a text
-    constructor( private person: IUserInfo, private registerPage ) {
+    constructor( private userRegister: IUserInfo, private registerPage ) {
         super()
     }
 
     async main() {
-        let user = this.person
+        let user = this.userRegister
         console.log('REGISTRATION TESTING STARTS...');
         console.log(user);
         await this.start( this.registerPage.domain, this.registerPage.sitename, browserOption ).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
@@ -30,7 +30,7 @@ export class Register extends PuppeteerExtension {
      * Will fill up the form.
      */
     async fillUpForm() {
-        let user: IUserInfo = this.person;
+        let user: IUserInfo = this.userRegister;
         let register_page = this.registerPage;
         // NAVIGATE TO REGISTRATION
         await this.waitAppear([register_page.head_menu]);
@@ -78,7 +78,7 @@ export class Register extends PuppeteerExtension {
      * @param user 
      */
     private async _checkAlert() {
-        let user: IUserInfo = this.person
+        let user: IUserInfo = this.userRegister
         await this.alertSuccess(['ion-toast.error-40001'], 'User Already Registered!', 1);
         await this.alertSuccess(['ion-toast>div:contains("registered")'], `${user.email} successfully registered!`, 1);
         await this.alertCapture(['ion-toast'], 'unknown toast', 1);
