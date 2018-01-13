@@ -19,8 +19,8 @@ let ontue_page_list = {
     help : 'help-page',
     login : 'login-page',
     register : 'register-page',
-    setting : 'page-settings',
-    qna : null,
+    setting : 'settings-page',
+    qna : '.kakaoWrap',
     teacher_list : 'teacher-list-page',
     reserve : 'schedule-table-page',
     class_comment : null,
@@ -28,7 +28,7 @@ let ontue_page_list = {
     payment_history : 'page-payment-history',
     reservation : 'session-future-page',
     past_session: 'session-past-page',
-    available_session: null,
+    available_session: 'schedule-available-page',
     policy : 'policy-page',
 
     // logged in
@@ -107,21 +107,21 @@ export class OntueMenuPage extends OntueHeaderElements {
     menu_help = '.menu-help';
     menu_profile = '.menu-profile';
     menu_message = '.menu-message';
-    menu_setting = '.menu-settings'
-    menu_qna = ".menu-qna"
+    menu_setting = '.menu-settings';
+    menu_qna = ".menu-qna";
     menu_teacherList = ".menu-teacher-list";
     menu_reserve = ".menu-schedule-table";
-    menu_classComment = ".menu-class-comments"
+    menu_classComment = ".menu-class-comments";
     menu_paymentLong = ".menu-payment";
     menu_paymentHistory = ".menu-payment-history";
     menu_reservationLong = ".menu-future-sessions";
     menu_pastLong = ".menu-past-sessions";
     menu_availableSession = ".menu-today-sessions";
     menu_policy = ".menu-policy";
-    menu_changePassword = ".menu-password-change"
+    menu_changePassword = ".menu-password-change";
     menu_logout = ".menu-logout";
     menu_login = ".menu-login";
-    menu_cv = ".menu-curriculum-vitae"
+    menu_cv = ".menu-curriculum-vitae";
     menu_registration = ".menu-registration";
     menu_settingsPayment = ".menu-settings-payment-info";
     
@@ -149,7 +149,7 @@ export class OntueMenuPage extends OntueHeaderElements {
             { menu : this.menu_logout,              expect : ontue_page_list.logout }  
         ]
     }
-   /**
+    /**
      * Returns list of available menu in side bar.
      */
     menuExpectList() {
@@ -261,6 +261,8 @@ export class OntueSchedulePage extends OntueLoginPage {
     // action buttons
     sched_action_delete =`td.delete>button`;
     sched_action_edit =`td.edit>button`;
+
+    sched_form_cancel = `${this.sched_form}>ion-header>ion-toolbar>ion-buttons>.cancel`
 
     sched_alert = `ion-alert>.alert-wrapper`;
     sched_alert_title = `${this.sched_alert}>.alert-head>.alert-title`;

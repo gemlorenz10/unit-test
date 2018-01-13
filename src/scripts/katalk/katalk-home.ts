@@ -13,7 +13,7 @@ class KatalkHome extends Login {
     async main() {
         let homepage = this.katalkHomePage;
         // console.log( student_domain )
-        await this.start( homepage.domain, browserOption, homepage.sitename ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
+        await this.start( homepage.domain, homepage.sitename, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
         if ( this.katalkUserInfo ) await this.submitLogin();
         await this.open( homepage.head_home, [ homepage.home_intro ] )
         await this.checkStat().catch(async e => await this.error( e.code, e.message ) );

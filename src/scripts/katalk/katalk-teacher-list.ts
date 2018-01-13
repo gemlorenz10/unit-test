@@ -12,7 +12,7 @@ export class KatalkTeacherList extends Login {
 
     async main() {
         // console.log( student_domain )
-        await this.start( this.katalkLoginPage.domain, browserOption, this.katalkLoginPage.sitename ).catch( async e => await this.fatal( e.code, e.message ) );
+        await this.start( this.katalkLoginPage.domain, this.katalkLoginPage.sitename, browserOption ).catch( async e => await this.fatal( e.code, e.message ) );
         if ( this.teacherListUser ) await this.submitLogin();
         await this.click(teacher_list_page.head_teacher_list);
         await this.countTeacherList();

@@ -11,7 +11,7 @@ class KatalkReservationList extends Login {
     }
     async main() {
         console.log('Test: ', student_domain )
-        await this.start( this.katalkReservePage.domain, browserOption, this.katalkReservePage.sitename ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
+        await this.start( this.katalkReservePage.domain, this.katalkReservePage.sitename, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
         if ( this.katalkUserInfo ) await this.submitLogin();
         await this.open( reserve_list.head_reservation );
         await this.checkUserPoint()

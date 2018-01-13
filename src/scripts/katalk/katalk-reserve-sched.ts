@@ -11,7 +11,7 @@ export class ReserveSchedule extends Login {
     }
 
     async main() {
-        await this.start( this.reservePage.domain, browserOption, this.reservePage.sitename ).catch( e=> this.fatal(e.code, e.message) );
+        await this.start( this.reservePage.domain, this.reservePage.sitename, browserOption ).catch( e=> this.fatal(e.code, e.message) );
         await this.submitLogin().catch( e=> this.fatal(e.code, e.message) );
         await this.openScheduler().catch( e=> this.fatal(e.code, e.message) );
         await this._getSchedule();
