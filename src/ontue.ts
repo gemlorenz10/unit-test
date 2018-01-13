@@ -65,7 +65,7 @@ async function run( script ){
     await run( menu_teacher ).then( a => console.log('ONTUE MENU TESTING IS DONE.') );
     await run( message_teacher ).then( a => console.log( 'ONTUE MESSAGE TESTING IS DONE.' ) );
 
-    ontue.activitySummary( super_summary, '-------------------------SUPER SUMMARY-----------------------' );
+    ontue.activitySummary( super_summary, '************************SUPER SUMMARY************************' );
     await ontue.exitProgram(0);
 })().catch( async e => {
     ontue.activitySummary( super_summary );
