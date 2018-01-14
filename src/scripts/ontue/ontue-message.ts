@@ -19,7 +19,8 @@ export class OntueMessage extends Login implements IScript {
         if ( !this.page ) await this.start( ontue_page.domain, 'ontue', browserOption )
         let option = { success_message : 'Open Message page', error_message : 'Failed to open Message page', idx : 'message-page', timeout: 1000 }
         await this.submitLogin();
-        await this.open( ontue_page.head_message, [ontue_page.msg_page], option );
+        await this.open( ontue_page.head_menu, [ ontue_page.menu_page ], option );
+        await this.open( ontue_page.menu_message, [ontue_page.msg_page], option ); // Changed, Open it in 
         await this.viewPages();
 
     }
@@ -33,7 +34,7 @@ export class OntueMessage extends Login implements IScript {
         this.success( 'Message Count: ' + (re  - 1) );
         await this._viewNextPage( re, true );
     }
-
+    
     private async _viewNextPage( index, is_first_page:boolean = false ) {
         console.log('------------')
         await this.waitInCase(1);
