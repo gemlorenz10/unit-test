@@ -48,12 +48,12 @@ export class OntueHeaderElements{
     // home = ontue_page_list.home;
     head = `ion-header>header-content>.teacher-menu` 
     head_menu = `${this.head}>ion-icon[name="menu"]`
-    head_home = `${this.head}>div:nth-child(1)`;
-    head_reserve = `${this.head}>div:nth-child(2)`;
-    head_past = `${this.head}>div:nth-child(3)`;
-    head_schedule = `${this.head}>div:nth-child(4)`;
-    head_logout = `${this.head}>div:nth-child(5)`;
-    head_login = `${this.head}>div:nth-child(2)`;
+    head_home = `${this.head}>div.p-2:nth-child(2)`;
+    head_reserve = `${this.head}>div.p-2:nth-child(3)`;
+    head_past = `${this.head}>div.p-2:nth-child(4)`;
+    head_schedule = `${this.head}>div.p-2:nth-child(5)`;
+    head_logout = `${this.head}>div.p-2:nth-child(6)`;
+    head_login = `${this.head}>div.p-2:nth-child(3)`;
     // head_dayoff = ".header-dayoff"
     // head_teacherList = ".header-teacher-list";
 
