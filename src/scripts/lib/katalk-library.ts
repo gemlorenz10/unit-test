@@ -1,7 +1,7 @@
 ﻿import { student_domain } from './global-library';
 import * as path from 'path';
 import * as fs from 'fs';
-import { IUserInfo, ISchedule } from './interface';
+import { IUserInfo, ISchedule, IMenuPage } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 import { tzQuery } from './global-library';
 
@@ -14,16 +14,17 @@ let katalk_page_list = {
     help : 'help-page',
     login : 'login-page',
     register : 'register-page',
-    setting : 'page-settings',
+    setting : 'settings-page',
+    schedule_available : 'schedule-available-page',
     qna : null, // teacher list showing
     teacher_list : 'teacher-list-page',
     reserve : 'schedule-table-page',
-    class_comment : null, // teacher list showing
+    class_comment : 'class-comment-page', // teacher list showing
     payment : 'payment-page',
-    payment_history : 'page-payment-history',
+    payment_history : 'payment-history-page',
     reservation : 'session-future-page',
     past_session: 'session-past-page',
-    available_session: null, // wrong page name toast
+    available_session: 'schedule-available-page', // wrong page name toast
     policy : 'policy-page',
 
     // logged in
@@ -35,66 +36,58 @@ let katalk_page_list = {
 
 
 /**
- * Ontue elements queries for Header navbar
+ * katalk elements queries for Header navbar
  */
-export class KatalkHeaderElements{
+export class KatalkHeaderElements implements IMenuPage {
     sitename = 'katalk';
     domain = student_domain;
     home = katalk_page_list.home; 
     head_home = ".header-home";
-    head_reserve = ".header-reserve";
-    head_teacher_list = ".header-teacher-list";
     head_reservation = ".header-reservation";
-    head_past_reservation = ".header-past-reservation";
+    head_reserve_session = ".header-teacher-list";
+    head_schedule_now = ".header-schedule-available";
     head_message = ".header-message";
-    head_curriculum = ".header-curriculum";
-    head_free_class = ".header-free-class";
-    head_forum = ".header-forum"
+    head_past_reservation = ".header-past-reservation";
     head_class_comments = ".header-class-comment";
+    head_class_qna = ".header-class-qna";
+    head_payment = ".header-class-payment";
+    head_help = ".header-class-help";
     head_menu = ".header-menu";
     constructor(){
     }
     /**
      * Returns list of head menu when logged in and expected element
      */
-    headExpectListLogin() {
+    menuExpectListLogin() {
         return [
-            // { menu : this.head_home,            expect : ontue_page_list.home },
-            // { menu : this.head_scheduleEdit,    expect : ontue_page_list.schedule },
-            // { menu : this.head_dayoff,          expect : ontue_page_list.dayoff },
-            // { menu : this.head_teacherList,     expect : ontue_page_list.teacher_list },
-            // { menu : this.head_reservation,     expect : ontue_page_list.reservation },
-            // { menu : this.head_pastReservation, expect : ontue_page_list.past_session },
-            // { menu : this.head_message,         expect : ontue_page_list.message },
-            // { menu : this.head_curriculum,      expect : ontue_page_list.curriculum },
-            // { menu : this.head_freeClass,       expect : ontue_page_list.free_class },
-            // { menu : this.head_forum,           expect : ontue_page_list.forum },
-            // { menu : this.head_classComments,   expect : ontue_page_list.class_comment },
-            // { menu : this.head_menu,            expect : ontue_page_list.menu }
+            { menu : this.head_home,            expect : katalk_page_list.home, idx: 'katalk-head-home' },
+            { menu : this.head_reservation,     expect : katalk_page_list.reservation, idx: 'katalk-head-reservation' },
+            { menu : this.head_reserve_session, expect : katalk_page_list.teacher_list, idx: 'katalk-head-reserve-session' },
+            { menu : this.head_schedule_now,    expect : katalk_page_list.schedule_available, idx: 'katalk-head-schedule-now' },
+            { menu : this.head_message,         expect : katalk_page_list.message, idx: 'katalk-head-message' },
+            { menu : this.head_past_reservation, expect : katalk_page_list.past_session, idx: 'katalk-head-reservation' },
+            { menu : this.head_class_comments,   expect : katalk_page_list.class_comment, idx: 'katalk-head-comment' },
+            // { menu : this.head_class_qna,       expect : katalk_page_list.class_qna, idx: 'head-qna' },
+            { menu : this.head_payment,         expect : katalk_page_list.payment, idx: 'katalk-head-payment' },
+            { menu : this.head_help,            expect : katalk_page_list.help, idx: 'katalk-head-help' },
+            { menu : this.head_menu,            expect : katalk_page_list.menu, idx: 'katalk-head-menu' }
+
+
+            // { menu : this.head_curriculum,      expect : katalk_page_list.curriculum },
+            // { menu : this.head_freeClass,       expect : katalk_page_list.free_class },
+            // { menu : this.head_forum,           expect : katalk_page_list.forum },
+
         ];
     }
    /**
      * Returns list of head menu and expected element
      */
-    headExpectList() {
-        return [
-            // { menu : this.head_home,            expect : ontue_page_list.home },
-            // // { menu : this.head_scheduleEdit,    expect : ontue_page_list.login },
-            // // { menu : this.head_dayoff,          expect : ontue_page_list.dayoff },
-            // { menu : this.head_teacherList,     expect : ontue_page_list.teacher_list },
-            // { menu : this.head_reservation,     expect : ontue_page_list.reservation },
-            // { menu : this.head_pastReservation, expect : ontue_page_list.past_session },
-            // { menu : this.head_message,         expect : ontue_page_list.message },
-            // { menu : this.head_curriculum,      expect : ontue_page_list.curriculum },
-            // { menu : this.head_freeClass,       expect : ontue_page_list.free_class },
-            // { menu : this.head_forum,           expect : ontue_page_list.forum },
-            // { menu : this.head_classComments,   expect : ontue_page_list.class_comment },
-            // { menu : this.head_menu,            expect : ontue_page_list.menu }
-        ];
+    menuExpectList() {
+        return this.menuExpectListLogin();
     }
 }
 /**
- * Ontue elements queries for Menu
+ * katalk elements queries for Menu
  */
 
  export class KatalkHomePage extends KatalkHeaderElements {
@@ -120,67 +113,67 @@ export class KatalkHeaderElements{
     home_teacher_pointer = '.teacher-list>ion-grid>ion-row>.pointer';
  }
 
-export class KatalkMenuPage extends KatalkHeaderElements {
+export class KatalkMenuPage extends KatalkHeaderElements implements IMenuPage{
     menu_page = katalk_page_list.menu;
     menu_help = '.menu-help';
     menu_profile = '.menu-profile';
     menu_message = '.menu-message';
     menu_setting = '.menu-settings'
     menu_qna = ".menu-qna"
-    menu_teacherList = ".menu-teacher-list";
-    menu_reserve = ".menu-schedule-table";
-    menu_classComment = ".menu-class-comments"
-    menu_paymentLong = ".menu-payment";
-    menu_paymentHistory = ".menu-payment-history";
-    menu_reservationLong = ".menu-future-sessions";
-    menu_pastLong = ".menu-past-sessions";
-    menu_availableSession = ".menu-today-sessions";
+    menu_reserve = ".menu-teacher-list";
+    menu_all_teacher = ".menu-schedule-table";
+    menu_class_comment = ".menu-class-comments"
+    menu_payment_long = ".menu-payment";
+    menu_payment_history = ".menu-payment-history";
+    menu_reservation_long = ".menu-future-sessions";
+    menu_past_long = ".menu-past-sessions";
+    menu_available_session = ".menu-today-sessions";
     menu_policy = ".menu-policy";
-    menu_changePassword = ".menu-password-change"
+    menu_change_password = ".menu-password-change"
     menu_logout = ".menu-logout";
     menu_login = ".menu-login";
     menu_registration = ".menu-registration";
-    menu_settingsPayment = ".menu-settings-payment-info";
+    menu_settings_payment = ".menu-settings-payment-info";
     
-    menuListLoggedIn() {
+    menuExpectListLogin() {
         return [
-            { menu : this.menu_help,                expect : katalk_page_list.help },
-            { menu : this.menu_profile,             expect : katalk_page_list.profile },
-            { menu : this.menu_message,             expect : katalk_page_list.message },
-            { menu : this.menu_setting,             expect : katalk_page_list.setting },
-            { menu : this.menu_qna,                 expect : katalk_page_list.qna },
-            { menu : this.menu_teacherList,         expect : katalk_page_list.teacher_list },
-            { menu : this.menu_reserve,             expect : katalk_page_list.reserve },
-            { menu : this.menu_classComment,        expect : katalk_page_list.class_comment },
-            { menu : this.menu_paymentLong,         expect : katalk_page_list.payment },
-            { menu : this.menu_paymentHistory,      expect : katalk_page_list.payment_history },
-            { menu : this.menu_reservationLong,     expect : katalk_page_list.reservation },
-            { menu : this.menu_pastLong,            expect : katalk_page_list.past_session },
-            { menu : this.menu_availableSession,    expect : katalk_page_list.available_session },
-            { menu : this.menu_policy,              expect : katalk_page_list.policy },
-            { menu : this.menu_changePassword,      expect : katalk_page_list.change_password },
-            { menu : this.menu_logout,              expect : katalk_page_list.logout }  
+            { menu : this.menu_help,                expect : katalk_page_list.help , idx : 'katalk-menu-help'},
+            { menu : this.menu_profile,             expect : katalk_page_list.profile, idx : 'katalk-menu-profile' },
+            { menu : this.menu_message,             expect : katalk_page_list.message, idx : 'katalk-menu-message' },
+            { menu : this.menu_setting,             expect : katalk_page_list.setting, idx : 'katalk-menu-setting' },
+            // { menu : this.menu_qna,                 expect : katalk_page_list.qna, idx : 'katalk-menu-qna' },
+            { menu : this.menu_reserve,         expect : katalk_page_list.teacher_list, idx : 'katalk-menu-teacher-list' },
+            { menu : this.menu_all_teacher,             expect : katalk_page_list.reserve, idx : 'katalk-menu-reserve' },
+            { menu : this.menu_class_comment,        expect : katalk_page_list.class_comment, idx : 'katalk-menu-class-comment' },
+            { menu : this.menu_payment_long,         expect : katalk_page_list.payment, idx : 'katalk-menu-payment-long' },
+            { menu : this.menu_payment_history,      expect : katalk_page_list.payment_history, idx : 'katalk-menu-payment-history' },
+            { menu : this.menu_reservation_long,     expect : katalk_page_list.reservation, idx : 'katalk-menu-reservation-long' },
+            { menu : this.menu_past_long,            expect : katalk_page_list.past_session, idx : 'katalk-menu-past-long' },
+            { menu : this.menu_available_session,    expect : katalk_page_list.available_session, idx : 'katalk-menu-available-session' },
+            { menu : this.menu_policy,              expect : katalk_page_list.policy, idx : 'katalk-menu-policy' },
+            { menu : this.menu_change_password,      expect : katalk_page_list.change_password, idx : 'katalk-menu-change-password' },
+            { menu : this.menu_logout,              expect : katalk_page_list.logout, idx : 'katalk-menu-logout' }  
         ]
     }
 
     
 
-    menuList() {
+    menuExpectList() {
         return [
-            { menu : this.menu_help,                expect : katalk_page_list.help },
-            { menu : this.menu_login,               expect : katalk_page_list.login },
-            { menu : this.menu_registration,        expect : katalk_page_list.register },
-            { menu : this.menu_setting,             expect : katalk_page_list.setting },
-            { menu : this.menu_qna,                 expect : katalk_page_list.qna },
-            { menu : this.menu_teacherList,         expect : katalk_page_list.teacher_list },
-            { menu : this.menu_reserve,             expect : katalk_page_list.reserve },
-            { menu : this.menu_classComment,        expect : katalk_page_list.class_comment },
-            { menu : this.menu_paymentLong,         expect : katalk_page_list.payment },
-            { menu : this.menu_paymentHistory,      expect : katalk_page_list.payment_history },
-            { menu : this.menu_reservationLong,     expect : katalk_page_list.reservation },
-            { menu : this.menu_pastLong,            expect : katalk_page_list.past_session },
-            { menu : this.menu_availableSession,    expect : katalk_page_list.available_session },
-            { menu : this.menu_policy,              expect : katalk_page_list.policy }
+            { menu : this.menu_help,                expect : katalk_page_list.help, idx : 'katalk-menu-help' },
+            { menu : this.menu_login,               expect : katalk_page_list.login, idx : ',katalk-menu-login' },
+            { menu : this.menu_registration,        expect : katalk_page_list.register, idx : 'katalk-menu-registration' },
+            { menu : this.menu_setting,             expect : katalk_page_list.setting, idx : 'katalk-menu-setting' },
+            // { menu : this.menu_qna,                 expect : katalk_page_list.qna, idx : 'katalk-menu-qna' },
+            { menu : this.menu_reserve,         expect : katalk_page_list.teacher_list, idx : 'katalk-menu-teacher-list' },
+            { menu : this.menu_all_teacher,             expect : katalk_page_list.reserve, idx : 'katalk-menu-reserve' },
+            { menu : this.menu_class_comment,        expect : katalk_page_list.class_comment, idx : 'katalk-menu-class-comment' },
+            { menu : this.menu_payment_long,         expect : katalk_page_list.payment, idx : 'katalk-menu-payment-long' },
+            { menu : this.menu_payment_history,      expect : katalk_page_list.payment_history, idx : 'katalk-menu-payment-history' },
+            { menu : this.menu_reservation_long,     expect : katalk_page_list.reservation, idx : 'katalk-menu-reservation-long' },
+            { menu : this.menu_past_long,            expect : katalk_page_list.past_session, idx : 'katalk-menu-past-long' },
+            { menu : this.menu_available_session,    expect : katalk_page_list.available_session, idx : 'katalk-menu-available-session' },
+            { menu : this.menu_policy,              expect : katalk_page_list.policy, idx : 'katalk-menu-policy' }
         ]
     }
 
@@ -194,6 +187,7 @@ export class KatalkMenuPage extends KatalkHeaderElements {
  * Katalk element queries for login page.
  */
 export class KatalkLoginPage  extends  KatalkMenuPage {
+    login_page = katalk_page_list.login;
     login_email = 'input[name="email"]';
     login_password = 'input[name="password"]';
     login_btnSubmit = 'button[type="submit"]';
@@ -205,7 +199,7 @@ export class KatalkLoginPage  extends  KatalkMenuPage {
 }
 
 /**
- * Ontue elements queries for Registration page
+ * katalk elements queries for Registration page
  */
 export class KatalkRegistrationPage extends KatalkMenuPage {
     page = 'register-page';
@@ -280,7 +274,7 @@ export class KatalkReservationListPage extends KatalkLoginPage {
 }
 
 // /**
-//  * Ontue element queries for schedule page
+//  * katalk element queries for schedule page
 //  */
 // export class KatalkSchedulePage extends KatalkMenuPage {
 //     sched_btnAddSchedule = '.add-schedule';
