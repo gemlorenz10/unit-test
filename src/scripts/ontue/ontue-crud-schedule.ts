@@ -35,7 +35,8 @@ export class OntueSchedule extends Login {
     async addSched() {
         console.log('TEST: ADD a schedule.');
         // open add schedule form
-        await this.open( this.schedulePage.sched_btnAddSchedule, [this.schedulePage.sched_form], 'Open add schedule form.' );
+        let option = {success_message : 'Open add schedule form.', error_message : 'Failed to start add schedule.'} ;
+        await this.open( this.schedulePage.sched_btnAddSchedule, [this.schedulePage.sched_form], option);
         await this._fillUpForm();
     }
 

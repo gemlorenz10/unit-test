@@ -81,26 +81,6 @@ export abstract class PuppeteerExtension{
         console.log('Headless? :', browser_option.headless)
         this.event.setMaxListeners(15);
         // Listen for logs and emit them to collect data
-        // this.event.on('js-error', e => {
-        //     this.report.js_error.push(e);
-        // });
-
-        // this.event.on('js-warn', e => {
-        //     this.report.js_warn.push(e);
-        // });
-        // this.event.on('browser-error', e => {
-        //     this.report.browser_error.push(e);
-        // });
-        // this.event.on('success', e => {
-        //     this.report.success.push(e);
-        // });
-        // this.event.on('tester-error', e => {
-        //     this.report.test_error.push(e);
-        // });
-        // this.event.on('http-request-error', e => {
-        //     this.report.http_request_error.push(e);
-        // });
-
         this.event.on('log', e => {
             if ( e.code === 'js-error' ) this.report.js_error.push(e);
             if ( e.code === 'js-warn' ) this.report.js_warn.push(e);
@@ -109,7 +89,6 @@ export abstract class PuppeteerExtension{
             if ( e.code === 'tester-error' ) this.report.tester_error.push(e);
             if ( e.code === 'http-request-error' ) this.report.http_request_error.push(e);
             if ( e.code === 'http-response-error' ) this.report.http_response_error.push(e);
-
 
         } );
         
@@ -136,7 +115,7 @@ export abstract class PuppeteerExtension{
         this.page.on('requestfailed', req => {
             // console.log( 'REQUEST FAILED :', req.url, '' );
             let msg = `HTTP REQUEST FAILED: ${ req.url } -> Error Message: ${ req._failureText }`;
-            console.log( msg );
+            // console.log( msg );
             this.event.emit('log', {code:'http-request-error', message : msg});
 
         });
@@ -145,7 +124,7 @@ export abstract class PuppeteerExtension{
             if ( !res.ok ){
                 if ( res.status == '304' ) return;
                 let msg = `HTTP ERROR -> URL: ${ res.url } -> STATUS: ${res.status}`  
-                console.log( msg ); 
+                // console.log( msg ); 
                 this.event.emit('log', {code:'http-response-error', message : msg});
             }
         });
@@ -209,16 +188,16 @@ export abstract class PuppeteerExtension{
      * @param code 
      * @param msg 
      */
-    async error(code, msg) {
+    async error(error_code, msg) {
         if ( ! this.page ) {
             console.log("ERROR: page is falsy. You cannot leave a screenshot.");
             this.event.emit('log', { code:'page-falsy', message:'Page is falsy' })
             return;
         }
         // if (!code) code = this.makeId();
-        this.event.emit('log', { code: code, message: msg })
-        console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}`);
-        await this.capture( code, 'ERROR' );    
+        this.event.emit('log', { code: 'tester-error', message: `code: ${error_code}, message: ${msg}`, idx : error_code });
+        console.log(`ERROR: CODE: ${error_code} MESSAGE: ${msg}`);
+        await this.capture( error_code, 'ERROR' );    
         
     }
     /**
@@ -251,7 +230,7 @@ export abstract class PuppeteerExtension{
      * @param file 
      * @param level 
      */
-    async capture( file = 'capture', level? ) {
+    async capture( file = this.makeId(), level? ) {
         const dir = path.join(process.cwd(), 'screenshots');
         const filename = `${file}.png`
         const filepath = path.join(dir, filename);
@@ -290,7 +269,7 @@ export abstract class PuppeteerExtension{
             report.tester_error.forEach( e => {
                 tester_log = path.join(_log_path, date + 'tester-error.log')
                 if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
-                fs.appendFileSync(tester_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
+                fs.appendFileSync(tester_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.idx}.png` + '\n');
             } );
 
             report.browser_error.forEach( e => {
@@ -415,9 +394,10 @@ export abstract class PuppeteerExtension{
      */
     async waitAppear(selectors: Array<string>, option? ):Promise<string> {
         // set defaults -> success message is set inside a for loop to get selector.
+        let idx = this.makeId();
         option = option || {};
         let timeout = option.timeout || 5;
-        let err = option.error_message || 'Selectors not found';
+        let err = option.error_message || `Selectors not found -> Referrence: ${idx}`;
         
         let $html = null;
         let reMsg = [], msg;
@@ -435,7 +415,7 @@ export abstract class PuppeteerExtension{
 
         }
 
-        throw { code: 'selector-not-found', message: err };
+        throw { code: `${idx}-selector-not-found`, message: err };
     }
 
 
