@@ -27,9 +27,16 @@ export interface ISummary {
     js_error: Array<any>
     js_warn: Array<any>
     browser_error: Array<any>
-    test_error: Array<any>
+    tester_error: Array<any>
+    http_request_error: Array<any>
+    http_response_error: Array<any>
 }
 
 export interface IScript {
     main() : void
+}
+
+export interface IMenuPage {
+    menuExpectListLogin()
+    menuExpectList()
 }

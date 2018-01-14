@@ -31,12 +31,14 @@ export abstract class PuppeteerExtension{
      * let summary = instance.report;
      * @endcode
      */
-    report = {
+    report : ISummary = {
         success: [],
         js_error: [],
         js_warn: [],
         browser_error: [],
-        test_error: []
+        tester_error: [],
+        http_request_error : [],
+        http_response_error : []
     };
 
     constructor() {
@@ -66,33 +68,50 @@ export abstract class PuppeteerExtension{
         browser_option.viewport = browser_option.viewport || { height:900, width:800 };
         
         console.log('Start testing....')
+        // set page settings    
         await this.init( browser_option.headless );
         
         await this.page.setViewport({
             height: browser_option.viewport.height, 
             width: browser_option.viewport.width
         });
+        // await this.page.setRequestInterception(true);
         
         if ( !browser_option.headless ) await this.chrome();
         console.log('Headless? :', browser_option.headless)
         this.event.setMaxListeners(15);
         // Listen for logs and emit them to collect data
-        this.event.on('js-error', e => {
-            this.report.js_error.push(e);
-        });
+        // this.event.on('js-error', e => {
+        //     this.report.js_error.push(e);
+        // });
 
-        this.event.on('js-warn', e => {
-            this.report.js_warn.push(e);
-        });
-        this.event.on('browser-error', e => {
-            this.report.browser_error.push(e);
-        });
-        this.event.on('success', e => {
-            this.report.success.push(e);
-        });
-        this.event.on('tester-error', e => {
-            this.report.test_error.push(e);
-        });
+        // this.event.on('js-warn', e => {
+        //     this.report.js_warn.push(e);
+        // });
+        // this.event.on('browser-error', e => {
+        //     this.report.browser_error.push(e);
+        // });
+        // this.event.on('success', e => {
+        //     this.report.success.push(e);
+        // });
+        // this.event.on('tester-error', e => {
+        //     this.report.test_error.push(e);
+        // });
+        // this.event.on('http-request-error', e => {
+        //     this.report.http_request_error.push(e);
+        // });
+
+        this.event.on('log', e => {
+            if ( e.code === 'js-error' ) this.report.js_error.push(e);
+            if ( e.code === 'js-warn' ) this.report.js_warn.push(e);
+            if ( e.code === 'browser-error' ) this.report.browser_error.push(e);
+            if ( e.code === 'success' ) this.report.success.push(e);
+            if ( e.code === 'tester-error' ) this.report.tester_error.push(e);
+            if ( e.code === 'http-request-error' ) this.report.http_request_error.push(e);
+            if ( e.code === 'http-response-error' ) this.report.http_response_error.push(e);
+
+
+        } );
         
 
         // Listen for console error in remote browser.
@@ -102,15 +121,32 @@ export abstract class PuppeteerExtension{
                 for ( i = 0; i < msg.args.length - 1 ; ++i ){
                     const jsonArgs = await msg.args[i]._remoteObject.value;
                     console.log(  `${sitename.toUpperCase()}#${[i]}: `, jsonArgs );
-                    this.event.emit('js-error', {code:'js-error', message : jsonArgs})
+                    this.event.emit('log', {code:'js-error', message : jsonArgs})
                 }
             }
             if( msg.type === 'warn' ){
                 for ( i = 0; i < msg.args.length - 1 ; ++i ){
                     const jsonArgs = await msg.args[i]._remoteObject.value;
                     console.log(  `${sitename.toUpperCase()}#${[i]}: `, jsonArgs );
-                    this.event.emit('js-warn', {code:'js-warn', message : jsonArgs})
+                    this.event.emit('log', {code:'js-warn', message : jsonArgs})
                 }
+            }
+        });
+
+        this.page.on('requestfailed', req => {
+            // console.log( 'REQUEST FAILED :', req.url, '' );
+            let msg = `HTTP REQUEST FAILED: ${ req.url } -> Error Message: ${ req._failureText }`;
+            console.log( msg );
+            this.event.emit('log', {code:'http-request-error', message : msg});
+
+        });
+
+        this.page.on('response', res => {
+            if ( !res.ok ){
+                if ( res.status == '304' ) return;
+                let msg = `HTTP ERROR -> URL: ${ res.url } -> STATUS: ${res.status}`  
+                console.log( msg ); 
+                this.event.emit('log', {code:'http-response-error', message : msg});
             }
         });
         
@@ -127,7 +163,9 @@ export abstract class PuppeteerExtension{
             js_error: [],
             js_warn: [],
             browser_error: [],
-            test_error: []
+            tester_error: [],
+            http_request_error: [],
+            http_response_error : []
         };
         console.log('End script...')
         await this.browser.close();
@@ -174,12 +212,11 @@ export abstract class PuppeteerExtension{
     async error(code, msg) {
         if ( ! this.page ) {
             console.log("ERROR: page is falsy. You cannot leave a screenshot.");
-            this.event.emit('browser-error', { code:'page-falsy', message:'Page is falsy' })
+            this.event.emit('log', { code:'page-falsy', message:'Page is falsy' })
             return;
         }
-
-        if (!code) code = 'error';
-        this.event.emit('tester-error', { code: code, message: msg })
+        // if (!code) code = this.makeId();
+        this.event.emit('log', { code: code, message: msg })
         console.log(`ERROR: CODE: ${code} MESSAGE: ${msg}`);
         await this.capture( code, 'ERROR' );    
         
@@ -229,45 +266,66 @@ export abstract class PuppeteerExtension{
      * Then writes a log file for errors.
      * Logs in memory( Array ) are deleted after displaying summary table.
      */
-    activitySummary( report : ISummary = this.report, label = 'TEST SUMMARY ------' ) {
+    activitySummary( report : ISummary = this.report, label = 'TEST SUMMARY ------', isSuperSummary:boolean = false ) {
         let d = new Date;
-        let date = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
-        let time = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-        let time_replace = time.replace(':','_');
-        let _log_path = path.join(__dirname, '../logs');
+        let date :string = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
+        let time :string = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        let time_replace :string = time.replace(':','_');
+        let _log_path :string = path.join(__dirname, '../logs');
         let i, key;
-        let js_log, tester_log, browser_log;
+        let js_log :string, tester_log :string, browser_log :string, request_log: string, response_log: string;
 
+        if ( isSuperSummary ){
+            report.js_error.forEach( e => {
+                js_log = path.join(_log_path, date + 'js-error.log')
+                if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+                fs.appendFileSync(js_log, `${time} > ${e.code}: ${e.message}` + '\n');
+            } );
+            report.js_warn.forEach( e => {
+                js_log = path.join(_log_path, date + 'js-warn.log')
+                if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+                fs.appendFileSync(js_log, `${time} > ${e.code}: ${e.message}` + '\n');
+            } );
 
-        report.browser_error.forEach( e => {
-            browser_log = path.join(_log_path, date + 'js-warn.log')
-            if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
-            fs.appendFileSync(browser_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
-        } );
+            report.tester_error.forEach( e => {
+                tester_log = path.join(_log_path, date + 'tester-error.log')
+                if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+                fs.appendFileSync(tester_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
+            } );
 
-        report.test_error.forEach( e => {
-            tester_log = path.join(_log_path, date + 'tester-error.log')
-            if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
-            fs.appendFileSync(tester_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
-        } );
+            report.browser_error.forEach( e => {
+                browser_log = path.join(_log_path, date + 'browser-error.log')
+                if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+                fs.appendFileSync(browser_log, `${time} > ${e.code}: ${e.message}` + '\n');
+            });
 
-        report.browser_error.forEach( e => {
-            browser_log = path.join(_log_path, date + 'browser-error.log')
-            if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
-            fs.appendFileSync(browser_log, `${time} > ${e.code}: ${e.message} SEE: screenshots/${e.code}.png` + '\n');
+            report.http_request_error.forEach( e => {
+                request_log = path.join(_log_path, date + 'http-request-error.log')
+                if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+                fs.appendFileSync(request_log, `${time} > ${e.code}: ${e.message}` + '\n');
+            });
+
+            report.http_response_error.forEach( e => {
+                response_log = path.join(_log_path, date + 'http-response-error.log')
+                if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
+                fs.appendFileSync(response_log, `${time} > ${e.code}: ${e.message}` + '\n');
+            });
+        }
         
-        } );
+        // summary table contents
+        let success =        ['Successful Tests',     report.success.length,             'N/A' ];
+        let failed =         ['Failed Tests',         report.tester_error.length,        tester_log ];
+        let website_error =  ['Website(JS) Errors',   report.js_error.length,            js_log ];
+        let website_warn =   ['Website(JS) Warnings', report.js_warn.length,             js_log ];
+        let browser_error =  ['Browser Errors',       report.browser_error.length,       browser_log];
+        let request_error =  ['HTTP Request Errors',  report.http_request_error.length,  request_log ];
+        let response_error = ['HTTP Response Errors', report.http_response_error.length, response_log];
 
-        let success = ['Successful Tests', report.success.length, 'N/A' ];
-        let failed = ['Failed Tests', report.test_error.length, tester_log ];
-        let website_errors = ['Website(JS) Errors', report.js_error.length, js_log ];
-        let website_warn = ['Website(JS) Warnings', report.js_warn.length, js_log ];
-        let browser_errors = ['Browser Errors', report.browser_error.length, browser_log];
-        let total =  ['Total Tests:', success[1] + failed[1]];
+        let total =          ['Total Tests:',         report.success.length + report.tester_error.length ];
 
         // return this.report;
         console.log(label)
-        console.table(['REMARKS','VALUE', 'LOG FILE'], [ success, failed, website_errors, website_warn, browser_errors, total ]);
+        console.table(['REMARKS','VALUE', 'LOG FILE'], [ success, failed, website_error, website_warn, browser_error, request_error, response_error, total ]);
     
     }
 
@@ -298,7 +356,7 @@ export abstract class PuppeteerExtension{
      * @param msg 
      */
     success(msg){
-        this.event.emit( 'success', { code: 'success', message : msg } );
+        this.event.emit( 'log', { code: 'success', message : msg } );
         console.log('OK: ', msg);
     }
     // END ERROR HANDLING
@@ -418,16 +476,16 @@ export abstract class PuppeteerExtension{
         option = option || {};
         let err =  option.error_message || `Failed to open page. -> ${expect[0]} Page/Selector not found`;
         let msg = option.success_message || 'Open a page.';
-        let idx = option.idx || 0;
+        let idx = option.idx || this.makeId();
         let timeout = option.timeout || 1000; //ms
 
-        await this.page.waitFor(timeout/500);
+        await this.page.waitFor(500);
         await this.click( selector, `${msg} --> Click: ${selector}` );
-        if( !expect ) this.success('Not expecting any selector');
+        if( !expect || expect === null ) this.success('Not expecting any selector');
         if( expect ) await this.waitAppear(expect, {error_message : err})
                                 .then( a => this.success( a ))
                                 .catch( async e => await this.error( `${idx}-page-open-failed`, e.message ) );
-        await this.waitInCase(timeout/500);
+        await this.page.waitFor(timeout);
     
     }
     
@@ -642,5 +700,18 @@ export abstract class PuppeteerExtension{
         return re;
 
     }
+
+    /**
+     * Generates random series of string.
+     */
+    protected makeId() {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      
+        for (var i = 0; i < 5; i++)
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+      
+        return text;
+      }
 
 }
