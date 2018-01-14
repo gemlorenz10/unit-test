@@ -17,7 +17,7 @@ export class Login extends PuppeteerExtension {
      */
     async main() {
         console.log('LOGIN TESTING STARTS...');
-        let website = ( this._user.type.toUpperCase() === 'S' )? student_domain : teacher_domain;
+        let website = this._page.domain;
         await this.start(website, this._page.sitename, browserOption);
         await this.submitLogin();
     }
@@ -38,8 +38,10 @@ export class Login extends PuppeteerExtension {
         await this.waitAppear([login.login_wrongPassword], {timeout:2})
             .then( a => { this.success('Password Incorrect!') } )
             .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
-        await this.waitAppear([login.home], {timeout:2})
-            .then( a =>  this.success('Success home page found!')  );
+        await this.waitInCase(2);
+            
+        // await this.waitAppear([login.home], {timeout:2})
+        //     .then( a =>  this.success('Success home page found!')  );
     }
 }
 
