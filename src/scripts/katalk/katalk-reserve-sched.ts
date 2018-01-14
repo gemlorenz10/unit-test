@@ -18,7 +18,7 @@ export class ReserveSchedule extends Login {
         await this.exitProgram(0)
     }
     async openScheduler() {
-        await this.click(this.reservePage.head_reserve);
+        // await this.click(this.reservePage.head_reserve);
         await this.click('.page-body>.grid>.row>.col:nth-child(1)');
     }
 

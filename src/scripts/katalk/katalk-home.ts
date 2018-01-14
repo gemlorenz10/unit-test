@@ -68,5 +68,5 @@ class KatalkHome extends Login {
     //     .catch( e => this.error('selector-not-found','Selectors not found!') )
     // }
 }
-let katalk = new KatalkHomePage;
-( new KatalkHome( null, katalk ) ).main();
+// let katalk = new KatalkHomePage;
+// ( new KatalkHome( null, katalk ) ).main();

@@ -14,7 +14,7 @@ export class KatalkTeacherList extends Login {
         // console.log( student_domain )
         await this.start( this.katalkLoginPage.domain, this.katalkLoginPage.sitename, browserOption ).catch( async e => await this.fatal( e.code, e.message ) );
         if ( this.teacherListUser ) await this.submitLogin();
-        await this.click(teacher_list_page.head_teacher_list);
+        await this.click(teacher_list_page.head_reserve_session);
         await this.countTeacherList();
 
         await this.exitProgram(0);
@@ -50,5 +50,5 @@ export class KatalkTeacherList extends Login {
         // if ( gender === 'all' )
     }
 }
-let login_page = new KatalkLoginPage;
-( new KatalkTeacherList( null, login_page ) ).main()
+// let login_page = new KatalkLoginPage;
+// ( new KatalkTeacherList( null, login_page ) ).main()
