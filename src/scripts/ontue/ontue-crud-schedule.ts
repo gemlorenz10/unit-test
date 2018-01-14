@@ -24,7 +24,7 @@ export class OntueSchedule extends Login {
         await this.start(this.schedulePage.domain, 'ontue', browserOption).catch( async e => { await this.fatal( e.code, e ) } );
 
         await this.submitLogin();
-        await this.open( this.schedulePage.head_scheduleEdit, [this.schedulePage.sched_page] );
+        await this.open( this.schedulePage.head_schedule, [this.schedulePage.sched_page] );
         
         await this.addSched().catch( async e => await this.error( e.code, e.message ) );
         await this.editSched(2).catch( async e => await this.error( e.code, e.message ) );
