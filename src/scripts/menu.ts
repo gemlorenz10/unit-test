@@ -16,6 +16,8 @@ export class Menu extends Login {
         this.menu_page = _pageLoginExtendMenu;
         this.menu_user = _menuUser;
     }
+
+
     /**
      * Starts a browser then run schedule. Closes the browser afterwards.
      * Defaults "display_summary": false, end_script : false
@@ -30,7 +32,7 @@ export class Menu extends Login {
     async startMenu() {
         console.log('TEST :', this.menu_page.domain );
         await this.start( this.menu_page.domain,  this.menu_page.sitename, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${this.menu_page.domain}!`) );
-        if ( this.menu_user ) await this.submitLogin();
+
     }
 
     /**
@@ -40,6 +42,7 @@ export class Menu extends Login {
     async checkMenuList( display_summary:boolean = false ) {
         console.log('MENU TESTING STARTS...');
         if( !this.page ) await this.startMenu();
+        if ( this.menu_user ) await this.submitLogin();
         console.log( 'TEST MENU PAGE' )
         let re;
         let menu_list = ( this.menu_user )
@@ -53,13 +56,13 @@ export class Menu extends Login {
 
         for ( re of  menu_list) {
             console.log(`TEST ${i}:`,re);
-            await this.open(this.menu_page.head_menu, [re.menu], { idx: 'menu-' + i, error_message : `Page failed to open when clicking -> ${this.menu_page.head_menu}`});
+            await this.open(this.menu_page.head_menu, [re.menu], { idx: re.idx, error_message : `Menu page failed to open when clicking -> ${re.idx}`});
             
             if ( re.menu === this.menu_page.menu_qna ) {
-                await this.open(re.menu, [re.expect],  { idx : 'menu-' + i, error_message : `QnA Opens a link to a Kakao Profile. -> ${re.menu}`});
+                await this.open(re.menu, [re.expect],  { idx : re.idx, error_message : `QnA Opens a link to a Kakao Profile. -> ${re.idx}`});
             }
             else{
-                await this.open(re.menu, [re.expect],  { idx : 'menu-' + i, error_message : `Page failed to open when clicking -> ${re.menu}`});
+                await this.open(re.menu, [re.expect],  { idx : re.idx, error_message : `Page failed to open when clicking -> ${re.idx}`});
             }
 
             i++;
@@ -73,16 +76,17 @@ export class Menu extends Login {
      */
     async checkHeadMenu( display_summary:boolean = false ) {
         if( !this.page ) await this.startMenu();
+        if ( this.menu_user ) await this.submitLogin();
         console.log('TEST HEADER MENUS');
         let re;
         let head_list = ( this.menu_user )
-                        ? this.menu_page.headExpectListLogin()
-                        : this.menu_page.headExpectList();
+                        ? this.menu_page.menuExpectListLogin()
+                        : this.menu_page.menuExpectList();
         let i = 0;
         for ( re of  head_list) {
             console.log(`TEST ${i}:`,re);
-            await this.open(this.menu_page.head_menu, [re.menu], { idx: i, error_message : `Page failed to open when clicking -> ${this.menu_page.head_menu}`});
-            await this.open(re.menu, [re.expect], { idx: i, error_message : `Page failed to open when clicking -> ${re.menu}`});
+            await this.open(this.menu_page.head_menu, [re.menu], { idx: re.idx, error_message : `Menu page failed to open when clicking -> ${this.menu_page.head_menu}`});
+            await this.open(re.menu, [re.expect], { idx: re.idx, error_message : `Page failed to open when clicking -> ${re.menu}`});
         i++;
         }
 
