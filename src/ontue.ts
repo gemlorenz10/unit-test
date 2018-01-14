@@ -11,6 +11,11 @@ import { Register } from './scripts/register';
 import { PuppeteerExtension } from './puppeteer-extension';
 import * as util from './lib';
 
+var argv = require('yargs').argv;
+
+
+
+
 class Ontue extends PuppeteerExtension {
 }
 
@@ -28,23 +33,42 @@ let login_teacher = new Login( teacher_eden, login_page )
 let register_teacher = new Register( teacher_eden, register_page );
 let menu_teacher = new Menu( teacher_eden, login_page );
 // Ontue Testers
-let schedule_teacher = new OntueSchedule( teacher_eden, schedule );
+global['schedule_teacher'] = new OntueSchedule( teacher_eden, schedule );
 let message_teacher = new OntueMessage( teacher_eden );
 
-(async function(){
 
-    // await util.run( register_teacher ).then( a => console.log('ONTUE REGISTRATION TESTING IS DONE.') );
+console.dir( global['schedule_teacher'] );
+
+
+
+
+async function runAll() {
+
+    await util.run( register_teacher ).then( a => console.log('ONTUE REGISTRATION TESTING IS DONE.') );
     await util.run( login_teacher ).then( a => console.log('ONTUE LOGIN TESTING IS DONE.') );
-    // await util.run( schedule_teacher ).then( a => console.log('ONTUE SCHEDULER TESTING IS DONE.') );
-    // await util.run( menu_teacher ).then( a => console.log('ONTUE MENU TESTING IS DONE.') );
-    // await util.run( message_teacher ).then( a => console.log( 'ONTUE MESSAGE TESTING IS DONE.' ) );
+    await util.run( schedule_teacher ).then( a => console.log('ONTUE SCHEDULER TESTING IS DONE.') );
+    await util.run( menu_teacher ).then( a => console.log('ONTUE MENU TESTING IS DONE.') );
+    await util.run( message_teacher ).then( a => console.log( 'ONTUE MESSAGE TESTING IS DONE.' ) );
 
     ontue.activitySummary( util.super_summary, '************************ SUPER SUMMARY ************************', true );
     await ontue.exitProgram(0);
 
-})().catch( async e => {
-    
-    ontue.activitySummary( util.super_summary );
-    await ontue.fatal( e.code, e );
+}
 
-});
+async function run() {
+
+    let promise;
+    if ( argv._.length ) await util.run( global[ argv._[0] ] );
+    else promise = await runAll();
+    
+    promise.catch( async e => {
+        
+        ontue.activitySummary( util.super_summary );
+        await ontue.fatal( e.code, e );
+    
+    });
+
+}
+
+
+run();
