@@ -55,31 +55,31 @@ export class OntueHeaderElements{
 
     
     // when logged in
-    head_reserve = `${this.head}>div.p-2:nth-child(2)`;
-    head_past = `${this.head}>div.p-2:nth-child(3)`;
-    head_schedule = `${this.head}>div.p-2:nth-child(4)`;
-    head_logout = `${this.head}>div.p-2:nth-child(5)`;
+    head_reserve = `${this.head}:nth-child(2)>div`;
+    head_past = `${this.head}:nth-child(3)>div`;
+    head_schedule = `${this.head}:nth-child(4)>div`;
+    head_logout = `${this.head}:nth-child(5)>div`;
     head_login_contact_us = `${this.head}:nth-child(6)>div`;
     head_login_how_to = `${this.head}:nth-child(7)>div`;
 
     head_expect_list_login =  [
-        { menu : this.head_home,        expect : ontue_page_list.home, idx: 'ontue-homepage' },
-        { menu : this.head_reserve,     expect : ontue_page_list.reservation, idx: 'ontue-reservation' },
-        { menu : this.head_past,        expect : ontue_page_list.past_session, idx: 'ontue-past-schedule' },
-        { menu : this.head_schedule,    expect : ontue_page_list.schedule, idx: 'ontue-schedule' },
-        { menu : this.head_logout,        expect : ontue_page_list.logout, idx: 'ontue-logout' },
-        { menu : this.head_login_contact_us, expect : null, idx: 'ontue-contact-us' },
-        { menu : this.head_login_how_to,  expect :null, idx: 'ontue-how-to-use' },
-        { menu : this.head_menu,            expect : ontue_page_list.menu, idx : 'ontue-menu' }
+        { menu : this.head_home,        expect : ontue_page_list.home,          idx : 'ontue-homepage' },
+        { menu : this.head_reserve,     expect : ontue_page_list.reservation,   idx : 'ontue-reserve' },
+        { menu : this.head_past,        expect : ontue_page_list.past_session,  idx : 'ontue-past-schedule' },
+        { menu : this.head_schedule,    expect : ontue_page_list.schedule,      idx : 'ontue-schedule' },
+        // { menu : this.head_logout,        expect : ontue_page_list.logout,      idx : 'ontue-logout' },
+        { menu : this.head_login_contact_us, expect : null,                     idx : 'ontue-contact-us' },
+        { menu : this.head_login_how_to,  expect :null,                         idx : 'ontue-how-to-use' },
+        { menu : this.head_menu,            expect : ontue_page_list.menu,      idx : 'ontue-menu' }
     ];
 
     head_expect_list = [
-        { menu : this.head_home,            expect : ontue_page_list.home, idx : 'ontue-homepage' },
-        { menu : this.head_login,           expect : ontue_page_list.login, idx : 'ontue-login' },
-        { menu : this.head_register,           expect : ontue_page_list.register, idx : 'ontue-register' },
-        { menu : this.head_contact_us,       expect : null, idx : 'ontue-contact_us' },
-        { menu : this.head_how_to,           expect : null, idx : 'ontue-how-to' },
-        { menu : this.head_menu,            expect : ontue_page_list.menu, idx : 'ontue-menu' }
+        { menu : this.head_home,            expect : ontue_page_list.home,           idx : 'ontue-homepage' },
+        { menu : this.head_login,           expect : ontue_page_list.login,          idx : 'ontue-login' },
+        { menu : this.head_register,           expect : ontue_page_list.register,    idx : 'ontue-register' },
+        { menu : this.head_contact_us,       expect : null,                          idx : 'ontue-contact_us' },
+        { menu : this.head_how_to,           expect : null,                          idx : 'ontue-how-to' },
+        { menu : this.head_menu,            expect : ontue_page_list.menu,           idx : 'ontue-menu' }
     ];
 
     constructor(){
@@ -275,7 +275,7 @@ export class OntueMessagePage extends OntueLoginPage {
 
 
     getBtnBottom( index ) {
-        return `${this.msg_item}:nth-child(${index})>div>div>ion-label>button`
+        return `${this.msg_item}:nth-child(${index})>div:nth-child(1)>div>ion-label>button`
     }
 
     getBtnNext( index ) {
