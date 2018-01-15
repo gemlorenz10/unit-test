@@ -38,7 +38,7 @@ global['schedule'] = new OntueSchedule( teacher_eden, schedule );
 global['message'] = new OntueMessage( teacher_eden );
 
 // console.dir( global['menu-no-user'] );
-let _global = [ global['register'], global['login'], global['menu'], global['schedule'], global['message'] ];
+let _global = [ global['register'], global['login'], global['schedule'], global['message'], global['menu'] ];
 let i, args = argv._[0];
 async function _run() {
     if ( args ) { 
