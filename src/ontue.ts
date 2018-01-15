@@ -31,25 +31,26 @@ let schedule_page = new OntueSchedulePage;
 let ontue = new Ontue;
 global['login'] = new Login( teacher_eden, login_page )
 global['register'] = new Register( teacher_eden, register_page );
-global['menu'] = new Menu( teacher_eden, login_page );
+global['menu'] = new Menu( login_page, teacher_eden );
+global['menu-no-user'] = new Menu( login_page );
 // Ontue Testers
 global['schedule'] = new OntueSchedule( teacher_eden, schedule );
 global['message'] = new OntueMessage( teacher_eden );
 
-
-let globals = [ global['register'],  global['login'], global['menu'], global['schedule'], global['message'] ];
-let i;
+// console.dir( global['menu-no-user'] );
+let _global = [ global['register'], global['login'], global['menu'], global['schedule'], global['message'] ];
+let i, args = argv._[0];
 async function _run() {
-    if ( argv._[0] ) { await util.run(global[argv._[0]]); }
+    if ( args ) { 
+        await util.run(global[args]); 
+    }
     else {
-        for( i of globals ){
+        for( i of _global ){
             await util.run(i);
         }
     }
     ontue.activitySummary( util.super_summary, '************************ SUPER SUMMARY ************************', true );
     await ontue.exitProgram(0);
-
 }
-
 
 _run();
