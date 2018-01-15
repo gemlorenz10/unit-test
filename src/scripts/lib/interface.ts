@@ -35,8 +35,3 @@ export interface ISummary {
 export interface IScript {
     main() : void
 }
-
-export interface IMenuPage {
-    menuExpectListLogin()
-    menuExpectList()
-}
