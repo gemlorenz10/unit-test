@@ -14,7 +14,7 @@ export class Menu extends Login {
     constructor( private _pageLoginExtendMenu, private _menuUser?: IUserInfo,  ) {
         super( _menuUser, _pageLoginExtendMenu )
         this.menu_page = _pageLoginExtendMenu;
-        this.menu_user = _menuUser||false;
+        this.menu_user = _menuUser;
     }
 
     /**
@@ -24,6 +24,7 @@ export class Menu extends Login {
     async main( ) {
         console.log('MENU TEST STARTS...')
         if ( !this.page ) await this.startMenu();
+        if ( this.menu_user ) await this.submitLogin();
         await this.checkHeadMenu();
         await this.checkMenuList();
     }
@@ -40,8 +41,10 @@ export class Menu extends Login {
      */
     async checkMenuList( display_summary:boolean = false ) {
         console.log('MENU TESTING STARTS...');
-        if( !this.page ) await this.startMenu();
-        if ( this.menu_user ) await this.submitLogin();
+        if( !this.page ){ 
+            await this.startMenu();
+            if ( this.menu_user ) await this.submitLogin();
+        }
         console.log( 'TEST MENU PAGE' )
         let re;
         let menu_list = ( this.menu_user )
@@ -82,8 +85,10 @@ export class Menu extends Login {
      * @param display_summary
      */
     async checkHeadMenu( display_summary:boolean = false ) {
-        if( !this.page ) await this.startMenu();
-        if ( this.menu_user ) await this.submitLogin();
+        if( !this.page ){ 
+            await this.startMenu();
+            if ( this.menu_user ) await this.submitLogin();
+        }
         console.log('TEST HEADER MENUS');
         let re;
         let head_list = ( this.menu_user )
@@ -92,7 +97,6 @@ export class Menu extends Login {
 
         let i = 0, menu_option;
         for ( re of  head_list) {
-
             menu_option = { 
                 idx: re.idx, 
                 success_message : `Open menu: -> ${re.idx}`, 
