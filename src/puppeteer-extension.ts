@@ -2,10 +2,11 @@
 // import { request } from 'http';
 import { EventEmitter } from 'events';
 import { Page, Browser } from 'puppeteer';
-import { userInfo } from 'os';
+// import { userInfo } from 'os';
 import * as cheerio from 'cheerio';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as os from 'os';
 import 'console.table';
 import { error } from 'util';
 const puppeteer = require('puppeteer');
@@ -20,7 +21,9 @@ export abstract class PuppeteerExtension{
         firefox: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:54.0) Gecko/20100101 Firefox/54.0",
         chrome: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
         chromeMobile: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Mobile Safari/537.36",
-        safari: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38"
+        safari: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38",
+
+        chromeWin : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
 
     };
     
@@ -155,8 +158,11 @@ export abstract class PuppeteerExtension{
     async firefox() {
         await this.page.setUserAgent(this.ua.firefox);
     }
-    async chrome() {
-        await this.page.setUserAgent(this.ua.chrome);
+    async chrome( platform = os.platform() ) {
+        if ( platform === 'win32' ) { await this.page.setUserAgent(this.ua.chromeWin); }
+        else { await this.page.setUserAgent(this.ua.chrome); }
+
+
     }
     async chromeMobile() {
         await this.page.setUserAgent( this.ua.chromeMobile );
@@ -247,7 +253,7 @@ export abstract class PuppeteerExtension{
      */
     activitySummary( report : ISummary = this.report, label = 'TEST SUMMARY ------', isSuperSummary:boolean = false ) {
         let d = new Date;
-        let date :string = d.getDay() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
+        let date :string = d.getDate() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
         let time :string = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
         let time_replace :string = time.replace(':','_');
         let _log_path :string = path.join(__dirname, '../logs');
@@ -445,7 +451,7 @@ export abstract class PuppeteerExtension{
 
     /**
      * Click selector then waits for expect.
-     * options { success_message, error_message, idx }
+     * options { success_message, error_message, idx, interval }
      * @param selector 
      * @param expect 
      * 
@@ -454,18 +460,18 @@ export abstract class PuppeteerExtension{
         // if ( message ) this.success(message);
         // set defaults
         option = option || {};
-        let err =  option.error_message || `Failed to open page. -> ${expect[0]} Page/Selector not found`;
-        let msg = option.success_message || 'Open a page.';
+        let error = option.error_message || `Failed to open page. -> ${expect[0]} Page/Selector not found`;
+        let success = option.success_message || 'Open a page.';
         let idx = option.idx || this.makeId();
-        let timeout = option.timeout || 1000; //ms
+        let interval = option.interval || 2000; //ms
 
-        await this.page.waitFor(500);
-        await this.click( selector, `${msg} --> Click: ${selector}` );
-        if( !expect || expect === null ) this.success('Not expecting any selector');
-        if( expect ) await this.waitAppear(expect, {error_message : err})
+        await this.page.waitFor(interval / 2);
+        await this.click( selector, `${success} --> Click: ${idx||selector}` );
+        if( expect === null ) this.success('Not expecting any selector');
+        if( expect ) await this.waitAppear(expect, { error_message : error})
                                 .then( a => this.success( a ))
                                 .catch( async e => await this.error( `${idx}-page-open-failed`, e.message ) );
-        await this.page.waitFor(timeout);
+        await this.page.waitFor(interval / 2);
     
     }
     
