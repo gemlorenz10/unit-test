@@ -16,7 +16,7 @@ let katalk_login_page = new KatalkLoginPage;
 let katalk_register_page = new KatalkRegistrationPage
 // students activities
 let student_eljei = user_data[1]; //student
-let student_menu = new Menu( null, katalk_login_page );
+let student_menu = new Menu( katalk_login_page );
 let student_register = new Register( student_eljei, katalk_register_page );
 let student_login = new Login( student_eljei,  katalk_login_page );
 
