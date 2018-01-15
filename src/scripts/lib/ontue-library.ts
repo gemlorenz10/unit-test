@@ -14,7 +14,7 @@ let ontue_page_list = {
     free_class : null,
     forum : null,
     schedule : 'page-schedule',
-    curriculum : null,
+    curriculum : 'page-teacher-curriculum-vitae',
     // in menus
     help : 'help-page',
     login : 'login-page',
@@ -23,9 +23,9 @@ let ontue_page_list = {
     qna : null,
     teacher_list : 'teacher-list-page',
     reserve : 'schedule-table-page',
-    class_comment : null,
+    class_comment : 'class-comment-page',
     payment : 'payment-page',
-    payment_history : 'page-payment-history',
+    payment_history : 'payment-history-page',
     reservation : 'session-future-page',
     past_session: 'session-past-page',
     available_session: 'schedule-available-page',
@@ -45,70 +45,47 @@ let ontue_page_list = {
 export class OntueHeaderElements{
     sitename = 'ontue'
     domain = teacher_domain;
-    // home = ontue_page_list.home;
-    head = `ion-header>header-content>.teacher-menu` 
+    head = `ion-header>header-content>.teacher-menu>ion-grid>ion-row>ion-col`; 
     head_menu = `${this.head}>ion-icon[name="menu"]`
-    head_home = `${this.head}>div.p-2:nth-child(2)`;
-    head_reserve = `${this.head}>div.p-2:nth-child(3)`;
-    head_past = `${this.head}>div.p-2:nth-child(4)`;
-    head_schedule = `${this.head}>div.p-2:nth-child(5)`;
-    head_logout = `${this.head}>div.p-2:nth-child(6)`;
-    head_login = `${this.head}>div.p-2:nth-child(3)`;
-    // head_dayoff = ".header-dayoff"
-    // head_teacherList = ".header-teacher-list";
+    head_home = `${this.head}:nth-child(1)>div`;
+    head_login = `${this.head}:nth-child(2)>div`;
+    head_register = `${this.head}:nth-child(3)>div`;
+    head_contact_us = `${this.head}:nth-child(4)>div`;
+    head_how_to = `${this.head}:nth-child(5)>div`;
 
-    // head_message = ".header-message";
-    // head_curriculum = ".header-curriculum";
-    // head_freeClass = ".header-free-class";
-    // head_forum = ".header-forum"
-    // head_classComments = ".header-class-comment";
-    // head_menu = ".header-menu";
+    
+    // when logged in
+    head_reserve = `${this.head}>div.p-2:nth-child(2)`;
+    head_past = `${this.head}>div.p-2:nth-child(3)`;
+    head_schedule = `${this.head}>div.p-2:nth-child(4)`;
+    head_logout = `${this.head}>div.p-2:nth-child(5)`;
+    head_login_contact_us = `${this.head}:nth-child(6)>div`;
+    head_login_how_to = `${this.head}:nth-child(7)>div`;
 
+    head_expect_list_login =  [
+        { menu : this.head_home,        expect : ontue_page_list.home, idx: 'ontue-homepage' },
+        { menu : this.head_reserve,     expect : ontue_page_list.reservation, idx: 'ontue-reservation' },
+        { menu : this.head_past,        expect : ontue_page_list.past_session, idx: 'ontue-past-schedule' },
+        { menu : this.head_schedule,    expect : ontue_page_list.schedule, idx: 'ontue-schedule' },
+        { menu : this.head_logout,        expect : ontue_page_list.logout, idx: 'ontue-logout' },
+        { menu : this.head_login_contact_us, expect : null, idx: 'ontue-contact-us' },
+        { menu : this.head_login_how_to,  expect :null, idx: 'ontue-how-to-use' },
+        { menu : this.head_menu,            expect : ontue_page_list.menu, idx : 'ontue-menu' }
+    ];
+
+    head_expect_list = [
+        { menu : this.head_home,            expect : ontue_page_list.home, idx : 'ontue-homepage' },
+        { menu : this.head_login,           expect : ontue_page_list.login, idx : 'ontue-login' },
+        { menu : this.head_register,           expect : ontue_page_list.register, idx : 'ontue-register' },
+        { menu : this.head_contact_us,       expect : null, idx : 'ontue-contact_us' },
+        { menu : this.head_how_to,           expect : null, idx : 'ontue-how-to' },
+        { menu : this.head_menu,            expect : ontue_page_list.menu, idx : 'ontue-menu' }
+    ];
 
     constructor(){
     }
-    /**
-     * Returns list of available head menu when logged in and expected element
-     */
-    headExpectListLogin() {
-        return [
-            { menu : this.head_home,        expect : ontue_page_list.home, idx: 'ontue-homepage' },
-            { menu : this.head_schedule,    expect : ontue_page_list.schedule, idx: 'ontue-schedule' },
-            // { menu : this.head_dayoff,          expect : ontue_page_list.dayoff },
-            // { menu : this.head_teacherList,     expect : ontue_page_list.teacher_list },
-            { menu : this.head_reserve,     expect : ontue_page_list.reservation, idx: 'ontue-reservation' },
-            { menu : this.head_past,        expect : ontue_page_list.past_session, idx: 'ontue-past-schedule' },
-            // { menu : this.head_logout,        expect : ontue_page_list.past_session, idx: 'teacher-logout' },
-            
-            // { menu : this.head_message,         expect : ontue_page_list.message },
-            // { menu : this.head_curriculum,      expect : ontue_page_list.curriculum },
-            // { menu : this.head_freeClass,       expect : ontue_page_list.free_class },
-            // { menu : this.head_forum,           expect : ontue_page_list.forum },
-            // { menu : this.head_classComments,   expect : ontue_page_list.class_comment },
-            { menu : this.head_menu,            expect : ontue_page_list.menu, idx : 'ontue-menu' }
-        ];
-    }
-   /**
-     * Returns list of available head menu and expected element
-     */
-    headExpectList() {
-        return [
-            { menu : this.head_home,            expect : ontue_page_list.home, idx : 'ontue-homepage' },
-            { menu : this.head_login,           expect : ontue_page_list.login, idx : 'ontue-login' },
-            // { menu : this.head_dayoff,          expect : ontue_page_list.dayoff },
-            // { menu : this.head_teacherList,     expect : ontue_page_list.teacher_list },
-            // { menu : this.head_reservation,     expect : ontue_page_list.reservation },
-            // { menu : this.head_pastReservation, expect : ontue_page_list.past_session },
-            // { menu : this.head_message,         expect : ontue_page_list.message },
-            // { menu : this.head_curriculum,      expect : ontue_page_list.curriculum },
-            // { menu : this.head_freeClass,       expect : ontue_page_list.free_class },
-            // { menu : this.head_forum,           expect : ontue_page_list.forum },
-            // { menu : this.head_classComments,   expect : ontue_page_list.class_comment },
-            { menu : this.head_menu,            expect : ontue_page_list.menu, idx : 'ontue-menu' }
-        ];
-    }
-    
-}   
+
+}
 
 
 export class OntueMenuPage extends OntueHeaderElements {
@@ -137,49 +114,29 @@ export class OntueMenuPage extends OntueHeaderElements {
     /**
      * Returns list of available menu in side bar when logged in.
      */
-    menuExpectListLogin() {
-        return [
-            { menu : this.menu_help,                expect : ontue_page_list.help, idx : 'ontue-menu-help' },
-            { menu : this.menu_profile,             expect : ontue_page_list.profile, idx : 'ontue-menu-profile' },
-            { menu : this.menu_message,             expect : ontue_page_list.message, idx : 'ontue-menu-message' },
-            { menu : this.menu_setting,             expect : ontue_page_list.setting, idx : 'ontue-menu-setting' },
-            { menu : this.menu_qna,                 expect : ontue_page_list.qna, idx : 'ontue-menu-qna' },
-            { menu : this.menu_teacherList,         expect : ontue_page_list.teacher_list, idx : 'ontue-menu-teacher-list' },
-            { menu : this.menu_reserve,             expect : ontue_page_list.reserve, idx : 'ontue-menu-reserve' },
-            { menu : this.menu_classComment,        expect : ontue_page_list.class_comment, idx : 'ontue-menu-comment' },
-            { menu : this.menu_paymentLong,         expect : ontue_page_list.payment, idx : 'ontue-menu-payment' },
-            { menu : this.menu_paymentHistory,      expect : ontue_page_list.payment_history, idx : 'ontue-menu-payment-history' },
-            { menu : this.menu_reservationLong,     expect : ontue_page_list.reservation, idx : 'ontue-menu-reservation' },
-            { menu : this.menu_pastLong,            expect : ontue_page_list.past_session, idx : 'ontue-menu-past-session' },
-            { menu : this.menu_availableSession,    expect : ontue_page_list.available_session, idx : 'ontue-menu-available-session' },
-            { menu : this.menu_cv,                  expect : ontue_page_list.cv_page, idx : 'ontue-menu-curriculum-vitae' },  
-            { menu : this.menu_policy,              expect : ontue_page_list.policy, idx : 'ontue-menu-policy' },
-            { menu : this.menu_changePassword,      expect : ontue_page_list.change_password, idx : 'ontue-menu-change-password' },
-            { menu : this.menu_logout,              expect : ontue_page_list.logout, idx : 'ontue-menu-logout' }  
-        ]
-    }
+    menu_expect_list_login = [
+        { menu : this.menu_help,                expect : ontue_page_list.help, idx : 'ontue-menu-help' },
+        { menu : this.menu_profile,             expect : ontue_page_list.profile, idx : 'ontue-menu-profile' },
+        { menu : this.menu_message,             expect : ontue_page_list.message, idx : 'ontue-menu-message' },
+        { menu : this.menu_setting,             expect : ontue_page_list.setting, idx : 'ontue-menu-setting' },
+        { menu : this.menu_qna,                 expect : ontue_page_list.qna, idx : 'ontue-menu-qna' },
+        { menu : this.menu_teacherList,         expect : ontue_page_list.teacher_list, idx : 'ontue-menu-teacher-list' },
+        { menu : this.menu_reserve,             expect : ontue_page_list.reserve, idx : 'ontue-menu-reserve' },
+        { menu : this.menu_classComment,        expect : ontue_page_list.class_comment, idx : 'ontue-menu-comment' },
+        { menu : this.menu_paymentLong,         expect : ontue_page_list.payment, idx : 'ontue-menu-payment' },
+        { menu : this.menu_paymentHistory,      expect : ontue_page_list.payment_history, idx : 'ontue-menu-payment-history' },
+        { menu : this.menu_reservationLong,     expect : ontue_page_list.reservation, idx : 'ontue-menu-reservation' },
+        { menu : this.menu_pastLong,            expect : ontue_page_list.past_session, idx : 'ontue-menu-past-session' },
+        { menu : this.menu_availableSession,    expect : ontue_page_list.available_session, idx : 'ontue-menu-available-session' },
+        { menu : this.menu_cv,                  expect : ontue_page_list.cv_page, idx : 'ontue-menu-curriculum-vitae' },  
+        { menu : this.menu_policy,              expect : ontue_page_list.policy, idx : 'ontue-menu-policy' },
+        { menu : this.menu_changePassword,      expect : ontue_page_list.change_password, idx : 'ontue-menu-change-password' },
+        { menu : this.menu_logout,              expect : ontue_page_list.logout, idx : 'ontue-menu-logout' }  
+    ];
     /**
      * Returns list of available menu in side bar.
      */
-    menuExpectList() {
-        return [
-            // { menu : this.menu_help,                expect : ontue_page_list.help },
-            // { menu : this.menu_login,               expect : ontue_page_list.login },
-            // { menu : this.menu_registration,        expect : ontue_page_list.register },
-            // { menu : this.menu_setting,             expect : ontue_page_list.setting },
-            // { menu : this.menu_qna,                 expect : ontue_page_list.qna },
-            // { menu : this.menu_teacherList,         expect : ontue_page_list.teacher_list },
-            // { menu : this.menu_reserve,             expect : ontue_page_list.reserve },
-            // { menu : this.menu_classComment,        expect : ontue_page_list.class_comment },
-            // { menu : this.menu_paymentLong,         expect : ontue_page_list.payment },
-            // { menu : this.menu_paymentHistory,      expect : ontue_page_list.payment_history },
-            // { menu : this.menu_reservationLong,     expect : ontue_page_list.reservation },
-            // { menu : this.menu_pastLong,            expect : ontue_page_list.past_session },
-            // { menu : this.menu_availableSession,    expect : ontue_page_list.available_session },
-            // { menu : this.menu_policy,              expect : ontue_page_list.policy }
-
-
-
+    menu_expect_list = [
             { menu : this.menu_help,                expect : ontue_page_list.help, idx : 'ontue-menu-help' },
             { menu : this.menu_login,               expect : ontue_page_list.login, idx : 'ontue-menu-login' },
             { menu : this.menu_registration,        expect : ontue_page_list.register, idx : 'ontue-menu-registration' },
@@ -194,9 +151,7 @@ export class OntueMenuPage extends OntueHeaderElements {
             { menu : this.menu_pastLong,            expect : ontue_page_list.past_session, idx : 'ontue-menu-past-session' },
             { menu : this.menu_availableSession,    expect : ontue_page_list.available_session, idx : 'ontue-menu-available-session' },
             { menu : this.menu_policy,              expect : ontue_page_list.policy, idx : 'ontue-menu-policy' }
-
-        ]
-    }
+    ];
 
     constructor(){
         super()
@@ -337,6 +292,7 @@ export class OntueHomePage extends OntueLoginPage {
     home_reminders = `${this.home_page}>ion-content>div>.page>page[name='ontue.reminders']`;
     home_policy = `${this.home_page}>ion-content>div>.page>page[name='ontue.policy']`;
     home_guideline = `${this.home_page}>ion-content>div>.page>page[name='ontue.guideline']`;
+    home_register_btn = `${this.home_page}>.register-button`;
 
     home_rmdr_discussion = `${this.home_reminders}>section>.xpage>button:nth-child(1)`;
     home_rmdr_qna = `${this.home_reminders}>section>.xpage>button:nth-child(2)`;

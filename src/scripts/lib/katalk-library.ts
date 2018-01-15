@@ -1,7 +1,7 @@
 ﻿import { student_domain } from './global-library';
 import * as path from 'path';
 import * as fs from 'fs';
-import { IUserInfo, ISchedule, IMenuPage } from './interface';
+import { IUserInfo, ISchedule } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 import { tzQuery } from './global-library';
 
@@ -38,7 +38,7 @@ let katalk_page_list = {
 /**
  * katalk elements queries for Header navbar
  */
-export class KatalkHeaderElements implements IMenuPage {
+export class KatalkHeaderElements {
     sitename = 'katalk';
     domain = student_domain;
     home = katalk_page_list.home; 
@@ -113,7 +113,7 @@ export class KatalkHeaderElements implements IMenuPage {
     home_teacher_pointer = '.teacher-list>ion-grid>ion-row>.pointer';
  }
 
-export class KatalkMenuPage extends KatalkHeaderElements implements IMenuPage{
+export class KatalkMenuPage extends KatalkHeaderElements{
     menu_page = katalk_page_list.menu;
     menu_help = '.menu-help';
     menu_profile = '.menu-profile';
