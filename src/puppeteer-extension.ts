@@ -434,7 +434,7 @@ export abstract class PuppeteerExtension{
         let msg = ( !message ) ? `Click: ${selector}` : message
         await this.waitAppear([selector], `Selector not found. ${selector}`)
             .then( a => a )
-            .catch( async e => await this.error( e.code, e.message ) );
+            .catch( async e => await this.error( e.code, 'ERROR ON CLICK:'+e.message ) );
         await this.page.waitFor(500);
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
