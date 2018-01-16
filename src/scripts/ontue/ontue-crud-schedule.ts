@@ -1,12 +1,9 @@
-﻿// import { browserOption } from './../lib/global-library';
-import { browserOption } from '../lib/global-library';
+﻿import { browserOption } from '../lib/global-library';
 import { IUserInfo, ISchedule } from '../lib/interface';
 import { OntueSchedulePage, OntueLoginPage } from '../lib/ontue-library';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 import { Login } from '../login'
 import { user_data, schedule_data } from '../../data/test-data';
-
-// const schedPageTest = new OntueSchedulePage;
 
 /**
  * Run to test schedule page. pass user to login.
@@ -14,8 +11,9 @@ import { user_data, schedule_data } from '../../data/test-data';
 export class OntueSchedule extends Login {
 
     constructor( private scheduleUser: IUserInfo,  
-                 private schedule: ISchedule,         
-                 private schedulePage : OntueSchedulePage = new OntueSchedulePage, ){
+                 private schedule: ISchedule,        
+                 private doTest? : string, 
+                 private schedulePage : OntueSchedulePage = new OntueSchedulePage){
         
         super( scheduleUser, schedulePage )
     }
@@ -24,20 +22,26 @@ export class OntueSchedule extends Login {
         await this.start(this.schedulePage.domain, 'ontue', browserOption).catch( async e => { await this.fatal( e.code, e ) } );
 
         await this.submitLogin();
-        await this.open( this.schedulePage.head_schedule, [this.schedulePage.sched_page] );
-        
-        await this.addSched().catch( async e => await this.error( e.code, e.message ) );
-        await this.editSched(2).catch( async e => await this.error( e.code, e.message ) );
-        await this.deleteSched(2).catch( async e => await this.error( e.code, e.message ) );
+        await this.open( this.schedulePage.head_schedule, [this.schedulePage.sched_page], { success_message: 'Open schedule page.', idx : 'schedule-open-page' } );
+
+        if ( this.doTest === 'add' ) await this.addSched().catch( async e => await this.error( e.code, e.message ) );
+        else if ( this.doTest === 'edit' ) await this.editSched( this.schedule.row ).catch( async e => await this.error( e.code, e.message ) );
+        else if ( this.doTest == 'delete' ) await this.deleteSched(2).catch( async e => await this.error( e.code, e.message ) );
+        else {
+            await this.addSched().catch( async e => await this.error( e.code, e.message ) );
+            await this.editSched(2).catch( async e => await this.error( e.code, e.message ) );
+            await this.deleteSched(2).catch( async e => await this.error( e.code, e.message ) );
+        }
 
     }
 
     async addSched() {
         console.log('TEST: ADD a schedule.');
         // open add schedule form
-        let option = {success_message : 'Open add schedule form.', error_message : 'Failed to start add schedule.'} ;
+        let option = {success_message : 'Open add schedule form.', error_message : 'Failed to start add schedule.', idx : 'schedule-add'} ;
         await this.open( this.schedulePage.sched_btnAddSchedule, [this.schedulePage.sched_form], option);
         await this._fillUpForm();
+        await this._checkAlert();
     }
 
     /**
@@ -58,7 +62,7 @@ export class OntueSchedule extends Login {
         console.log('TEST: DELETE a schedule.');
         await this.click( this._queryTable( row, this.schedulePage.sched_action_delete ), 'Delete schedule.');
         await this.alertAccept( this.schedulePage.sched_alert_title, this.schedulePage.sched_alert_accept, 'Accept to delete!' );
-        
+        await this._checkAlert();
         // await this.checkRow()
     }
     /**
@@ -69,10 +73,12 @@ export class OntueSchedule extends Login {
      */
     async editSched( row: number ) {
         console.log('TEST: EDIT a schedule.');
-        let open_option = { error_message : 'Failed to open EDIT form.', success_message: 'Open EDIT form.', idx : 'edit-schedule' }
+        let open_option = { error_message : 'Failed to open EDIT form.', success_message: 'Open EDIT form.', idx : 'schedule-edit' }
         await this.waitInCase(.5);
         await this.open( this._queryTable( row, this.schedulePage.sched_action_edit ), [this.schedulePage.sched_form], open_option );
         await this._fillUpForm( 'edit' );
+        await this._checkAlert();
+
     }
     
     /**
@@ -127,11 +133,3 @@ export class OntueSchedule extends Login {
     }
 
 }
-
-
-
-// let eden = user_data[0]; // teacher
-// let emma = user_data[2]; // teacher
-
-// const schedPage = new OntueSchedulePage;
-// ( new OntueSchedule( eden, schedPage, schedule[0]) ).main();
