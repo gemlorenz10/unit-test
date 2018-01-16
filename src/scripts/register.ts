@@ -18,8 +18,7 @@ export class Register extends PuppeteerExtension {
         console.log('REGISTRATION TESTING STARTS...');
         console.log(user);
         await this.start( this.registerPage.domain, this.registerPage.sitename, browserOption ).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
-        //check alert
-        await this.alertCapture(['.ion-alert'], null, 1);
+
         // Register all info that are in text file
         await this.fillUpForm().catch( async e => { await this.fatal(e.code, e.message) } );
 
@@ -79,9 +78,11 @@ export class Register extends PuppeteerExtension {
      */
     private async _checkAlert() {
         let user: IUserInfo = this.userRegister
-        await this.alertSuccess(['ion-toast.error-40001'], 'User Already Registered!', 1);
-        await this.alertSuccess(['ion-toast>div:contains("registered")'], `${user.email} successfully registered!`, 1);
-        await this.alertCapture(['ion-toast'], 'unknown toast', 1);
+
+        await this.handleAlertMessage('ion-toast', { idx : 'schedule-handle-toast' });
+        await this.click('ion-toast>.toast-wrapper>.toast-container>button', 'Close toast.');
+        await this.waitInCase(.5);
+
     }
 
 }
