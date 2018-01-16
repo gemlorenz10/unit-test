@@ -1,44 +1,49 @@
-﻿import { OntueMessage } from './scripts/ontue/ontue-message';
+﻿import { OntueHome } from './scripts/ontue/ontue-home';
+import { OntueMessage } from './scripts/ontue/ontue-message';
 import { Login } from './scripts/login';
 import { ISummary } from './scripts/lib/interface';
 import { OntueSchedule } from './scripts/ontue/ontue-crud-schedule';
 import { Menu } from './scripts/menu';
 
-import { OntueLoginPage, OntueRegistrationPage, OntueSchedulePage } from './scripts/lib/ontue-library';
-import { user_data, schedule_data } from './data/test-data';
+import { OntueLoginPage, OntueRegistrationPage, OntueSchedulePage, OntueHomePage } from './scripts/lib/ontue-library';
+import { user_data, schedule_data, teacher_data } from './data/test-data';
 
 import { Register } from './scripts/register';
 import { PuppeteerExtension } from './puppeteer-extension';
 import * as util from './lib';
-
 var argv = require('yargs').argv;
-
-
-
 
 class Ontue extends PuppeteerExtension {
 }
 
-// test data
-let teacher_eden = user_data[0]; //teacher
-let schedule = schedule_data[0];
 //ontue pages
 let login_page = new OntueLoginPage;
 let register_page = new OntueRegistrationPage;
 let schedule_page = new OntueSchedulePage;
+let home_page = new OntueHomePage;
 
 // Testers
 let ontue = new Ontue;
-global['login'] = new Login( teacher_eden, login_page )
-global['register'] = new Register( teacher_eden, register_page );
-global['menu'] = new Menu( login_page, teacher_eden );
-global['menu-no-user'] = new Menu( login_page );
-// Ontue Testers
-global['schedule'] = new OntueSchedule( teacher_eden, schedule );
-global['message'] = new OntueMessage( teacher_eden );
 
-// console.dir( global['menu-no-user'] );
-let _global = [ global['register'], global['login'], global['schedule'], global['message'], global['menu'] ];
+// basic testers
+global['home-no-user'] = new OntueHome( home_page );
+global['home'] = new OntueHome( home_page, teacher_data );
+global['login'] = new Login( teacher_data, login_page )
+global['register'] = new Register( teacher_data, register_page );
+global['menu'] = new Menu( login_page, teacher_data );
+global['menu-no-user'] = new Menu( login_page );
+
+// schedule testers
+global['schedule'] = new OntueSchedule( teacher_data, schedule_data ); // test all
+global['schedule-edit'] = new OntueSchedule( teacher_data, schedule_data, 'edit' );
+global['schedule-add'] = new OntueSchedule( teacher_data, schedule_data, 'add' );
+global['schedule-delete'] = new OntueSchedule( teacher_data, schedule_data, 'delete' );
+
+// message tester
+global['message'] = new OntueMessage( teacher_data );
+
+// Run modes
+let _global = [ global['register'], global['login'], global['home'], global['schedule'], global['message'], global['menu'] ];
 let i, args = argv._[0];
 async function _run() {
     if ( args ) { 
