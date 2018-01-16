@@ -9,6 +9,7 @@ import { tzQuery } from '../lib/global-library';
 let ontue_page_list = {
     // head
     home : 'page-home',
+    intro : 'teacher-intro-component',
     menu : 'menu-page',
     dayoff : 'teacher-dayoff-page',
     free_class : null,
@@ -36,7 +37,10 @@ let ontue_page_list = {
     message : 'message-page',
     cv_page : 'page-teacher-curriculum-vitae',
     change_password : 'password-change',
-    logout : 'page-home' //expects home page when logged-out.
+    logout : 'page-home', //expects home page when logged-out.
+
+    // in homepage
+    post : 'page-post'
 }
 
 /**
@@ -63,23 +67,23 @@ export class OntueHeaderElements{
     head_login_how_to = `${this.head}:nth-child(7)>div`;
 
     head_expect_list_login =  [
-        { menu : this.head_home,        expect : ontue_page_list.home,          idx : 'ontue-homepage' },
-        { menu : this.head_reserve,     expect : ontue_page_list.reservation,   idx : 'ontue-reserve' },
-        { menu : this.head_past,        expect : ontue_page_list.past_session,  idx : 'ontue-past-schedule' },
-        { menu : this.head_schedule,    expect : ontue_page_list.schedule,      idx : 'ontue-schedule' },
-        // { menu : this.head_logout,        expect : ontue_page_list.logout,      idx : 'ontue-logout' },
-        { menu : this.head_login_contact_us, expect : null,                     idx : 'ontue-contact-us' },
-        { menu : this.head_login_how_to,  expect :null,                         idx : 'ontue-how-to-use' },
-        { menu : this.head_menu,            expect : ontue_page_list.menu,      idx : 'ontue-menu' }
+        { menu : this.head_home,        expect : ontue_page_list.home,          idx : 'ontue-head-homepage' },
+        { menu : this.head_reserve,     expect : ontue_page_list.reservation,   idx : 'ontue-head-reserve' },
+        { menu : this.head_past,        expect : ontue_page_list.past_session,  idx : 'ontue-head-past-schedule' },
+        { menu : this.head_schedule,    expect : ontue_page_list.schedule,      idx : 'ontue-head-schedule' },
+        // { menu : this.head_logout,        expect : ontue_page_list.logout,      idx : 'ontue-head-logout' },
+        { menu : this.head_login_contact_us, expect : null,                     idx : 'ontue-head-contact-us' },
+        { menu : this.head_login_how_to,  expect :null,                         idx : 'ontue-head-how-to-use' },
+        { menu : this.head_menu,            expect : ontue_page_list.menu,      idx : 'ontue-head-menu' }
     ];
 
     head_expect_list = [
-        { menu : this.head_home,            expect : ontue_page_list.home,           idx : 'ontue-homepage' },
-        { menu : this.head_login,           expect : ontue_page_list.login,          idx : 'ontue-login' },
-        { menu : this.head_register,           expect : ontue_page_list.register,    idx : 'ontue-register' },
-        { menu : this.head_contact_us,       expect : null,                          idx : 'ontue-contact_us' },
-        { menu : this.head_how_to,           expect : null,                          idx : 'ontue-how-to' },
-        { menu : this.head_menu,            expect : ontue_page_list.menu,           idx : 'ontue-menu' }
+        { menu : this.head_home,            expect : ontue_page_list.intro,           idx : 'ontue-head-homepage-intro' },
+        { menu : this.head_login,           expect : ontue_page_list.login,          idx : 'ontue-head-login' },
+        { menu : this.head_register,           expect : ontue_page_list.register,    idx : 'ontue-head-register' },
+        { menu : this.head_contact_us,       expect : null,                          idx : 'ontue-head-contact_us' },
+        { menu : this.head_how_to,           expect : null,                          idx : 'ontue-head-how-to' },
+        { menu : this.head_menu,            expect : ontue_page_list.menu,           idx : 'ontue-head-menu' }
     ];
 
     constructor(){
@@ -289,13 +293,29 @@ export class OntueMessagePage extends OntueLoginPage {
 
 export class OntueHomePage extends OntueLoginPage {
     home_page = ontue_page_list.home;
-    home_reminders = `${this.home_page}>ion-content>div>.page>page[name='ontue.reminders']`;
+
+    // intro
+    home_intro = ontue_page_list.intro;
+    home_register_btn = `${this.home_page}>${this.home_intro}.register-button`;
+    
+    // content
+    home_reminder = `${this.home_page}>ion-content>div:nth-child(2)>.page>page[name='ontue.reminders']`;
     home_policy = `${this.home_page}>ion-content>div>.page>page[name='ontue.policy']`;
     home_guideline = `${this.home_page}>ion-content>div>.page>page[name='ontue.guideline']`;
-    home_register_btn = `${this.home_page}>.register-button`;
 
-    home_rmdr_discussion = `${this.home_reminders}>section>.xpage>button:nth-child(1)`;
-    home_rmdr_qna = `${this.home_reminders}>section>.xpage>button:nth-child(2)`;
-    home_rmdr_pages = `${this.home_reminders}>section>.xpage>button:nth-child(3)`;
+    // reminder content
+    home_discussion = `${this.home_reminder}>section>.xpage>button:nth-child(1)`;
+    home_qna = `${this.home_reminder}>section>.xpage>button:nth-child(2)`;
+    home_pages = `${this.home_reminder}>section>.xpage>button:nth-child(3)`;
+
+    content = [
+        { selector : this.home_reminder, idx : 'ontue-home-reminder' },
+        { selector : this.home_policy, idx : 'ontue-home-policy' },
+        { selector : this.home_guideline, idx : 'ontue-home-guideline' }
+    ];
+
+    content_login = [
+
+    ];
 
 }
