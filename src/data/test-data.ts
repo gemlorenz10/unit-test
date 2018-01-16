@@ -82,6 +82,22 @@ export let teacher_data = {
 
 }
 
+export let teacher_register = {
+
+    "type": "T",
+    "email": "gab@gmail.com",
+    "password": "secret",
+    "name": "Gab Ontue",
+    "nickname": "Gab",
+    "gender": "M",
+    "phone": "06445657986",
+    "kakao": "gab123",
+    "photo": "gab.jpg",
+    "timezone": 8,
+    "birthdate": "12/10/1990"
+
+}
+
 export let schedule_data = {
         "row" : 1, // number only
         "beginHour":"14",

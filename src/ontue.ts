@@ -6,7 +6,7 @@ import { OntueSchedule } from './scripts/ontue/ontue-crud-schedule';
 import { Menu } from './scripts/menu';
 
 import { OntueLoginPage, OntueRegistrationPage, OntueSchedulePage, OntueHomePage } from './scripts/lib/ontue-library';
-import { user_data, schedule_data, teacher_data } from './data/test-data';
+import { user_data, schedule_data, teacher_data, teacher_register } from './data/test-data';
 
 import { Register } from './scripts/register';
 import { PuppeteerExtension } from './puppeteer-extension';
@@ -28,7 +28,7 @@ let ontue = new Ontue;
 // basic testers
 global['home-no-user'] = new OntueHome( home_page );
 global['home'] = new OntueHome( home_page, teacher_data );
-global['login'] = new Login( teacher_data, login_page )
+global['login'] = new Login( teacher_register, login_page )
 global['register'] = new Register( teacher_data, register_page );
 global['menu'] = new Menu( login_page, teacher_data );
 global['menu-no-user'] = new Menu( login_page );
