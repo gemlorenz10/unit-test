@@ -13,6 +13,7 @@
 }
 
 export interface ISchedule {
+    row: any
     beginHour:      string
     beginMin:       string
     duration:       string
