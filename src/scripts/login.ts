@@ -29,18 +29,18 @@ export class Login extends PuppeteerExtension {
         let user = this._user;
         let login = this._page
         // GO TO LOGIN
-        await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login' } );
-        await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login' });
+        await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login-open-menu' } );
+        await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login-open-page' });
         await this.type( login.login_email, user.email);
         await this.type( login.login_password, user.password);
         await this.click( login.login_btnSubmit, 'Attemp to login. Click submit!' );
         // CHECK if wrong password.
-        await this.waitAppear([login.login_wrongPassword], {timeout:2})
+        await this.waitAppear(login.login_wrongPassword, {delay:2})
             .then( a => { this.success('Password Incorrect!') } )
             .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
         await this.waitInCase(2);
             
-        // await this.waitAppear([login.home], {timeout:2})
+        // await this.waitAppear([login.home], {delay:2})
         //     .then( a =>  this.success('Success home page found!')  );
     }
 }

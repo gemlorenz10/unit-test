@@ -95,8 +95,8 @@ export class Menu extends Login {
                         ? this.menu_page.head_expect_list_login
                         : this.menu_page.head_expect_list;
 
-        let i = 0, menu_option;
-        for ( re of  head_list) {
+        let i = 1, menu_option;
+        for ( re of  head_list ) {
             menu_option = { 
                 idx: re.idx, 
                 success_message : `Open menu: -> ${re.idx}`, 

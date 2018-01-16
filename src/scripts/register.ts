@@ -33,9 +33,9 @@ export class Register extends PuppeteerExtension {
         let user: IUserInfo = this.userRegister;
         let register_page = this.registerPage;
         // NAVIGATE TO REGISTRATION
-        await this.waitAppear([register_page.head_menu]);
-        await this.open(register_page.head_menu,  [register_page.menu_registration],'Going to open menu list page.');
-        await this.open( register_page.menu_registration, [register_page.page], 'Going to open Registration.' );
+        await this.waitAppear(register_page.head_menu);
+        await this.open(register_page.head_menu,  [register_page.menu_registration],{ success_message: 'Open menu page.', idx : 'register-open-menu' });
+        await this.open( register_page.menu_registration, [register_page.page], { success_message: 'Open Registration.', idx: 'register-open-page' } );
 
         // FILL UP REGISTRATION FORM
 

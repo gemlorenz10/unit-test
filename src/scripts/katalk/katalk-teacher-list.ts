@@ -23,7 +23,7 @@ export class KatalkTeacherList extends Login {
     async countTeacherList( recommended: boolean = true ) {
         // if ( recommended ) await this._showRecommended(); 
         // if ( !recommended ) await this._showAll();
-        await this.waitAppear([teacher_list_page.list_page, teacher_list_page.list_teacher_card]);
+        await this.waitAppear(teacher_list_page.list_page, teacher_list_page.list_teacher_card);
         await this.countSelector( teacher_list_page.list_teacher_card, `Teachers in the list count` )
 
 
@@ -32,7 +32,7 @@ export class KatalkTeacherList extends Login {
      * Shows all teachers regardless of grade.
      */
     private async _showAll(){
-        await this.waitAppear( [teacher_list_page.list_section_option] )
+        await this.waitAppear( teacher_list_page.list_section_option )
             .then( a => a )
             .catch( async e => await this.open(teacher_list_page.list_btn_option, [teacher_list_page.list_section_option]) );
         // await this.open(teacher_list_page.list_option_grade, )

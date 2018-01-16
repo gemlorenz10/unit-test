@@ -29,7 +29,7 @@ class KatalkHome extends Login {
     async checkStudentComment() {
         let homepage = this.katalkHomePage;
         await this.waitInCase(1);
-        await this.waitAppear([homepage.home_student_comment_list]);
+        await this.waitAppear(homepage.home_student_comment_list);
         await this.countSelector( homepage.home_student_comment, 'Comments' );
 
         // Stall
@@ -43,17 +43,17 @@ class KatalkHome extends Login {
 
     async checkTeacherList() {
         let homepage = this.katalkHomePage;
-        await this.waitAppear([homepage.home_teacher_list, 
-                                homepage.home_teacher_pointer]);
+        // await this.waitAppear([homepage.home_teacher_list, 
+        //                         homepage.home_teacher_pointer]);
 
         await this.countSelector( homepage.home_teacher_pointer, 'Teachers in top list' )
     }
 
     async checkStat() {
         let homepage = this.katalkHomePage;
-        await this.waitAppear([homepage.home_stat_teacher,
-                                homepage.home_stat_reservation,
-                                homepage.home_stat_leveltest]);
+        // await this.waitAppear([homepage.home_stat_teacher,
+        //                         homepage.home_stat_reservation,
+        //                         homepage.home_stat_leveltest]);
 
         await this.displayChild( homepage.home_stat_teacher, 'Teacher stat' );
         await this.displayChild( homepage.home_stat_reservation, 'Resavation stat');
