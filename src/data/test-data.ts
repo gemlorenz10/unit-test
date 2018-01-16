@@ -83,12 +83,12 @@ export let teacher_data = {
 }
 
 export let schedule_data = {
-        "row" : "2",
-        "beginHour":"13",
-        "beginMin":"30",
+        "row" : 1, // number only
+        "beginHour":"14",
+        "beginMin":"00",
         "duration":"25",
-        "point":"4000",
-        "weekDayList":['monday','tuesday','wednesday','thursday','friday'],
+        "point":"2000",
+        "weekDayList":['saturday','tuesday','wednesday','thursday','friday'],
         "preReserve":""
     }
 

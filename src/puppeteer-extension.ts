@@ -249,6 +249,19 @@ export abstract class PuppeteerExtension{
         await this.page.screenshot({ path: filepath }).then(a=>console.log(msg));
     }
 
+   /**
+     * uploads file
+     * @param filePath
+     * @param inputElement - puppeteer.page.$(input-selector); 
+     */
+    async upload( filePath, inputElement ) {
+        
+        console.log('UPLOAD: ',filePath);
+        await this.page.waitFor(500);
+        await inputElement.uploadFile( filePath )
+            .then(a => this.success('Image Uploaded'))
+            .catch( async e => { await this.fatal('error-uploading-file', e) } );
+    }
     /**
      * Display the activity summary of the test.
      * Then writes a log file for errors.
@@ -403,6 +416,17 @@ export abstract class PuppeteerExtension{
         throw { code: `${idx}-selector-not-found`, message: err };
     }
 
+    async handleAlertMessage( selector: string, option? ) {
+        let re;
+        option = option || {};
+        option.idx = option.idx || 'handle-alert-message'
+        await this.page.waitFor(500);
+        await this.waitAppear( selector, option )
+            .then( async a => {
+                re = await this.getText( selector )
+                this.success( `Ontue Said :${ re }` );
+            } );
+    }
 
     /**
      * Does click from puppeteer with proper handling.
@@ -418,6 +442,7 @@ export abstract class PuppeteerExtension{
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
             .catch( async e => await this.error( e.code, e.message ) );
+        await this.page.waitFor(200);
     }
     
     /**
@@ -517,22 +542,23 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param str 
      */
-    async type( selector, str, message?, delay = 60 ) {
+    async type( selector, str, message?, delay = 100 ) {
 
         message = (message)? `${message} -> ${str}` : `Type ${str} in ${selector}`;
         let wait_option = { success_message : message, error_message : `Cannot find text field ${selector}`, idx : 'type' };
         await this.page.waitFor(500);
         await this.waitAppear( selector, wait_option );
-        await this.deletePrevious( selector );
+        await this.clearText( selector );
         await this.page.type(selector, str, { delay: delay })
             .then(a=>{ this.success( message ) });
+        await this.page.waitFor(500);
     }
 
     /**
      * Deletes text in an input.
      * @param selector 
      */
-    async deletePrevious( selector ) {
+    async clearText( selector ) {
         await this.page.focus(selector);
         await this.page.keyboard.down('Control');
         await this.page.keyboard.down('A');
@@ -541,74 +567,6 @@ export abstract class PuppeteerExtension{
         await this.page.keyboard.up('Control');
 
         await this.page.keyboard.press('Backspace');
-    }
-
-    /**
-     * uploads file
-     * @param filePath
-     * @param inputElement - puppeteer.page.$(input-selector); 
-     */
-    async upload( filePath, inputElement ) {
-        
-        console.log('UPLOAD: ',filePath);
-        await this.page.waitFor(500);
-        await inputElement.uploadFile( filePath )
-            .then(a => this.success('Image Uploaded'))
-            .catch( async e => { await this.fatal('error-uploading-file', e) } );
-    }
-
-    /**
-     * Checks for Alert boxes. Capture and press enter to exit.
-     * @param selector_list 
-     * @param message - null if not necessary
-     * @param timeout 
-     */
-    async alertCapture(selector,  message, timeout = 5) {
-        if (message === null) message = 'Capture Alert';
-        await this.waitAppear(selector, { success_message:message, timeout:timeout })
-            .then( async a => { 
-                this.warn( 'capture-alert', a )
-                await this.waitInCase(1);
-                await this.page.keyboard.press('Enter');
-            } ).catch( e => e );
-
-    }
-
-    /**
-     * Checks for Alert boxes. Capture and press enter to exit.
-     * @param selector_list 
-     * @param message - null if not necessary
-     * @param timeout 
-     */
-    async alertSuccess(selector,  message, timeout = 3) {
-        if (message === null || undefined) message = 'Success! closing alert.';
-        await this.waitAppear(selector,  { success_message:message, timeout:timeout })
-            .then( async a => { 
-                this.success( a );        
-                await this.page.waitFor(500);
-                await this.page.keyboard.press('Enter').then( a=>{this.success('Press Enter to close alert box')} );
-
-                await this.waitDisappear(selector, 1)
-                    .then( a => { this.success(a) })
-                    .catch( async e => await this.error(e.code, e.message) );
-                
-
-            }).catch( e => e );   
-        await this.page.waitFor(500); 
-    }
-
-    /**
-     * Finds an alert then press ok. If no alert just pass.
-     */
-    async alertAccept( alertSelector, acceptSelector, message?, timeout = 3 ) {
-        if (message === null || undefined) message = 'Press ok/accept to continue.';
-        await this.waitAppear(alertSelector,  { success_message:message, timeout:timeout } )
-            .then( async a => { 
-                this.success( a );        
-                await this.waitInCase(1);
-                await this.click( acceptSelector, message );
-                await this.waitDisappear(alertSelector, 5).catch( e => this.fatal(e.code, 'Alert did not close within timeout.  -> '+ alertSelector) );
-            }).catch( e => e );
     }
 
     /**

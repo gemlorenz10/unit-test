@@ -220,7 +220,6 @@ export class OntueLoginPage extends  OntueMenuPage {
  */
 export class OntueSchedulePage extends OntueLoginPage {
     sched_page = ontue_page_list.schedule;
-    sched_form = 'add-schedule';
     sched_btnAddSchedule = '.add-schedule';
     sched_beginHour = 'input[name="class_begin_hour"]';
     sched_beginMinute = 'input[name="class_begin_minute"]';
@@ -248,6 +247,7 @@ export class OntueSchedulePage extends OntueLoginPage {
     sched_action_delete =`td.delete>button`;
     sched_action_edit =`td.edit>button`;
 
+    sched_form = 'ion-modal>.modal-wrapper>add-schedule';
     sched_form_cancel = `${this.sched_form}>ion-header>ion-toolbar>ion-buttons>.cancel`
 
     sched_alert = `ion-alert>.alert-wrapper`;

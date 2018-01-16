@@ -26,11 +26,11 @@ export class OntueSchedule extends Login {
 
         if ( this.doTest === 'add' ) await this.addSched().catch( async e => await this.error( e.code, e.message ) );
         else if ( this.doTest === 'edit' ) await this.editSched( this.schedule.row ).catch( async e => await this.error( e.code, e.message ) );
-        else if ( this.doTest == 'delete' ) await this.deleteSched(2).catch( async e => await this.error( e.code, e.message ) );
+        else if ( this.doTest == 'delete' ) await this.deleteSched(this.schedule.row).catch( async e => await this.error( e.code, e.message ) );
         else {
             await this.addSched().catch( async e => await this.error( e.code, e.message ) );
-            await this.editSched(2).catch( async e => await this.error( e.code, e.message ) );
-            await this.deleteSched(2).catch( async e => await this.error( e.code, e.message ) );
+            await this.editSched(this.schedule.row).catch( async e => await this.error( e.code, e.message ) );
+            await this.deleteSched(this.schedule.row).catch( async e => await this.error( e.code, e.message ) );
         }
 
     }
@@ -61,9 +61,7 @@ export class OntueSchedule extends Login {
     async deleteSched( row: number ) {
         console.log('TEST: DELETE a schedule.');
         await this.click( this._queryTable( row, this.schedulePage.sched_action_delete ), 'Delete schedule.');
-        await this.alertAccept( this.schedulePage.sched_alert_title, this.schedulePage.sched_alert_accept, 'Accept to delete!' );
-        await this._checkAlert();
-        // await this.checkRow()
+        await this.click( this.schedulePage.sched_alert_accept, 'Accept to delete!' );
     }
     /**
      * Edits the schedule in row
@@ -73,9 +71,10 @@ export class OntueSchedule extends Login {
      */
     async editSched( row: number ) {
         console.log('TEST: EDIT a schedule.');
-        let open_option = { error_message : 'Failed to open EDIT form.', success_message: 'Open EDIT form.', idx : 'schedule-edit' }
+        let open_option = { error_message : 'Failed to open EDIT form.', success_message: 'Open EDIT form.', idx : 'schedule-edit-open' }
         await this.waitInCase(.5);
-        await this.open( this._queryTable( row, this.schedulePage.sched_action_edit ), [this.schedulePage.sched_form], open_option );
+        await this.open( this._queryTable( row, this.schedulePage.sched_action_edit ), [this.schedulePage.sched_form], open_option )
+                    .catch( e => this.warn( e.code, `Row #${row} to edit not found` ) );
         await this._fillUpForm( 'edit' );
         await this._checkAlert();
 
@@ -101,7 +100,6 @@ export class OntueSchedule extends Login {
         await this._selectDays();
         await this.type( this.schedulePage.sched_preReserve, this.schedule.preReserve, `Input pre-reserve student` );
         await this.click( this.schedulePage.sched_btnSubmit, 'Submit schedule' );
-        await this._checkAlert();
     }
     /**
      * Returns the element's query for schedule table
@@ -109,7 +107,8 @@ export class OntueSchedule extends Login {
      * @param target 
      */
     private _queryTable( row_number: number, target ) {
-        let re = this.schedulePage.sched_table_row + `:nth-child(${row_number})>${target}`;
+        let row = (row_number + 1);
+        let re = this.schedulePage.sched_table_row + `:nth-child(${row})>${target}`;
         return re;
     }
 
@@ -117,12 +116,14 @@ export class OntueSchedule extends Login {
      * Check alert sequence for add-schedule
      * @param alertWrapper 
      */
-    private async _checkAlert( alertWrapper = '.ion-alert' ) {
-        
-        await this.alertSuccess([``], 'Schedule Created!', 2);
-        await this.alertSuccess([`ion-toast.error-40911`], 'Schedule already exists!', 2);
-        await this.alertCapture(['.ion-toast'], null, 1);
-        await this.click( this.schedulePage.sched_form_cancel, 'Close form!' );
+    private async _checkAlert() {
+        await this.handleAlertMessage('ion-toast', { idx : 'schedule-handle-toast' });
+        await this.click('ion-toast>.toast-wrapper>.toast-container>button', 'Close toast.');
+        await this.waitInCase(.5);
+
+        await this.waitDisappear( this.schedulePage.sched_form, 2 )
+            .then( e => this.success('Form closes.') )
+            .catch( async a => await this.click( this.schedulePage.sched_form_cancel ) );
     }
 
     private async _selectDays( days = this.schedule.weekDayList  ) {
