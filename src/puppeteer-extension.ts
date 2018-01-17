@@ -67,7 +67,6 @@ export abstract class PuppeteerExtension{
     async start( website: string, sitename:string = 'site', browser_option? ) {
         let error_log_log_file = path.join(__dirname, '../site-error-logs', `${sitename}.log`)
         browser_option = browser_option || {};
-        browser_option.headless = browser_option.headless;
         browser_option.viewport = browser_option.viewport || { height:900, width:800 };
         
         console.log('Start testing....')

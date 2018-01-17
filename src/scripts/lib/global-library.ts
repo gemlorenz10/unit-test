@@ -5,7 +5,7 @@ export let teacher_domain = 'https://ontue.com';
 
 export let path_to_images = '../../picture';
 export let browserOption = {
-    headless : false,
+    headless : true,
     viewport : {
         height : 1024,
         width : 1366
