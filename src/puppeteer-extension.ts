@@ -195,7 +195,7 @@ export abstract class PuppeteerExtension{
      * @param code 
      * @param msg 
      */
-    async error(error_code, msg) {
+    async error(error_code = this.makeId(), msg) {
         if ( ! this.page ) {
             console.log("ERROR: page is falsy. You cannot leave a screenshot.");
             this.event.emit('log', { event:'page-falsy', message:'Page is falsy' })
@@ -415,11 +415,18 @@ export abstract class PuppeteerExtension{
         throw { code: `${idx}-selector-not-found`, message: err };
     }
 
+    /**
+     * Handle's Ionic Toast. 
+     * Options { idx, timeout( in secs ) }
+     * @param selector 
+     * @param option 
+     */
     async handleAlertMessage( selector: string, option? ) {
         let re;
         option = option || {};
-        option.idx = option.idx || 'handle-alert-message'
-        await this.page.waitFor(500);
+        let idx = option.idx || 'handle-alert-message';
+        let timeout = option.timeout || 1;
+        await this.page.waitFor(timeout*1000);
         await this.waitAppear( selector, option )
             .then( async a => {
                 re = await this.getText( selector )
@@ -471,7 +478,8 @@ export abstract class PuppeteerExtension{
         let i;
         await this.page.waitFor(delay / 2);
         await this.page.focus( selector );
-        await this.click( selector, `${success} --> Click: ${idx||selector}` );
+        await this.click( selector, `${success} --> ${idx||selector}` );
+        await this.handleAlertMessage('ion-toast', { idx : `onclick-${idx}-toast`, timeout : .8 });
         if( expect === null ) this.success('Not expecting any selector');
 
         if( expect ){ 
@@ -480,7 +488,7 @@ export abstract class PuppeteerExtension{
                         .then( a => this.success( a ))
                         .catch( async e => await this.error( `${idx}-page-open-failed`, e.message ) );
         }
-        await this.handleAlertMessage('ion-toast', { idx : `${idx}-toast` });
+        await this.handleAlertMessage('ion-toast', { idx : `onload-${idx}-toast`, timeout : .8 });
         await this.page.waitFor(delay / 2);
     
     }
