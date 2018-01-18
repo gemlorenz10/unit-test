@@ -1,4 +1,4 @@
-﻿import { teacher_domain, student_domain, browserOption } from './lib/global-library';
+﻿import { teacher_domain, student_domain, browserOption, breakpoint } from './lib/global-library';
 import { IUserInfo } from './lib/interface';
 import { OntueLoginPage } from './lib/ontue-library';
 import { PuppeteerExtension } from '../puppeteer-extension';
@@ -29,8 +29,12 @@ export class Login extends PuppeteerExtension {
         let user = this._user;
         let login = this._page
         // GO TO LOGIN
-        await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login-open-menu' } );
-        await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login-open-page' });
+        if( browserOption.viewport.width > breakpoint || login instanceof OntueLoginPage ){
+            await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login-open-menu' } );
+            await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login-open-page' });
+        }else {
+            await this.open( login.head_mobile_login, [ login.login_page ], { idx: 'login-mobile-page', delay : 2 } );
+        }
         await this.type( login.login_email, user.email);
         await this.type( login.login_password, user.password);
         await this.click( login.login_btnSubmit, 'Attemp to login. Click submit!' );

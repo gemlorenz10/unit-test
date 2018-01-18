@@ -11,6 +11,7 @@ export class OntueHome extends Login {
 
 
     async main() {
+        console.log('TEST ONTUE HOME STARTS ...')
         if ( !this.page ) await this.start( this.homePage.domain, 'ontue', browserOption );
         if ( this.homeUser ) {
             await this.submitLogin();

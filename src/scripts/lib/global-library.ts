@@ -4,14 +4,26 @@ export let student_domain = 'https://katalkenglish.com';
 export let teacher_domain = 'https://ontue.com';
 
 export let path_to_images = '../../picture';
+
+export let breakpoint = 690;
+
 export let browserOption = {
     headless : true,
+    // web
+    // viewport : {
+    //     height : 1024,
+    //     width : 1366
+    // }
+    // mobile size
     viewport : {
-        height : 1024,
-        width : 1366
+        height : 667,
+        width : 375
     }
 }
+
+
 /**
+ * 
  * Returns query selector for timezone.
  * 
  * @param timezone

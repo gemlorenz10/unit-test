@@ -118,7 +118,6 @@ export class OntueSchedule extends Login {
      */
     private async _checkAlert() {
         await this.handleAlertMessage('ion-toast', { idx : 'schedule-handle-toast' });
-        await this.click('ion-toast>.toast-wrapper>.toast-container>button', 'Close toast.');
         await this.waitInCase(.5);
 
         await this.waitDisappear( this.schedulePage.sched_form, 2 )

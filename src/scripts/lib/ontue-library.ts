@@ -37,7 +37,7 @@ let ontue_page_list = {
     message : 'message-page',
     cv_page : 'page-teacher-curriculum-vitae',
     change_password : 'password-change',
-    logout : 'page-home', //expects home page when logged-out.
+    logout : this.home, //expects home page when logged-out.
 
     // in homepage
     post : 'page-post'
@@ -57,7 +57,6 @@ export class OntueHeaderElements{
     head_contact_us = `${this.head}:nth-child(4)>div`;
     head_how_to = `${this.head}:nth-child(5)>div`;
 
-    
     // when logged in
     head_reserve = `${this.head}:nth-child(2)>div`;
     head_past = `${this.head}:nth-child(3)>div`;
@@ -65,6 +64,7 @@ export class OntueHeaderElements{
     head_logout = `${this.head}:nth-child(5)>div`;
     head_login_contact_us = `${this.head}:nth-child(6)>div`;
     head_login_how_to = `${this.head}:nth-child(7)>div`;
+    
 
     head_expect_list_login =  [
         { menu : this.head_home,        expect : ontue_page_list.home,          idx : 'ontue-head-homepage' },

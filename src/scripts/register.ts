@@ -31,6 +31,7 @@ export class Register extends PuppeteerExtension {
     async fillUpForm() {
         let user: IUserInfo = this.userRegister;
         let register_page = this.registerPage;
+        let is_ontue_page = this.registerPage instanceof OntueRegistrationPage;
         // NAVIGATE TO REGISTRATION
         await this.waitAppear(register_page.head_menu);
         await this.open(register_page.head_menu,  [register_page.menu_registration],{ success_message: 'Open menu page.', idx : 'register-open-menu' });
@@ -39,7 +40,7 @@ export class Register extends PuppeteerExtension {
         // FILL UP REGISTRATION FORM
 
         // upload image
-        if ( user.photo ){
+        if ( user.photo && is_ontue_page ){
             let profile_pic = await this.page.$(register_page.reg_profilePic);//.then(a=>this.success('Uploading image.'));
             let photo_url = path.resolve(__dirname, path_to_images , user.photo);
             await this.upload(photo_url, profile_pic);
@@ -54,10 +55,10 @@ export class Register extends PuppeteerExtension {
         await this.type(register_page.reg_kakao, user.kakao);
 
         // gender
-        await this.click( register_page.reg_radio( user.gender ), 'Select Gender.' );
+        if ( is_ontue_page ) await this.click( register_page.reg_radio( user.gender ), 'Select Gender.' );
 
         // timezone
-        if ( user.timezone ){
+        if ( user.timezone && this.registerPage instanceof OntueRegistrationPage ){
             await this.click( register_page.reg_btnTimezone, 'select timezone');
             await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , 'submit timezone'); // click ok
             await this.click( register_page.reg_btnTimezoneOK, 'click ok' );
@@ -80,7 +81,7 @@ export class Register extends PuppeteerExtension {
         let user: IUserInfo = this.userRegister
 
         await this.handleAlertMessage('ion-toast', { idx : 'schedule-handle-toast' });
-        await this.click('ion-toast>.toast-wrapper>.toast-container>button', 'Close toast.');
+        // await this.click('ion-toast>.toast-wrapper>.toast-container>button', 'Close toast.');
         await this.waitInCase(.5);
 
     }

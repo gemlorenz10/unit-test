@@ -1,5 +1,5 @@
 ﻿import { IUserInfo } from './lib/interface';
-import { browserOption } from './lib/global-library';
+import { browserOption, breakpoint } from './lib/global-library';
 import { Login } from "./login";
 import { KatalkMenuPage, KatalkLoginPage } from "./lib/katalk-library";
 import { user_data } from '../data/test-data';
@@ -25,7 +25,7 @@ export class Menu extends Login {
         console.log('MENU TEST STARTS...')
         if ( !this.page ) await this.startMenu();
         if ( this.menu_user ) await this.submitLogin();
-        await this.checkHeadMenu();
+        if ( browserOption.viewport.width > breakpoint ) await this.checkHeadMenu();
         await this.checkMenuList();
     }
 
@@ -51,22 +51,23 @@ export class Menu extends Login {
                         ? this.menu_page.menu_expect_list_login
                         : this.menu_page.menu_expect_list;
         
-        let i = 0, open_option, menu_option;
+        let i = 1, open_option, menu_option;
         for ( re of  menu_list) {
             open_option = { 
                 idx: re.idx, 
-                success_message : `Open menu page: -> ${re.idx}`, 
-                error_message : `Page failed to open when clicking -> ${re.menu}`
+                success_message : `Open MENU page: -> ${re.idx}`, 
+                error_message : `Page failed to open when clicking -> ${re.menu}`,
               }
             menu_option = { 
                 idx: re.idx, 
-                success_message : `Open menu: -> ${re.idx}`, 
+                success_message : `Open -> ${re.idx}`, 
                 error_message : `Page failed to open when clicking -> ${re.idx}`
             };
             
             console.log(`TEST ${i}:`,re.idx);
             
-            await this.open(this.menu_page.head_menu, [re.menu], open_option);
+            if ( browserOption.viewport.width > breakpoint || this.menu_page instanceof OntueLoginPage ) await this.open(this.menu_page.head_menu, [re.menu], open_option);
+            else await this.open(this.menu_page.head_mobile_menu, [re.menu], open_option);
             
             if ( re.menu === this.menu_page.menu_qna ) {
                 await this.open(re.menu, [re.expect],  { idx : re.idx, error_message : `QnA Opens a link to a Kakao Profile. -> ${re.idx}`});
