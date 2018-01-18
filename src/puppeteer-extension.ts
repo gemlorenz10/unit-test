@@ -248,7 +248,7 @@ export abstract class PuppeteerExtension{
         await this.page.screenshot({ path: filepath }).then(a=>console.log(msg));
     }
 
-   /**
+    /**
      * uploads file
      * @param filePath
      * @param inputElement - puppeteer.page.$(input-selector); 
@@ -424,7 +424,8 @@ export abstract class PuppeteerExtension{
             .then( async a => {
                 re = await this.getText( selector )
                 this.success( `Ontue Said :${ re }` );
-            } );
+                await this.click('ion-toast>.toast-wrapper>.toast-container>button', 'Close toast.');   
+            }).catch( e => e );
     }
 
     /**
@@ -463,12 +464,13 @@ export abstract class PuppeteerExtension{
         // if ( message ) this.success(message);
         // set defaults
         option = option || {};
-        let error = option.error_message || `Failed to open page. -> ${expect[0]} Page/Selector not found`;
+        let error = option.error_message || `Failed to open page. -> Selector "${expect[0]}" is not in not found in DOM.`;
         let success = option.success_message || 'Open a page.';
         let idx = option.idx || this.makeId();
         let delay = option.delay || 2000; //ms
         let i;
         await this.page.waitFor(delay / 2);
+        await this.page.focus( selector );
         await this.click( selector, `${success} --> Click: ${idx||selector}` );
         if( expect === null ) this.success('Not expecting any selector');
 
@@ -478,7 +480,7 @@ export abstract class PuppeteerExtension{
                         .then( a => this.success( a ))
                         .catch( async e => await this.error( `${idx}-page-open-failed`, e.message ) );
         }
-        
+        await this.handleAlertMessage('ion-toast', { idx : `${idx}-toast` });
         await this.page.waitFor(delay / 2);
     
     }
