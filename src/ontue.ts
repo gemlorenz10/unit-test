@@ -43,7 +43,15 @@ global['schedule-delete'] = new OntueSchedule( teacher_data, schedule_data, 'del
 global['message'] = new OntueMessage( teacher_data );
 
 // Run modes
-let _global = [ global['register'], global['login'], global['home'], global['schedule'], global['message'], global['menu'] ];
+let _global = [ 
+    global['register'], 
+    global['login'], 
+    global['home'], 
+    global['schedule'], 
+    global['message'], 
+    global['menu'] 
+];
+
 let i, args = argv._[0];
 async function _run() {
     if ( args ) { 
