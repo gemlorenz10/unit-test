@@ -4,7 +4,6 @@ import { path_to_images, browserOption } from './lib/global-library';
 import { IUserInfo } from './lib/interface';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import * as path from 'path';
-import { user_data } from './../data/test-data';
 
 export class Register extends PuppeteerExtension {
 

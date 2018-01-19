@@ -1,5 +1,4 @@
 ﻿import { browserOption, student_domain } from '../lib/global-library';
-import { user_data } from '../../data/test-data';
 import { KatalkHeaderElements, KatalkLoginPage, KatalkReservationListPage } from '../lib/katalk-library';
 import { IUserInfo, ISchedule } from '../lib/interface';
 import { Login } from "../login";
@@ -46,9 +45,3 @@ export class ReserveSchedule extends Login {
        console.log( 'row =' + row );
     }
 }
-let student, _schedule
-student = user_data[1];
-let katalk = new KatalkReservationListPage;
-// _schedule = eden_schedule;
-let s = new ReserveSchedule(student, _schedule, katalk);
-s.main();

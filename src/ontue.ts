@@ -6,7 +6,7 @@ import { OntueSchedule } from './scripts/ontue/ontue-crud-schedule';
 import { Menu } from './scripts/menu';
 
 import { OntueLoginPage, OntueRegistrationPage, OntueSchedulePage, OntueHomePage } from './scripts/lib/ontue-library';
-import { user_data, schedule_data, teacher_data, teacher_register } from './data/test-data';
+import { schedule_data, teacher_data, teacher_register } from './data/test-data';
 
 import { Register } from './scripts/register';
 import { PuppeteerExtension } from './puppeteer-extension';

@@ -2,7 +2,6 @@
 import { IUserInfo } from './lib/interface';
 import { OntueLoginPage } from './lib/ontue-library';
 import { PuppeteerExtension } from '../puppeteer-extension';
-import { user_data } from './../data/test-data';
 
 export class Login extends PuppeteerExtension {
     private _page;

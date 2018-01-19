@@ -3,7 +3,7 @@ import { IUserInfo, ISchedule } from '../lib/interface';
 import { OntueSchedulePage, OntueLoginPage } from '../lib/ontue-library';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 import { Login } from '../login'
-import { user_data, schedule_data } from '../../data/test-data';
+import { schedule_data } from '../../data/test-data';
 
 /**
  * Run to test schedule page. pass user to login.

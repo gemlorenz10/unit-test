@@ -1,7 +1,7 @@
 ﻿import { KatalkHome } from './scripts/katalk/katalk-home';
 import { Login } from './scripts/login';
 import { ISummary } from './scripts/lib/interface';
-import { user_data, schedule_data, student_data, teacher_data } from './data/test-data';
+import { schedule_data, student_data, teacher_data } from './data/test-data';
 import { Register } from './scripts/register';
 import { KatalkLoginPage, KatalkRegistrationPage, KatalkHomePage } from './scripts/lib/katalk-library';
 import { Menu } from './scripts/menu';

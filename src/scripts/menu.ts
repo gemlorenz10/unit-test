@@ -2,7 +2,6 @@
 import { browserOption, breakpoint } from './lib/global-library';
 import { Login } from "./login";
 import { KatalkMenuPage, KatalkLoginPage } from "./lib/katalk-library";
-import { user_data } from '../data/test-data';
 import { OntueLoginPage } from './lib/ontue-library';
 
 /**
