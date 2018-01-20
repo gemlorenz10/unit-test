@@ -555,16 +555,16 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param str 
      */
-    async type( selector, str, message?, delay = 100 ) {
+    async type( selector, str, message?, delay = 80 ) {
 
         message = (message)? `${message} -> ${str}` : `Type ${str} in ${selector}`;
         let wait_option = { success_message : message, error_message : `Cannot find text field ${selector}`, idx : 'type' };
-        await this.page.waitFor(500);
-        await this.waitAppear( selector, wait_option );
+        await this.page.waitFor(250);
+        // await this.waitAppear( selector, wait_option );
         await this.clearText( selector );
         await this.page.type(selector, str, { delay: delay })
             .then(a=>{ this.success( message ) });
-        await this.page.waitFor(500);
+        await this.page.waitFor(250);
     }
 
     /**
@@ -654,14 +654,13 @@ export abstract class PuppeteerExtension{
     /**
      * Generates random series of string.
      */
-    protected makeId() {
+    protected makeId( possible?, length = 5 ) {
         var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        possible = possible || "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       
-        for (var i = 0; i < 5; i++)
+        for (var i = 0; i < length; i++)
           text += possible.charAt(Math.floor(Math.random() * possible.length));
       
         return text;
       }
-
 }

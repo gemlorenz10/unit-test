@@ -29,7 +29,7 @@ let ontue = new Ontue;
 global['home-no-user'] = new OntueHome( home_page );
 global['home'] = new OntueHome( home_page, teacher_data );
 global['login'] = new Login( teacher_register, login_page )
-global['register'] = new Register( teacher_data, register_page );
+global['register'] = new Register( register_page );
 global['menu'] = new Menu( login_page, teacher_data );
 global['menu-no-user'] = new Menu( login_page );
 

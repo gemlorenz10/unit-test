@@ -26,6 +26,7 @@ export let teacher_data = {
 
 }
 
+
 export let teacher_register = {
 
     "type": "T",

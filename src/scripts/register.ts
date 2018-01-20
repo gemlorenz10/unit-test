@@ -1,41 +1,56 @@
 ﻿import { KatalkRegistrationPage } from './lib/katalk-library';
 import { OntueRegistrationPage, OntueLoginPage } from './lib/ontue-library';
-import { path_to_images, browserOption } from './lib/global-library';
+import { path_to_images, browserOption, breakpoint } from './lib/global-library';
 import { IUserInfo } from './lib/interface';
 import { PuppeteerExtension } from '../puppeteer-extension';
 import * as path from 'path';
-
+import * as fs from 'fs';
 export class Register extends PuppeteerExtension {
 
     // get account information to a text
-    constructor( private userRegister: IUserInfo, private registerPage ) {
+    constructor(  private registerPage, private userRegister?: IUserInfo, ) {
         super()
     }
 
     async main() {
-        let user = this.userRegister
         console.log('REGISTRATION TESTING STARTS...');
-        console.log(user);
         await this.start( this.registerPage.domain, this.registerPage.sitename, browserOption ).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
 
         // Register all info that are in text file
-        await this.fillUpForm().catch( async e => { await this.fatal(e.code, e.message) } );
+        await this.openRegisterForm();
+        await this.fillUpForm(); //.catch( async e => { await this.fatal(e.code, e.message) } );
 
     }
 
+    async openRegisterForm() {
+        let register_page = this.registerPage;
+        let is_mobile = ( browserOption.viewport.width <= breakpoint );
+        let is_katalk_page = ( register_page instanceof KatalkRegistrationPage )
+        if( is_mobile && is_katalk_page ){
+            await this.open(register_page.head_mobile_menu,  [register_page.menu_registration],{ success_message: 'Open menu page.', idx : 'register-open-menu' }); 
+        }else{
+            await this.open(register_page.head_menu,  [register_page.menu_registration],{ success_message: 'Open menu page.', idx : 'register-open-menu' });
+        }
+        await this.open( register_page.menu_registration, [register_page.page], { success_message: 'Open Registration.', idx: 'register-open-page' } );
+    }
 
     /**
      * Will fill up the form.
      */
     async fillUpForm() {
-        let user: IUserInfo = this.userRegister;
+        let user;
         let register_page = this.registerPage;
         let is_ontue_page = this.registerPage instanceof OntueRegistrationPage;
-        // NAVIGATE TO REGISTRATION
-        await this.waitAppear(register_page.head_menu);
-        await this.open(register_page.head_menu,  [register_page.menu_registration],{ success_message: 'Open menu page.', idx : 'register-open-menu' });
-        await this.open( register_page.menu_registration, [register_page.page], { success_message: 'Open Registration.', idx: 'register-open-page' } );
-
+        
+        // prepare user
+        if ( this.userRegister ){ user = this.userRegister; }
+        else {
+            user = ( this.registerPage instanceof OntueRegistrationPage )
+                ? this._makeTeacher()
+                : this._makeStudent();
+        }
+        
+        console.log( 'User: ', user );
         // FILL UP REGISTRATION FORM
 
         // upload image
@@ -84,4 +99,53 @@ export class Register extends PuppeteerExtension {
 
     }
 
+    private _makeTeacher() {
+        let id = this.makeId()
+        let teacher = {
+            "type": "T",
+            "email": `test_teacher_${id}@gmail.com`,
+            "password": "secret",
+            "name": `${id} Ontue`,
+            "nickname": 'Tester '+id,
+            "gender": this.makeId('mf', 1),
+            "phone": this.makeId('0123456789', 11),
+            "kakao": id + this.makeId('0123456789', 3),
+            "photo": this._choosePhoto(),
+            "timezone": this._getRandomInt(13),
+            "birthdate": "12/10/1990"
+        }
+
+        return teacher;
+    }
+
+    private _makeStudent() {
+        let id = this.makeId();
+        let student = { 
+            "email": `test_student_${ id }@gmail.com`,
+            "password": "secret",
+            "name": `${ id } Ontue`,
+            "nickname": `Tester ${ id }`,
+            "gender": this.makeId( 'mf', 1 ),
+            "phone": this.makeId('0123456789', 11),
+            "kakao": id + this.makeId('0123456789', 3),
+            "birthdate": "12/10/1990"
+
+        }
+
+        return student;
+    }
+    
+    private _getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    private _choosePhoto() {
+        let dir = path.join(__dirname, '../../picture')
+        let photo_list = fs.readdirSync( dir );
+
+        let chosen = photo_list[ this._getRandomInt(photo_list.length) ];
+
+        return chosen;
+
+    }
 }

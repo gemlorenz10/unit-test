@@ -21,7 +21,7 @@ let home_page = new KatalkHomePage;
 // students activities
 
 global['login'] = new Login( student_data, login_page )
-global['register'] = new Register( student_data, register_page );
+global['register'] = new Register( register_page );
 global['menu'] = new Menu( login_page, student_data );
 global['menu-no-user'] = new Menu( login_page );
 global['teacher-list'] = new KatalkTeacherList ( student_data, teacher_search_query );
