@@ -41,12 +41,12 @@ export class OntueMessage extends Login implements IScript {
         let ontue_page = this._messagePage;
         let msgNext = 'View next page.'
 
-        if ( is_first_page ) { await this.click( `${ontue_page.getBtnBottom(index)}`, msgNext); }
+        if ( is_first_page ) { await this.click( `${ontue_page.getBtnBottom(index)}`, { success_message:msgNext }); }
                
         let current_count = await this.getCount( ontue_page.msg_item );
         let button_count = await this.getCount( ontue_page.getBtnBottom(current_count) );
         
-        if ( button_count == 2 && !is_first_page ) await this.click( `${ontue_page.getBtnNext(current_count)}`, msgNext);
+        if ( button_count == 2 && !is_first_page ) await this.click( `${ontue_page.getBtnNext(current_count)}`, {success_message:msgNext });
         this.success( 'Message Count: ' + (current_count - 1) )
         // console.log( 'BUTTONS:',button_count );
 
@@ -66,12 +66,12 @@ export class OntueMessage extends Login implements IScript {
         let button_count = await this.getCount( ontue_page.getBtnBottom(current_count) );
         
         if ( is_last_page ){     
-            await this.click( ontue_page.getBtnBottom(index), msg + 'Last Page.');
+            await this.click( ontue_page.getBtnBottom(index), { success_message : msg + 'Last Page.' });
             this.success( 'Message Count: '+ (current_count - 1) );
             await this._viewPrevPage( current_count );
         }else{
             if ( button_count == 2 ){
-                await this.click( `${ontue_page.getBtnPrev(current_count)}`, msg);
+                await this.click( `${ontue_page.getBtnPrev(current_count)}`, { success_message : msg });
                 this.success( 'Message Count: '+ (current_count - 1) );
                 await this._viewPrevPage( current_count );
             }else{

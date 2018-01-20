@@ -60,8 +60,8 @@ export class OntueSchedule extends Login {
      */
     async deleteSched( row: number ) {
         console.log('TEST: DELETE a schedule.');
-        await this.click( this._queryTable( row, this.schedulePage.sched_action_delete ), 'Delete schedule.');
-        await this.click( this.schedulePage.sched_alert_accept, 'Accept to delete!' );
+        await this.click( this._queryTable( row, this.schedulePage.sched_action_delete ), {success_message:'Delete schedule.'});
+        await this.click( this.schedulePage.sched_alert_accept, {success_message:'Accept to delete!'} );
     }
     /**
      * Edits the schedule in row
@@ -94,12 +94,12 @@ export class OntueSchedule extends Login {
         await this.type( this.schedulePage.sched_classPoint, this.schedule.point, `Input class point` );
         // choose days in a week.
         if ( action.toLowerCase() === 'edit' ) {
-            this.click( this.schedulePage.getWeekDay('allDays'));
-            this.click( this.schedulePage.getWeekDay('allDays'), 'Un-select All days' );
+            await this.click( this.schedulePage.getWeekDay('allDays'), {success_message:'click all.'});
+            await this.click( this.schedulePage.getWeekDay('allDays'), {success_message:'Un-select All days'} );
         } 
         await this._selectDays();
         await this.type( this.schedulePage.sched_preReserve, this.schedule.preReserve, `Input pre-reserve student` );
-        await this.click( this.schedulePage.sched_btnSubmit, 'Submit schedule' );
+        await this.click( this.schedulePage.sched_btnSubmit, {success_message:'Submit schedule'} );
     }
     /**
      * Returns the element's query for schedule table
@@ -128,7 +128,7 @@ export class OntueSchedule extends Login {
     private async _selectDays( days = this.schedule.weekDayList  ) {
         let i;
         for( i of days ) {
-            await this.click( this.schedulePage.getWeekDay(i), `${i} Selected` ).catch( async e => { await this.fatal( e.code, e ) } );
+            await this.click( this.schedulePage.getWeekDay(i), {success_message:`${i} Selected`} ).catch( async e => { await this.fatal( e.code, e ) } );
         }
     }
 

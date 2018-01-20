@@ -431,7 +431,7 @@ export abstract class PuppeteerExtension{
             .then( async a => {
                 re = await this.getText( selector )
                 this.success( `Ontue Said :${ re }` );
-                await this.click('ion-toast>.toast-wrapper>.toast-container>button', 'Close toast.');   
+                await this.click('ion-toast>.toast-wrapper>.toast-container>button', { idx : idx, success_message : 'Close Toast.' });   
             }).catch( e => e );
     }
 
@@ -442,19 +442,17 @@ export abstract class PuppeteerExtension{
      */
     async click( selector: string, option? ) {
         option = option || {};
-        let msg = option.success_message || `Click: ${selector}`;
-        let error = option.error_message || `Error Clicking ${selector}`;
         let idx = option.idx || this.makeId();
+        let error = option.error_message || `Error Clicking ${selector}`;
+        let msg = option.success_message || `Click: ${idx}`;
         let delay = option.delay || 500;
         let new_option = { success_message : msg, error_message : error, idx : idx }
-        // await this.waitAppear(selector, new_option)
-        //     .then( a => a )
-        //     .catch( async e => await this.error( idx, e.message ) );
+
         await this.page.waitFor(delay);
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
             .catch( async e => await this.error( idx, error ) );
-        // await this.page.waitFor(delay/2);
+
     }
     
     /**
@@ -480,10 +478,11 @@ export abstract class PuppeteerExtension{
         let success = option.success_message || 'Open a page.';
         let idx = option.idx || this.makeId();
         let delay = option.delay || 2000; //ms
+
         let i;
         await this.page.waitFor(delay / 2);
         await this.page.focus( selector );
-        await this.click( selector, `${success} --> ${idx||selector}` );
+        await this.click( selector, option );
         await this.handleAlertMessage('ion-toast', { idx : `onclick-${idx}-toast`, timeout : .8 });
         if( expect === null ) this.success('Not expecting any selector');
 

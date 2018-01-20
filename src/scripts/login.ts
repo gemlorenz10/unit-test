@@ -36,7 +36,7 @@ export class Login extends PuppeteerExtension {
         }
         await this.type( login.login_email, user.email);
         await this.type( login.login_password, user.password);
-        await this.click( login.login_btnSubmit, 'Attemp to login. Click submit!' );
+        await this.click( login.login_btnSubmit, {success_message:'Attemp to login. Click submit!', idx : 'login-submit'} );
         // CHECK if wrong password.
         await this.waitAppear(login.login_wrongPassword, {delay:2})
             .then( a => { this.success('Password Incorrect!') } )

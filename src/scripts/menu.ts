@@ -55,12 +55,12 @@ export class Menu extends Login {
             open_option = { 
                 idx: re.idx, 
                 success_message : `Open MENU page: -> ${re.idx}`, 
-                error_message : `Page failed to open when clicking -> ${re.menu}`,
+                error_message : `Page failed to open. -> ${re.menu}`,
               }
             menu_option = { 
                 idx: re.idx, 
                 success_message : `Open -> ${re.idx}`, 
-                error_message : `Page failed to open when clicking -> ${re.idx}`
+                error_message : `Page failed to open. -> ${re.idx}`
             };
             
             console.log(`TEST ${i}:`,re.idx);
@@ -99,8 +99,8 @@ export class Menu extends Login {
         for ( re of  head_list ) {
             menu_option = { 
                 idx: re.idx, 
-                success_message : `Open menu: -> ${re.idx}`, 
-                error_message : `Page failed to open when clicking -> ${re.idx}`
+                success_message : `Open menu page for -> ${re.idx}`, 
+                error_message : `Page failed to open. -> ${re.idx}`
               };
             console.log(`TEST ${i}:`,re.idx);
             await this.open(re.menu, [re.expect], menu_option);
