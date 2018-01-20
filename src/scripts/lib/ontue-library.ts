@@ -26,6 +26,7 @@ let ontue_page_list = {
     reserve : 'schedule-table-page',
     class_comment : 'class-comment-page',
     payment : 'payment-page',
+    payment_setting : 'settings-payment-info-page',
     payment_history : 'payment-history-page',
     reservation : 'session-future-page',
     past_session: 'session-past-page',
@@ -102,6 +103,7 @@ export class OntueMenuPage extends OntueHeaderElements {
     menu_teacherList = ".menu-teacher-list";
     menu_reserve = ".menu-schedule-table";
     menu_classComment = ".menu-class-comments";
+    menu_payment_setting = ".menu-teacher-payment-info";
     menu_paymentLong = ".menu-payment";
     menu_paymentHistory = ".menu-payment-history";
     menu_reservationLong = ".menu-future-sessions";
@@ -127,6 +129,7 @@ export class OntueMenuPage extends OntueHeaderElements {
         { menu : this.menu_teacherList,         expect : ontue_page_list.teacher_list, idx : 'ontue-menu-teacher-list' },
         { menu : this.menu_reserve,             expect : ontue_page_list.reserve, idx : 'ontue-menu-reserve' },
         { menu : this.menu_classComment,        expect : ontue_page_list.class_comment, idx : 'ontue-menu-comment' },
+        { menu : this.menu_payment_setting,        expect : ontue_page_list.payment_setting, idx : 'ontue-menu-payment-setting' },
         { menu : this.menu_paymentLong,         expect : ontue_page_list.payment, idx : 'ontue-menu-payment' },
         { menu : this.menu_paymentHistory,      expect : ontue_page_list.payment_history, idx : 'ontue-menu-payment-history' },
         { menu : this.menu_reservationLong,     expect : ontue_page_list.reservation, idx : 'ontue-menu-reservation' },
@@ -318,4 +321,8 @@ export class OntueHomePage extends OntueLoginPage {
 
     ];
 
+}
+
+export class OntuePaymentSettingPage extends OntueLoginPage {
+    pay_setting_page = ontue_page_list.payment_setting;
 }
