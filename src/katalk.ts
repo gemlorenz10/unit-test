@@ -1,9 +1,10 @@
-﻿import { KatalkHome } from './scripts/katalk/katalk-home';
+﻿import { KatalkTeacherList } from './scripts/katalk/katalk-teacher-list';
+import { KatalkHome } from './scripts/katalk/katalk-home';
 import { Login } from './scripts/login';
 import { ISummary } from './scripts/lib/interface';
-import { schedule_data, student_data, teacher_data } from './data/test-data';
+import { schedule_data, student_data, teacher_data, teacher_search_query } from './data/test-data';
 import { Register } from './scripts/register';
-import { KatalkLoginPage, KatalkRegistrationPage, KatalkHomePage } from './scripts/lib/katalk-library';
+import { KatalkLoginPage, KatalkRegistrationPage, KatalkHomePage, KatalkTeacherListPage } from './scripts/lib/katalk-library';
 import { Menu } from './scripts/menu';
 import * as util from './lib'
 import { PuppeteerExtension } from './puppeteer-extension';
@@ -15,14 +16,15 @@ class Katalk extends PuppeteerExtension{
 let katalk = new Katalk;
 // katalk pages
 let login_page = new KatalkLoginPage;
-let register_page = new KatalkRegistrationPage
-let home_page = new KatalkHomePage
+let register_page = new KatalkRegistrationPage;
+let home_page = new KatalkHomePage;
 // students activities
 
 global['login'] = new Login( student_data, login_page )
 global['register'] = new Register( student_data, register_page );
 global['menu'] = new Menu( login_page, student_data );
 global['menu-no-user'] = new Menu( login_page );
+global['teacher-list'] = new KatalkTeacherList ( student_data, teacher_search_query );
 
 // katalk testers
 global['home'] = new KatalkHome( student_data, home_page );
@@ -34,7 +36,7 @@ async function _run() {
         await util.run(global[args]); 
     }
     else {
-        for( i of _global ){
+        for ( i of _global ) {
             await util.run(i);
         }
     }
