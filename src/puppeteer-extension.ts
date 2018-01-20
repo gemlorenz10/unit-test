@@ -412,7 +412,7 @@ export abstract class PuppeteerExtension{
 
         }
 
-        throw { code: `${idx}-selector-not-found`, message: err };
+        throw { code: `wait-${idx}`, message: err };
     }
 
     /**
@@ -440,16 +440,21 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param message 
      */
-    async click( selector: string, message? ) {
-        let msg = ( !message ) ? `Click: ${selector}` : message
-        await this.waitAppear(selector, `Selector not found. ${selector}`)
-            .then( a => a )
-            .catch( async e => await this.error( e.code, 'ERROR ON CLICK:'+e.message ) );
-        await this.page.waitFor(500);
+    async click( selector: string, option? ) {
+        option = option || {};
+        let msg = option.success_message || `Click: ${selector}`;
+        let error = option.error_message || `Error Clicking ${selector}`;
+        let idx = option.idx || this.makeId();
+        let delay = option.delay || 500;
+        let new_option = { success_message : msg, error_message : error, idx : idx }
+        // await this.waitAppear(selector, new_option)
+        //     .then( a => a )
+        //     .catch( async e => await this.error( idx, e.message ) );
+        await this.page.waitFor(delay);
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
-            .catch( async e => await this.error( e.code, e.message ) );
-        await this.page.waitFor(200);
+            .catch( async e => await this.error( idx, error ) );
+        // await this.page.waitFor(delay/2);
     }
     
     /**
@@ -643,7 +648,6 @@ export abstract class PuppeteerExtension{
         await this.page.waitFor(500);
         const $html = await this.jQuery();
         const re = $html.find(selector).length;
-        if( re === 0 ) throw { code: 'selector-not-found', message: `${selector} not found in DOM!` };
         return re;
 
     }
