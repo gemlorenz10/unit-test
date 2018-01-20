@@ -1,5 +1,4 @@
-﻿
-export let student_data =     {
+﻿export let student_data =     {
     "email": "eljei@gmail.com",
     "password": "secret",
     "name": "eljei Ontue",
@@ -44,12 +43,16 @@ export let teacher_register = {
 }
 
 export let schedule_data = {
-        "row" : 1, // number only
-        "beginHour":"14",
-        "beginMin":"00",
-        "duration":"25",
-        "point":"2000",
-        "weekDayList":['saturday','tuesday','wednesday','thursday','friday'],
-        "preReserve":""
+    "row" : 1, // number only
+    "beginHour":"14",
+    "beginMin":"00",
+    "duration":"25",
+    "point":"2000",
+    "weekDayList":['saturday','tuesday','wednesday','thursday','friday'],
+    "preReserve":""
 }
 
+export let teacher_search_query = {
+    "gender":"f",
+    "grade":"recommend"
+};
