@@ -6,8 +6,6 @@
     "gender": "F",
     "phone": "165432188",
     "kakao": "eljei125",
-    // "photo": "eljei.jpg",
-    // "timezone": 8,
     "birthdate": "12/10/1993"
 }
 
@@ -17,11 +15,11 @@ export let teacher_data = {
     "password": "secret",
     "name": "Eden Ontue",
     "nickname": "Eden",
-    "gender": "M",
+    "gender": "F",
     "phone": "064347986",
     "kakao": "Eden123",
     "photo": "eden.jpg",
-    "timezone": -2,
+    "timezone": 8,
     "birthdate": "12/10/1993"
 
 }
@@ -30,17 +28,28 @@ export let teacher_data = {
 export let teacher_register = {
 
     "type": "T",
-    "email": "gab@gmail.com",
+    "email": "eden@gmail.com",
     "password": "secret",
-    "name": "Gab Ontue",
-    "nickname": "Gab",
-    "gender": "M",
+    "name": "Eden Ontue",
+    "nickname": "Eden",
+    "gender": "f",
     "phone": "06445657986",
-    "kakao": "gab123",
-    "photo": "gab.jpg",
+    "kakao": "Eden123",
+    "photo": "eden.jpg",
     "timezone": 8,
     "birthdate": "12/10/1990"
 
+}
+
+export let student_register =     {
+    "email": "eljei@gmail.com",
+    "password": "secret",
+    "name": "eljei Ontue",
+    "nickname": "Eljei",
+    "gender": "F",
+    "phone": "165432188",
+    "kakao": "eljei125",
+    "birthdate": "12/10/1993"
 }
 
 export let schedule_data = {
@@ -55,5 +64,5 @@ export let schedule_data = {
 
 export let teacher_search_query = {
     "gender":"f",
-    "grade":"recommend"
+    "grade":"all"
 };

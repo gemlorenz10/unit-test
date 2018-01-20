@@ -2,7 +2,7 @@
 import { KatalkHome } from './scripts/katalk/katalk-home';
 import { Login } from './scripts/login';
 import { ISummary } from './scripts/lib/interface';
-import { schedule_data, student_data, teacher_data, teacher_search_query } from './data/test-data';
+import { schedule_data, student_data, teacher_data, teacher_search_query, student_register } from './data/test-data';
 import { Register } from './scripts/register';
 import { KatalkLoginPage, KatalkRegistrationPage, KatalkHomePage, KatalkTeacherListPage } from './scripts/lib/katalk-library';
 import { Menu } from './scripts/menu';
@@ -21,7 +21,8 @@ let home_page = new KatalkHomePage;
 // students activities
 
 global['login'] = new Login( student_data, login_page )
-global['register'] = new Register( register_page );
+global['register-random'] = new Register( register_page );
+global['register'] = new Register( register_page, student_register );
 global['menu'] = new Menu( login_page, student_data );
 global['menu-no-user'] = new Menu( login_page );
 global['teacher-list'] = new KatalkTeacherList ( student_data, teacher_search_query );

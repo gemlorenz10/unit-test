@@ -1,4 +1,5 @@
-﻿import { OntueHome } from './scripts/ontue/ontue-home';
+﻿import { OntuePaymentSetting } from './scripts/ontue/ontue-payment-setting';
+import { OntueHome } from './scripts/ontue/ontue-home';
 import { OntueMessage } from './scripts/ontue/ontue-message';
 import { Login } from './scripts/login';
 import { ISummary } from './scripts/lib/interface';
@@ -29,7 +30,8 @@ let ontue = new Ontue;
 global['home-no-user'] = new OntueHome( home_page );
 global['home'] = new OntueHome( home_page, teacher_data );
 global['login'] = new Login( teacher_register, login_page )
-global['register'] = new Register( register_page );
+global['register'] = new Register( register_page, teacher_register );
+global['register-random'] = new Register( register_page );
 global['menu'] = new Menu( login_page, teacher_data );
 global['menu-no-user'] = new Menu( login_page );
 
@@ -41,6 +43,9 @@ global['schedule-delete'] = new OntueSchedule( teacher_data, schedule_data, 'del
 
 // message tester
 global['message'] = new OntueMessage( teacher_data );
+
+// payments
+global['payment-setting'] = new OntuePaymentSetting( teacher_data );
 
 // Run modes
 let _global = [ 

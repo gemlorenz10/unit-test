@@ -69,7 +69,7 @@ export class Register extends PuppeteerExtension {
         await this.type(register_page.reg_kakao, user.kakao);
 
         // gender
-        if ( is_ontue_page ) await this.click( register_page.reg_radio( user.gender ), { success_message : 'Select Gender.' } );
+        if ( is_ontue_page ) await this.click( register_page.reg_radio( user.gender ), { success_message : `Select Gender: ${ user.gender }` } );
 
         // timezone
         if ( user.timezone && this.registerPage instanceof OntueRegistrationPage ){
