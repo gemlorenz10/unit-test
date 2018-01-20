@@ -477,7 +477,7 @@ export abstract class PuppeteerExtension{
         let error = option.error_message || `Failed to open page. -> Selector "${expect[0]}" is not in not found in DOM.`;
         let success = option.success_message || 'Open a page.';
         let idx = option.idx || this.makeId();
-        let delay = option.delay || 2000; //ms
+        let delay = option.delay || 1000; //ms
 
         let i;
         await this.page.waitFor(delay / 2);
