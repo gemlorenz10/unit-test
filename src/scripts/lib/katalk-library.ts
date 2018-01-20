@@ -55,7 +55,6 @@ export class KatalkHeaderElements {
     head_payment = ".header-class-payment";
     head_help = ".header-class-help";
     head_menu = ".header-menu";
-
     constructor(){
     }
     /**
@@ -64,8 +63,8 @@ export class KatalkHeaderElements {
     head_expect_list_login = [
             { menu : this.head_home,            expect : katalk_page_list.home, idx: 'katalk-head-home' },
             { menu : this.head_reservation,     expect : katalk_page_list.reservation, idx: 'katalk-head-reservation' },
-            { menu : this.head_level_test,     expect : katalk_page_list.teacher_list, idx: 'katalk-head-level-test' },
-            // { menu : this.head_reserve, expect : katalk_page_list.teacher_list, idx: 'katalk-head-reserve-session' },
+            // { menu : this.head_level_test,     expect : katalk_page_list.teacher_list, idx: 'katalk-head-level-test' },
+            { menu : this.head_reserve, expect : katalk_page_list.teacher_list, idx: 'katalk-head-reserve-session' },
             { menu : this.head_schedule_available,    expect : katalk_page_list.schedule_available, idx: 'katalk-head-schedule-now' },
             { menu : this.head_message,         expect : katalk_page_list.message, idx: 'katalk-head-message' },
             { menu : this.head_past_reservation, expect : katalk_page_list.past_session, idx: 'katalk-head-reservation' },
@@ -86,8 +85,8 @@ export class KatalkHeaderElements {
     head_expect_list = [
         { menu : this.head_home,            expect : katalk_page_list.home, idx: 'katalk-head-home' },
         { menu : this.head_reservation,     expect : katalk_page_list.reservation, idx: 'katalk-head-reservation' },
-        { menu : this.head_level_test,     expect : katalk_page_list.teacher_list, idx: 'katalk-head-level-test' },
-        // { menu : this.head_reserve, expect : katalk_page_list.teacher_list, idx: 'katalk-head-reserve-session' },
+        // { menu : this.head_level_test,     expect : katalk_page_list.teacher_list, idx: 'katalk-head-level-test' },
+        { menu : this.head_reserve, expect : katalk_page_list.teacher_list, idx: 'katalk-head-reserve-session' },
         { menu : this.head_schedule_available,    expect : katalk_page_list.schedule_available, idx: 'katalk-head-schedule-now' },
         { menu : this.head_message,         expect : katalk_page_list.message, idx: 'katalk-head-message' },
         { menu : this.head_past_reservation, expect : katalk_page_list.past_session, idx: 'katalk-head-reservation' },
@@ -163,19 +162,19 @@ export class KatalkMenuPage extends KatalkHeaderElements{
     
 
     menu_expect_list = [
-            // { menu : this.menu_help,                expect : katalk_page_list.help, idx : 'katalk-menu-help' },
-            // { menu : this.menu_login,               expect : katalk_page_list.login, idx : ',katalk-menu-login' },
-            // { menu : this.menu_registration,        expect : katalk_page_list.register, idx : 'katalk-menu-registration' },
-            // { menu : this.menu_setting,             expect : katalk_page_list.setting, idx : 'katalk-menu-setting' },
+            { menu : this.menu_help,                expect : katalk_page_list.help, idx : 'katalk-menu-help' },
+            { menu : this.menu_login,               expect : katalk_page_list.login, idx : ',katalk-menu-login' },
+            { menu : this.menu_registration,        expect : katalk_page_list.register, idx : 'katalk-menu-registration' },
+            { menu : this.menu_setting,             expect : katalk_page_list.setting, idx : 'katalk-menu-setting' },
             // // { menu : this.menu_qna,                 expect : katalk_page_list.qna, idx : 'katalk-menu-qna' },
-            // { menu : this.menu_reserve,         expect : katalk_page_list.teacher_list, idx : 'katalk-menu-teacher-list' },
-            // { menu : this.menu_all_teacher,             expect : katalk_page_list.reserve, idx : 'katalk-menu-reserve' },
-            // { menu : this.menu_class_comment,        expect : katalk_page_list.class_comment, idx : 'katalk-menu-class-comment' },
-            // { menu : this.menu_payment_long,         expect : katalk_page_list.payment, idx : 'katalk-menu-payment-long' },
-            // { menu : this.menu_payment_history,      expect : katalk_page_list.payment_history, idx : 'katalk-menu-payment-history' },
+            { menu : this.menu_reserve,         expect : katalk_page_list.teacher_list, idx : 'katalk-menu-teacher-list' },
+            { menu : this.menu_all_teacher,             expect : katalk_page_list.reserve, idx : 'katalk-menu-reserve' },
+            { menu : this.menu_class_comment,        expect : katalk_page_list.class_comment, idx : 'katalk-menu-class-comment' },
+            { menu : this.menu_payment_long,         expect : katalk_page_list.payment, idx : 'katalk-menu-payment-long' },
+            { menu : this.menu_payment_history,      expect : katalk_page_list.payment_history, idx : 'katalk-menu-payment-history' },
             { menu : this.menu_reservation_long,     expect : katalk_page_list.reservation, idx : 'katalk-menu-reservation-long' },
-            // { menu : this.menu_past_long,            expect : katalk_page_list.past_session, idx : 'katalk-menu-past-long' },
-            // { menu : this.menu_available_session,    expect : katalk_page_list.available_session, idx : 'katalk-menu-available-session' },
+            { menu : this.menu_past_long,            expect : katalk_page_list.past_session, idx : 'katalk-menu-past-long' },
+            { menu : this.menu_available_session,    expect : katalk_page_list.available_session, idx : 'katalk-menu-available-session' },
             { menu : this.menu_policy,              expect : katalk_page_list.policy, idx : 'katalk-menu-policy' }
         ]
 
@@ -238,21 +237,35 @@ export class KatalkRegistrationPage extends KatalkMenuPage {
 export class KatalkTeacherListPage extends KatalkLoginPage {
     list_page = 'teacher-list-page';
     // sections
-    list_section_header = `${this.list_page}>ion-content>div>.page>.page-header`;
-    list_section_desc = `${this.list_page}>ion-content>div>.page>.page-desc`;
-    list_section_body = `${this.list_page}>ion-content>div>.page>.page-body`;
-    list_section_option = `${this.list_page}>ion-content>div>.page>.options`;
+    list_section_header = `${this.list_page}>ion-content>.scroll-content>.page>.page-header`;
+    list_section_desc = `${this.list_page}>ion-content>.scroll-content>.page>.page-desc`;
+    list_section_body = `${this.list_page}>ion-content>.scroll-content>.page>.page-body`;
+    list_section_option = `${this.list_page}>ion-content>.scroll-content>.page>.options`;
 
     // header
-    list_btn_option = `${this.list_section_header}>div`;
+    list_btn_option = `${this.list_section_header}>div>ion-icon[name="options"]`;
     // list
     list_teacher_card = `${this.list_section_body}>ion-grid>ion-row>ion-col`;
     // options
     list_option_list = `${this.list_section_option}>ion-list`;
-    list_option_gender = `${this.list_option_list}>ion-item:nth-child(1)`;
-    list_option_grade = `${this.list_option_list}>ion-item:nth-child(2)`;
-    list_btn_close_option = `${this.list_option_list}>button`;
+    list_option_gender = `${this.list_option_list}>.item:nth-child(2)`//>div>div>ion-select`;
+    list_option_grade = `${this.list_option_list}>.item:nth-child(3)`//>div>div>ion-select`;
+    list_btn_close_option = `${this.list_section_option}>button`;
 
+    // option
+    list_alert = `ion-alert>.alert-wrapper`;
+    list_alert_option = `${ this.list_alert }>div:nth-child(3)>.alert-radio-group`;
+    list_option_confirm = `${ this.list_alert }>div:nth-child(4)>button:nth-child(2)`;
+    list_option_cancel = `${ this.list_alert }>div:nth-child(4)>button:nth-child(1)`;
+
+    // gender
+    list_gender_female = `${ this.list_alert_option }>button:nth-child(1)`;
+    list_gender_male = `${ this.list_alert_option }>button:nth-child(2)`;
+    list_gender_all = `${ this.list_alert_option }>button:nth-child(3)`;
+
+    // grade
+    list_grade_recommended = `${ this.list_alert_option }>button:nth-child(2)`;
+    list_grade_all = `${ this.list_alert_option }>button:nth-child(3)`;
 }
 
 

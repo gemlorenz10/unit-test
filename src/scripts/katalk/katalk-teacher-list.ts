@@ -1,54 +1,72 @@
-﻿import { KatalkTeacherListPage, KatalkLoginPage } from './../lib/katalk-library';
-import { browserOption } from '../lib/global-library';
+﻿import { browserOption, breakpoint } from './../lib/global-library';
+import { KatalkTeacherListPage } from './../lib/katalk-library';
 import { Login } from "../login";
-let teacher_list_page = new KatalkTeacherListPage;
+let page = new KatalkTeacherListPage;
 /**
  * Dont put user info if you dont want to login.
  */
 export class KatalkTeacherList extends Login {
-    constructor( private teacherListUser, private katalkLoginPage ) {
-        super( teacherListUser, katalkLoginPage )
+    constructor( private teacherListUser?, private searchQuery?, private katalkTeacherListPage : KatalkTeacherListPage = page ) {
+        super( teacherListUser, katalkTeacherListPage )
     }
 
     async main() {
         // console.log( student_domain )
-        await this.start( this.katalkLoginPage.domain, this.katalkLoginPage.sitename, browserOption ).catch( async e => await this.fatal( e.code, e.message ) );
+        let isMobile = browserOption.viewport.width < breakpoint;
+        let openOption = {
+            success_message : "Success opening teacher list page.",
+            error_mesassage : 'Error opening teacher list page.',
+            idx : 'list-open-page'
+        }
+        if ( !this.page ) await this.start( this.katalkTeacherListPage.domain, this.katalkTeacherListPage.sitename, browserOption ).catch( async e => await this.fatal( e.code, e.message ) );
         if ( this.teacherListUser ) await this.submitLogin();
-        await this.click(teacher_list_page.head_reserve);
-        await this.countTeacherList();
+        if ( isMobile ){
+            await this.open( this.katalkTeacherListPage.head_mobile_menu, [this.katalkTeacherListPage.menu_page], openOption );
+            await this.open(this.katalkTeacherListPage.menu_reserve, [this.katalkTeacherListPage.list_page], openOption);
+        }else{
+            await this.open( this.katalkTeacherListPage.head_menu, [this.katalkTeacherListPage.menu_page], openOption );
+            await this.open(this.katalkTeacherListPage.menu_reserve, [this.katalkTeacherListPage.list_page], openOption);
+        }
 
-        await this.exitProgram(0);
+        await this._selectGender();
+        await this._selectGrade();
+        await this.waitInCase(1);
+        await this.countTeacherList();
     }
 
     async countTeacherList( recommended: boolean = true ) {
-        // if ( recommended ) await this._showRecommended(); 
-        // if ( !recommended ) await this._showAll();
-        await this.waitAppear(teacher_list_page.list_page, teacher_list_page.list_teacher_card);
-        await this.countSelector( teacher_list_page.list_teacher_card, `Teachers in the list count` )
-
-
+        await this.waitAppear(this.katalkTeacherListPage.list_page, {idx : 'katalk-teacher-list-count'} );
+        await this.countSelector( this.katalkTeacherListPage.list_teacher_card, `Teacher List Length:` )
     }
-    /**
-     * Shows all teachers regardless of grade.
-     */
-    private async _showAll(){
-        await this.waitAppear( teacher_list_page.list_section_option )
-            .then( a => a )
-            .catch( async e => await this.open(teacher_list_page.list_btn_option, [teacher_list_page.list_section_option]) );
-        // await this.open(teacher_list_page.list_option_grade, )
-    }
-    /**
-     * Shows top / recommended teachers.
-     */
-    private async _showRecommended() {
+
+    private async _selectGender() {
+        let value;
+        if ( this.searchQuery.gender === 'm' ) value = this.katalkTeacherListPage.list_gender_male;
+        else if ( this.searchQuery.gender === 'f' ) value = this.katalkTeacherListPage.list_gender_female;
+        else value = this.katalkTeacherListPage.list_gender_all;
+
+        await this._chooseOption( this.katalkTeacherListPage.list_option_gender, value, `select-gender-${this.searchQuery.gender}` );
 
     }
 
-    private async _filterGender( gender = 'all' ) {
-        // if ( gender === 'm' )
-        // if ( gender === 'f' )
-        // if ( gender === 'all' )
+    private async _selectGrade() {
+        let value;
+        if ( this.searchQuery.grade === 'recommend' || 'recommended' ) value = this.katalkTeacherListPage.list_grade_recommended;
+        else value = this.katalkTeacherListPage.list_grade_all;
+
+        await this._chooseOption( this.katalkTeacherListPage.list_option_grade, value, `select-grade-${this.searchQuery.grade}` );
+
+    
+    }
+
+    private async _chooseOption( option_selector, value_selector, idx = this.makeId() ) {
+        await this.open( this.katalkTeacherListPage.list_btn_option, [this.katalkTeacherListPage.list_section_option], {idx : 'teacher-list-search-option'} );
+        await this.waitInCase(.5);
+        // await this.click( option_selector );
+        // await this.page.waitFor( option_selector ).then( a => this.success( 'Selector for gender option correct!' ) ).catch( e => console.log(e) );
+        await this.open( option_selector, [value_selector], { idx : idx }  )
+        await this.click( value_selector, {success_message : `Chosen option : ${ idx }`, idx : idx} );
+        await this.click( this.katalkTeacherListPage.list_option_confirm,  {success_message :`Close ${ idx } option.`, idx : idx} );
+        await this.click( this.katalkTeacherListPage.list_btn_close_option, {success_message :`Close options.`, idx : idx}  )
     }
 }
-// let login_page = new KatalkLoginPage;
-// ( new KatalkTeacherList( null, login_page ) ).main()
