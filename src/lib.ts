@@ -5,7 +5,7 @@
  */
 export async function run( script ){
 
-    await script.main().catch( async e => await script.error( e.code, e.message ) );
+    await script.main().catch( async e => await script.fatal( e.code, e.message ) );
     script.activitySummary( script.report );
     addSummary( script.report );
     await script.endScript();

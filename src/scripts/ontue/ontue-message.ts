@@ -25,6 +25,8 @@ export class OntueMessage extends Login implements IScript {
 
     }
 
+
+
     /**
      * Checks next and previous buttons in message page.
      *  */
@@ -35,6 +37,11 @@ export class OntueMessage extends Login implements IScript {
         await this._viewNextPage( re, true );
     }
     
+
+    private async gotoMessages() {
+        
+    }
+
     private async _viewNextPage( index, is_first_page:boolean = false ) {
         console.log('------------')
         await this.waitInCase(1);

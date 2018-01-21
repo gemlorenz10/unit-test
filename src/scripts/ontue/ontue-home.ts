@@ -13,20 +13,30 @@ export class OntueHome extends Login {
     async main() {
         console.log('TEST ONTUE HOME STARTS ...')
         if ( !this.page ) await this.start( this.homePage.domain, 'ontue', browserOption );
+        await this.gotoHome();
         if ( this.homeUser ) {
-            await this.submitLogin();
+            await this.checkIntro().then( a => this.success( 'Intro found will login and check if intro will disappear.' ) );
+            await this.submitLogin()
+            await this.waitDisappear( this.homePage.home_intro, 2 )
+                .then( a => this.success('Intro disappears.') )
+                .catch( e => this.fatal( e.code, 'Intro did not disappear after timeout.') )
+            await this.checkPage();
         }else{
-            await this.checkIntro();
+            await this.checkPage();
         }
 
-        await this.checkPage();
+    }
+
+    async gotoHome(){
+        let page = this.homePage;
+        let user = this.homeUser;
+        await this.open( page.head_home, [ page.home ], { idx : 'go-to-homepage' } );
+
     }
 
     async checkIntro() {
         let option = { idx: 'test-home-intro', error_message : `Cannot find introduction component.`, delay : 2000  }; 
         await this.waitAppear(this.homePage.home_intro, option)
-            .then( a => this.success('Introduction component test found.') )
-            .catch( async e => await this.error( e.code, e.message ) );
     }
 
     async checkPage() {

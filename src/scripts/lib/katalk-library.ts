@@ -1,7 +1,7 @@
 ﻿import { student_domain } from './global-library';
 import * as path from 'path';
 import * as fs from 'fs';
-import { IUserInfo, ISchedule } from './interface';
+import { IUserInfo, ISchedule, ILoginPage } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 import { tzQuery } from './global-library';
 
@@ -187,7 +187,7 @@ export class KatalkMenuPage extends KatalkHeaderElements{
 /**
  * Katalk element queries for login page.
  */
-export class KatalkLoginPage  extends  KatalkMenuPage {
+export class KatalkLoginPage  extends  KatalkMenuPage implements ILoginPage {
     login_page = katalk_page_list.login;
     login_email = 'input[name="email"]';
     login_password = 'input[name="password"]';
@@ -313,25 +313,3 @@ export class KatalkHomePage extends KatalkLoginPage {
     home_teacher_list = '.teacher-list';
     home_teacher_pointer = `${ this.home_teacher_list }>ion-grid>ion-row>.pointer`;
  }
-
-// /**
-//  * katalk element queries for schedule page
-//  */
-// export class KatalkSchedulePage extends KatalkMenuPage {
-//     sched_btnAddSchedule = '.add-schedule';
-//     sched_beginHour = 'input[name="class_begin_hour"]';
-//     sched_beginMinute = 'input[name="class_begin_minute"]';
-//     sched_classDuration = 'input[name="duration"]';
-//     sched_classPoint = 'input[name="point"]';
-//     sched_preReserve = 'input[name="prere"]';
-//     sched_btnSubmit = 'button[type="submit"]';
-//     sched_btnTimezone = '.update-tz';
-//     sched_tbSchedule = '.schedule'
-//     constructor(){
-//         super()
-//     }
-//     // returns query for week based on parameter week
-//     sched_weekDay( week ) {
-//         return `input[name="${week}"]`;
-//     }    
-// }

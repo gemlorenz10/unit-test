@@ -1,14 +1,17 @@
-﻿import { teacher_domain, student_domain, browserOption, breakpoint } from './lib/global-library';
-import { IUserInfo } from './lib/interface';
+﻿import { KatalkLoginPage } from './lib/katalk-library';
+import { Register } from './register';
+import { teacher_domain, student_domain, browserOption, breakpoint } from './lib/global-library';
+import { IUserInfo, ILoginPage } from './lib/interface';
 import { OntueLoginPage } from './lib/ontue-library';
 import { PuppeteerExtension } from '../puppeteer-extension';
 
-export class Login extends PuppeteerExtension {
+// loginPage should be extending menu
+export class Login extends Register {
     private _page;
     private _user;
-    constructor( private loginUser : IUserInfo, private pageLoginExtendMenu ){
-        super()
-        this._page = pageLoginExtendMenu;
+    constructor( private loginUser : IUserInfo, private loginPage : ILoginPage ){
+        super( loginPage, loginUser )
+        this._page = loginPage;
         this._user = loginUser;
     }
     /**
@@ -18,36 +21,35 @@ export class Login extends PuppeteerExtension {
         console.log('LOGIN TESTING STARTS...');
         let website = this._page.domain;
         await this.start(website, this._page.sitename, browserOption);
+        // if ( this._page instanceof OntueLoginPage || KatalkLoginPage )
+        await this.openLogin();
         await this.submitLogin();
     }
 
-     /**
-     * Submits login credentials of user. Can use in other tasks.
-     */
-    async submitLogin() {
-        let user = this._user;
-        let login = this._page
+    async openLogin() {
+        let login = this._page;
+        let is_mobile = browserOption.viewport.width <= breakpoint; 
         // GO TO LOGIN
-        if( browserOption.viewport.width > breakpoint || login instanceof OntueLoginPage ){
+         if( !is_mobile && login instanceof OntueLoginPage ){
             await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login-open-menu' } );
             await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login-open-page' });
         }else {
-            await this.open( login.head_mobile_login, [ login.login_page ], { idx: 'login-mobile-page', delay : 2 } );
+            // await this.open( login.head_mobile_login, [ login.login_page ], { idx: 'login-mobile-page', delay : 2 } );
+            return;
         }
-        await this.type( login.login_email, user.email);
-        await this.type( login.login_password, user.password);
-        await this.click( login.login_btnSubmit, {success_message:'Attemp to login. Click submit!', idx : 'login-submit'} );
+    }
+     /**
+     * Submits login credentials of user. Can use in other tasks.
+     */
+    async submitLogin( idx = 'login' ) {
+        let user = this._user;
+        let login = this._page;
+        await this.type( login.login_email, user.email, { idx : idx + '-type-email' } );
+        await this.type( login.login_password, user.password, { idx : idx + '-type-password' });
+        await this.click( login.login_btnSubmit, {success_message:'Attemp to login. Click submit!', idx : idx + '-submit'} );
+        await this.handleAlertMessage('ion-toast', { timeout : 1 });
+
+        await this.waitInCase(.5);
         // CHECK if wrong password.
-        await this.waitAppear(login.login_wrongPassword, {delay:2})
-            .then( a => { this.success('Password Incorrect!') } )
-            .catch( e => { this.success( 'No Wrong Password Alert.' ) } );
-        await this.waitInCase(2);
-            
-        // await this.waitAppear([login.home], {delay:2})
-        //     .then( a =>  this.success('Success home page found!')  );
     }
 }
-
-// ( new Login( user_data[0], new OntueLoginPage ) ).main().then( a=> a );
-
-// process.exit(0);

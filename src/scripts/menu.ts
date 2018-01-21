@@ -64,8 +64,8 @@ export class Menu extends Login {
             };
             
             console.log(`TEST ${i}:`,re.idx);
-            
-            if ( browserOption.viewport.width > breakpoint || this.menu_page instanceof OntueLoginPage ) await this.open(this.menu_page.head_menu, [re.menu], open_option);
+            let is_mobile = browserOption.viewport.width <= breakpoint;
+            if ( !is_mobile || this.menu_page instanceof OntueLoginPage ) await this.open(this.menu_page.head_menu, [re.menu], open_option);
             else await this.open(this.menu_page.head_mobile_menu, [re.menu], open_option);
             
             if ( re.menu === this.menu_page.menu_qna ) {

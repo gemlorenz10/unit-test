@@ -1,7 +1,7 @@
 ﻿import { teacher_domain } from './global-library';
 import * as path from 'path';
 import * as fs from 'fs';
-import { IUserInfo, ISchedule } from './interface';
+import { IUserInfo, ISchedule, ILoginPage } from './interface';
 import { PuppeteerExtension } from '../../puppeteer-extension';
 import { tzQuery } from '../lib/global-library';
 
@@ -9,7 +9,7 @@ import { tzQuery } from '../lib/global-library';
 let ontue_page_list = {
     // head
     home : 'page-home',
-    intro : 'teacher-intro-component',
+    intro : 'teacher-intro-component>#teacher-intro1',
     menu : 'menu-page',
     dayoff : 'teacher-dayoff-page',
     free_class : null,
@@ -32,7 +32,7 @@ let ontue_page_list = {
     past_session: 'session-past-page',
     available_session: 'schedule-available-page',
     policy : 'policy-page',
-
+    dashboard : 'teacher-dashboard-page',
     // logged in
     profile : 'register-page',
     message : 'message-page',
@@ -48,23 +48,30 @@ let ontue_page_list = {
  * Ontue elements queries for Header navbar
  */
 export class OntueHeaderElements{
+    home = ontue_page_list.home;
     sitename = 'ontue'
     domain = teacher_domain;
-    head = `ion-header>header-content>.teacher-menu>ion-grid>ion-row>ion-col`; 
-    head_menu = `${this.head}>ion-icon[name="menu"]`
-    head_home = `${this.head}:nth-child(1)>div`;
-    head_login = `${this.head}:nth-child(2)>div`;
-    head_register = `${this.head}:nth-child(3)>div`;
-    head_contact_us = `${this.head}:nth-child(4)>div`;
-    head_how_to = `${this.head}:nth-child(5)>div`;
+    head = `ion-header>header-content`; 
+    head_wide = `${this.head}>.teacher-wide-menu>ion-grid>ion-row>ion-col`;
+    head_menu = `${this.head_wide}>ion-icon[name="menu"]`
+    head_home = `${this.head_wide}:nth-child(1)`;
+    head_login = `${this.head_wide}:nth-child(2)>div`;
+    head_register = `${this.head_wide}:nth-child(3)>div`;
+    head_contact_us = `${this.head_wide}:nth-child(4)>div`;
+    head_how_to = `${this.head_wide}:nth-child(5)>div`;
 
     // when logged in
-    head_reserve = `${this.head}:nth-child(2)>div`;
-    head_past = `${this.head}:nth-child(3)>div`;
-    head_schedule = `${this.head}:nth-child(4)>div`;
-    head_logout = `${this.head}:nth-child(5)>div`;
-    head_login_contact_us = `${this.head}:nth-child(6)>div`;
-    head_login_how_to = `${this.head}:nth-child(7)>div`;
+    head_reserve = `${this.head_wide}:nth-child(2)>div`;
+    head_past = `${this.head_wide}:nth-child(3)>div`;
+    head_schedule = `${this.head_wide}:nth-child(4)>div`;
+    // head_logout = `${this.head_wide}:nth-child(5)>div`;
+    head_login_contact_us = `${this.head_wide}:nth-child(5)>div`;
+    head_login_how_to = `${this.head_wide}:nth-child(6)>div`;
+    head_login_dashboard = `${this.head_wide}:nth-child(7)>div`;
+
+    head_mobile = `${ this.head }>.teacher-mobile-toolbar`;
+    head_mobile_home = `${ this.head_mobile }>ion-grid>ion-row>ion-col:nth-child(1)`;
+    head_mobile_menu = `${ this.head_mobile }>ion-grid>ion-row>ion-col:nth-child(2)`; // >ion-icon[name="menu"]
     
 
     head_expect_list_login =  [
@@ -206,7 +213,7 @@ export class OntueRegistrationPage extends OntueMenuPage {
 /**
  * Ontue element queries for login page.
  */
-export class OntueLoginPage extends  OntueMenuPage {
+export class OntueLoginPage extends  OntueRegistrationPage implements ILoginPage{
     login_page = ontue_page_list.login;
     login_email = 'input[name="email"]';
     login_password = 'input[name="password"]';
@@ -218,10 +225,57 @@ export class OntueLoginPage extends  OntueMenuPage {
     }
 }
 
+export class OntueDashboardPage extends OntueRegistrationPage implements ILoginPage{
+    dashboard_page = ontue_page_list.dashboard;
+    form_list = `#teacher-intro1>.intro-wrapper>.page>ion-grid>ion-row`;
+    dashboard_navigation = '#teacher-navigation';
+    // Login Form
+    login_form = `${this.form_list}>ion-col:nth-child(1)>ion-card>form>ion-list`;
+    login_email = `${this.login_form}>ion-item:nth-child(1)>div>div>ion-input>input[name="email"]`;
+    login_password = `${this.login_form}>ion-item:nth-child(2)>div>div>ion-input>input[name="password"]`;
+    login_btnSubmit = `${this.login_form}>div>button`;
+    
+    // Registration Form
+    register_form = `${this.form_list}>ion-col:nth-child(2)>ion-card>form>ion-list`;
+    register_button = `${ this.register_form }>div>button`;
+
+    dashboard_item = `${ this.dashboard_navigation }>ion-grid>ion-row>ion-col`;
+    
+    dashboard_reserve =  `${this.dashboard_item}:nth-child(1)`;
+    dashboard_past_class =  `${this.dashboard_item}:nth-child(2)`;
+    dashboard_schedule =  `${this.dashboard_item}:nth-child(3)`;
+    dashboard_curriculum_vitae =  `${this.dashboard_item}:nth-child(4)`;
+    dashboard_profile_update =  `${this.dashboard_item}:nth-child(5)`;
+    dashboard_payment_information =  `${this.dashboard_item}:nth-child(6)`;
+    dashboard_message_list =  `${this.dashboard_item}:nth-child(7)`;
+    // dashboard_contact_us
+    // dashboard_guideline
+    dashboard_term_condition =  `${this.dashboard_item}:nth-child(10)`;
+    dashboard_setting =  `${this.dashboard_item}:nth-child(11)`;
+
+    dashboard_item_list = [
+
+        { idx : 'dashboard-reserve', menu : this.dashboard_reserve, expect : ontue_page_list.reservation },
+        { idx : 'dashboard-past-class', menu : this.dashboard_past_class , expect : ontue_page_list.past_session },
+        { idx : 'dashboard-schedule', menu : this.dashboard_schedule, expect : ontue_page_list.schedule},
+        { idx : 'dashboard-curriculum-vitae', menu : this.dashboard_curriculum_vitae, expect : ontue_page_list.cv_page },
+        { idx : 'dashboard-profile-update', menu : this.dashboard_profile_update, expect : ontue_page_list.register },
+        { idx : 'dashboard-payment-information', menu : this.dashboard_payment_information, expect : ontue_page_list.payment_setting },
+        { idx : 'dashboard-message-list', menu : this.dashboard_message_list, expect : ontue_page_list.message },
+        // { idx : 'dashboard-contact-us', menu : `${this.dashboard_item}:nth-child(8)`, expect : ontue_page_list.qna },
+        // { idx : 'dashboard-guideline', menu : `${this.dashboard_item}:nth-child(9)`, expect : ontue_page_list.guidline },
+        { idx : 'dashboard-term-condition', menu : this.dashboard_term_condition, expect : ontue_page_list.policy },
+        { idx : 'dashboard-settings', menu : this.dashboard_setting, expect : ontue_page_list.setting },
+        
+    ]
+
+
+}
+
 /**
  * Ontue element queries for schedule page
  */
-export class OntueSchedulePage extends OntueLoginPage {
+export class OntueSchedulePage extends OntueDashboardPage {
     sched_page = ontue_page_list.schedule;
     sched_btnAddSchedule = '.add-schedule';
     sched_beginHour = 'input[name="class_begin_hour"]';
@@ -323,6 +377,53 @@ export class OntueHomePage extends OntueLoginPage {
 
 }
 
-export class OntuePaymentSettingPage extends OntueLoginPage {
+export class OntuePaymentSettingPage extends OntueDashboardPage {
     pay_setting_page = ontue_page_list.payment_setting;
+
+    // form
+    pay_setting_form = `${ this.pay_setting_page }>ion-content>.scroll-content>.page>.page-body>ion-list:nth-child(1)`;
+    pay_setting_firstname = `${ this.pay_setting_form }>ion-item:nth-child(1)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_middlename = `${ this.pay_setting_form }>ion-item:nth-child(2)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_lastname = `${ this.pay_setting_form }>ion-item:nth-child(3)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_phone = `${ this.pay_setting_form }>ion-item:nth-child(4)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_email = `${ this.pay_setting_form }>ion-item:nth-child(5)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_country = `${ this.pay_setting_form }>ion-item:nth-child(6)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_province = `${ this.pay_setting_form }>ion-item:nth-child(7)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_city = `${ this.pay_setting_form }>ion-item:nth-child(8)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_address = `${ this.pay_setting_form }>ion-item:nth-child(9)>.item-inner>.input-wrapper>ion-input>input`;
+    pay_setting_zip = `${ this.pay_setting_form }>ion-item:nth-child(10)>.item-inner>.input-wrapper>ion-input>input`;
+
+    pay_textfield_list = [
+        this.pay_setting_firstname,
+        this.pay_setting_middlename,
+        this.pay_setting_lastname,
+        this.pay_setting_phone,
+        this.pay_setting_email,
+        this.pay_setting_country,
+        this.pay_setting_province,
+        this.pay_setting_city,
+        this.pay_setting_address,
+        this.pay_setting_zip,
+    ] 
+    pay_setting_submit = `${ this.pay_setting_page }>ion-content>.scroll-content>.page>.page-body>ion-item:nth-child(2)>.item-inner>.input-wrapper>ion-label`;
+
+    // payment method
+    paySelectMethod( value ) {
+        return `input[value="${ value }"]`
+    }
+
+}
+
+export class OntuePastSchedulePage extends OntueDashboardPage {
+    home = ontue_page_list.home;
+    past_page = ontue_page_list.past_session;
+
+    past_summary = `${ this.past_page }>ion-content>.scroll-content>.page>session-list>section>ul`;
+}
+
+export class OntueReservationPage extends OntueDashboardPage {
+    home = ontue_page_list.home;
+    reserve_page = ontue_page_list.reservation;
+
+    reserve_summary = `${ this.reserve_page }>ion-content>.scroll-content>.page>session-list>section>ul`;
 }

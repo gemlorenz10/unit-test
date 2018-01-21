@@ -15,14 +15,14 @@ export class Register extends PuppeteerExtension {
     async main() {
         console.log('REGISTRATION TESTING STARTS...');
         await this.start( this.registerPage.domain, this.registerPage.sitename, browserOption ).catch( async e => await this.fatal(e, 'failed to open ontue.com') );
-
+        await this.waitInCase(.5);
         // Register all info that are in text file
         await this.openRegisterForm();
         await this.fillUpForm(); //.catch( async e => { await this.fatal(e.code, e.message) } );
 
     }
 
-    async openRegisterForm() {
+    private async openRegisterForm() {
         let register_page = this.registerPage;
         let is_mobile = ( browserOption.viewport.width <= breakpoint );
         let is_katalk_page = ( register_page instanceof KatalkRegistrationPage )
@@ -33,11 +33,10 @@ export class Register extends PuppeteerExtension {
         }
         await this.open( register_page.menu_registration, [register_page.page], { success_message: 'Open Registration.', idx: 'register-open-page' } );
     }
-
     /**
      * Will fill up the form.
      */
-    async fillUpForm() {
+    async fillUpForm( idx='register' ) {
         let user;
         let register_page = this.registerPage;
         let is_ontue_page = this.registerPage instanceof OntueRegistrationPage;
@@ -60,30 +59,30 @@ export class Register extends PuppeteerExtension {
             await this.upload(photo_url, profile_pic);
         }
         // type
-        if ( user.type ) await this.click( register_page.reg_radio( user.type ) , { success_message : 'Select Type.' });
-        await this.type(register_page.reg_email, user.email);
-        await this.type(register_page.reg_password, user.password);
-        await this.type(register_page.reg_name, user.name);
-        await this.type(register_page.reg_nickName, user.nickname);
-        await this.type(register_page.reg_mobile, user.phone);
-        await this.type(register_page.reg_kakao, user.kakao);
+        if ( user.type ) await this.click( register_page.reg_radio( user.type ) , { success_message : 'Select Type.', idx : `${idx}-type-usertype` });
+        await this.type( register_page.reg_email, user.email, { idx : `${idx}-type-email` } );
+        await this.type( register_page.reg_password, user.password, { idx : `${idx}-type-password` } );
+        await this.type( register_page.reg_name, user.name, { idx : `${idx}-type-name` } );
+        await this.type( register_page.reg_nickName, user.nickname, { idx : `${idx}-type-nickname` } );
+        await this.type( register_page.reg_mobile, user.phone, { idx : `${idx}-type-phone` } );
+        await this.type( register_page.reg_kakao, user.kakao, { idx : `${idx}-type-kakao` } );
 
         // gender
-        if ( is_ontue_page ) await this.click( register_page.reg_radio( user.gender ), { success_message : `Select Gender: ${ user.gender }` } );
+        if ( is_ontue_page ) await this.click( register_page.reg_radio( user.gender ), { success_message : `Select Gender: ${ user.gender }`, idx : `${idx}-select-gender` } );
 
         // timezone
         if ( user.timezone && this.registerPage instanceof OntueRegistrationPage ){
-            await this.click( register_page.reg_btnTimezone,{ success_message : 'select timezone' });
-            await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , { success_message : 'submit timezone' }); // click ok
-            await this.click( register_page.reg_btnTimezoneOK, { success_message : 'click ok' } );
+            await this.click( register_page.reg_btnTimezone,{ success_message : 'select timezone', idx : `${idx}-select-timezone` } );
+            await this.click( register_page.reg_timezone('.select-timezone', user.timezone) , { success_message : 'submit timezone', idx : `${idx}-select-timezone` }); // click ok
+            await this.click( register_page.reg_btnTimezoneOK, { success_message : 'click ok', idx : `${idx}-select-timezone` } );
         }// await this.click( register_page.reg_btnTimezoneCancel, { success_message : 'click cancel' } );
         
         // birthdate
         
         // submit
-        await this.click('.button-md-primary', { success_message : 'Submit form!' });
+        await this.click('.button-md-primary', { success_message : 'Submit form!', idx : `${idx}-submit` });
 
-        await this._checkAlert();
+        await this._checkAlertRegister();
 
 
     }
@@ -91,7 +90,7 @@ export class Register extends PuppeteerExtension {
      * Checks alert box in register.
      * @param user 
      */
-    private async _checkAlert() {
+    private async _checkAlertRegister() {
         let user: IUserInfo = this.userRegister
 
         await this.handleAlertMessage('ion-toast', { idx : 'schedule-handle-toast' });

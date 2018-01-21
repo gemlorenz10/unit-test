@@ -1,4 +1,5 @@
-﻿import { browserOption } from '../lib/global-library';
+﻿import { OntueDashboard } from './ontue-dashboard';
+import { browserOption, breakpoint } from './../lib/global-library';
 import { IUserInfo, ISchedule } from '../lib/interface';
 import { OntueSchedulePage, OntueLoginPage } from '../lib/ontue-library';
 import { PuppeteerExtension } from '../../puppeteer-extension';
@@ -8,31 +9,40 @@ import { schedule_data } from '../../data/test-data';
 /**
  * Run to test schedule page. pass user to login.
  */
-export class OntueSchedule extends Login {
+export class OntueSchedule extends OntueDashboard {
 
     constructor( private scheduleUser: IUserInfo,  
                  private schedule: ISchedule,        
                  private doTest? : string, 
                  private schedulePage : OntueSchedulePage = new OntueSchedulePage){
         
-        super( scheduleUser, schedulePage )
+        super( scheduleUser )
     }
     async main() { 
-        console.log('SCHEDULER TESTING STARTS...');
-        await this.start(this.schedulePage.domain, 'ontue', browserOption).catch( async e => { await this.fatal( e.code, e ) } );
-
-        await this.submitLogin();
-        await this.open( this.schedulePage.head_schedule, [this.schedulePage.sched_page], { success_message: 'Open schedule page.', idx : 'schedule-open-page' } );
+        await this.gotoScheduler();
 
         if ( this.doTest === 'add' ) await this.addSched().catch( async e => await this.error( e.code, e.message ) );
         else if ( this.doTest === 'edit' ) await this.editSched( this.schedule.row ).catch( async e => await this.error( e.code, e.message ) );
-        else if ( this.doTest == 'delete' ) await this.deleteSched(this.schedule.row).catch( async e => await this.error( e.code, e.message ) );
+        else if ( this.doTest === 'delete' ) await this.deleteSched(this.schedule.row).catch( async e => await this.error( e.code, e.message ) );
         else {
             await this.addSched().catch( async e => await this.error( e.code, e.message ) );
             await this.editSched(this.schedule.row).catch( async e => await this.error( e.code, e.message ) );
             await this.deleteSched(this.schedule.row).catch( async e => await this.error( e.code, e.message ) );
         }
 
+    }
+
+    async gotoScheduler(){
+        let page = this.schedulePage;
+        let is_mobile = browserOption.viewport.width <= breakpoint;
+        console.log('SCHEDULER TESTING STARTS...');
+        await this.start(this.schedulePage.domain, 'ontue', browserOption).catch( async e => { await this.fatal( e.code, e ) } );
+        await this.waitInCase(.5);
+        await this.open( page.head_home, [ page.home ], { idx : 'go-to-homepage' } );
+        await this.submitLogin();
+        await this.open( page.head_login_dashboard, [page.dashboard_page], {idx:'open-dashboard'} )
+        await this.open( page.dashboard_schedule, [page.sched_page], { success_message: 'Open schedule page.', idx : 'schedule-open-page' } );
+        
     }
 
     async addSched() {
@@ -133,3 +143,4 @@ export class OntueSchedule extends Login {
     }
 
 }
+;

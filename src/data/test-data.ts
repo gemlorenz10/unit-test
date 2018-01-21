@@ -10,6 +10,8 @@
 }
 
 export let teacher_data = {
+    
+    "is_new_teacher" : false,
     "type": "T",
     "email": "eden@gmail.com",
     "password": "secret",
@@ -27,6 +29,7 @@ export let teacher_data = {
 
 export let teacher_register = {
 
+    "is_new_teacher" : true,
     "type": "T",
     "email": "eden@gmail.com",
     "password": "secret",
@@ -66,3 +69,17 @@ export let teacher_search_query = {
     "gender":"f",
     "grade":"all"
 };
+
+export let payment_setting = {
+    "firstname":"Eden",
+    "middlename":"Test",
+    "lastname":"Ontue",
+    "phone":"06445657986",
+    "email":"eden@gmail.com",
+    "country":"philippines",
+    "province":"pampanga",
+    "city":"angeles",
+    "address":"galang-wong bldg2, salome st., abacan, balibago",
+    "zip":"2005",
+    "pay_method":"gcash"
+}

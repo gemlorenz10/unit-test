@@ -9,16 +9,23 @@ export let breakpoint = 690;
 
 export let browserOption = {
     headless : true,
+    devtools : false,
     // web
-    // viewport : {
-    //     height : 1024,
-    //     width : 1366
-    // }
-    // mobile size
     viewport : {
-        height : 667,
-        width : 375
+        height : 1000,
+        width : 768
     }
+    // mobile size
+    // viewport : {
+    //     height : 667,
+    //     width : 375
+    // }
+
+    // iphoneX
+    // viewport : {
+    //     height : 812,
+    //     width : 375
+    // }
 }
 
 

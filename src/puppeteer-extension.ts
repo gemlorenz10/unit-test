@@ -71,7 +71,7 @@ export abstract class PuppeteerExtension{
         
         console.log('Start testing....')
         // set page settings    
-        await this.init( browser_option.headless );
+        await this.init( browser_option.headless, browser_option.devtools );
         
         await this.page.setViewport({
             height: browser_option.viewport.height, 
@@ -135,7 +135,7 @@ export abstract class PuppeteerExtension{
         
 
         await this.page.goto( website );
-        await this.page.reload();
+        // await this.page.reload();
         await this.page.waitFor(1000);
     }
 
@@ -451,7 +451,7 @@ export abstract class PuppeteerExtension{
         await this.page.waitFor(delay);
         await this.page.click( selector )
             .then( a => { this.success( msg ) } )
-            .catch( async e => await this.error( idx, error ) );
+            .catch( async e => await this.error( idx, e.message ) );
 
     }
     
@@ -477,11 +477,11 @@ export abstract class PuppeteerExtension{
         let error = option.error_message || `Failed to open page. -> Selector "${expect[0]}" is not in not found in DOM.`;
         let success = option.success_message || 'Open a page.';
         let idx = option.idx || this.makeId();
-        let delay = option.delay || 1000; //ms
+        let delay = option.delay || 2000; //ms
 
         let i;
         await this.page.waitFor(delay / 2);
-        await this.page.focus( selector );
+        // await this.page.waitFor(selector,{visible:true, timeout:2000}).catch( async e => await this.fatal(idx, e.message) );
         await this.click( selector, option );
         await this.handleAlertMessage('ion-toast', { idx : `onclick-${idx}-toast`, timeout : .8 });
         if( expect === null ) this.success('Not expecting any selector');
@@ -490,8 +490,9 @@ export abstract class PuppeteerExtension{
             for( i of expect )
                 await this.waitAppear(i, { error_message : error, idx : idx })
                         .then( a => this.success( a ))
-                        .catch( async e => await this.error( `${idx}-page-open-failed`, e.message ) );
+                        .catch( async e => await this.fatal( `${idx}-page-open-failed`, e.message ) );
         }
+
         await this.handleAlertMessage('ion-toast', { idx : `onload-${idx}-toast`, timeout : .8 });
         await this.page.waitFor(delay / 2);
     
@@ -555,15 +556,19 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param str 
      */
-    async type( selector, str, message?, delay = 80 ) {
-
-        message = (message)? `${message} -> ${str}` : `Type ${str} in ${selector}`;
-        let wait_option = { success_message : message, error_message : `Cannot find text field ${selector}`, idx : 'type' };
+    async type( selector, str, option? ) {
+        option = option || {};
+        let idx = option.idx || this.makeId();
+        let message = option.success_message || `Type ${str} in ${idx}`;
+        let error = option.error_message || `Failed typing ${str} in "${ idx }", Selector : ${ selector }`
+        let delay = option.delay || 80
+        let wait_option = { success_message : message, error_message : error , idx : idx };
         await this.page.waitFor(250);
-        // await this.waitAppear( selector, wait_option );
+        await this.waitAppear( selector, wait_option );
         await this.clearText( selector );
         await this.page.type(selector, str, { delay: delay })
-            .then(a=>{ this.success( message ) });
+            .then(a=>{ this.success( message ) })
+            .catch( async e => { await this.fatal( idx, error ) } );
         await this.page.waitFor(250);
     }
 
@@ -605,7 +610,7 @@ export abstract class PuppeteerExtension{
     }
 
     /**
-     * Returns the lenght of selectors with promise handle
+     * Logs the lenght of selectors with promise handle
      * @param selector 
      * @param label 
      */

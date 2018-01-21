@@ -36,3 +36,9 @@ export interface ISummary {
 export interface IScript {
     main() : void
 }
+
+export interface ILoginPage {
+    login_email : string
+    login_password : string
+    login_btnSubmit : string
+}
