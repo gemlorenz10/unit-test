@@ -202,7 +202,7 @@ export abstract class PuppeteerExtension{
             return;
         }
         
-        this.event.emit('log', { event: 'tester-error', message: `code: ${error_code}, message: ${msg}`, idx : error_code });
+        this.event.emit('log', { event: 'tester-error', message: `IDX: ${error_code}, -> ${msg}`, idx : error_code });
         console.log(`ERROR: "${error_code}" MESSAGE: ${msg}`);
         await this.capture( error_code, 'ERROR' );    
         
@@ -279,7 +279,7 @@ export abstract class PuppeteerExtension{
             report.js_error.forEach( e => {
                 js_log = path.join(_log_path, date + 'js-error.log')
                 if ( !fs.existsSync(_log_path) ) fs.mkdirSync(_log_path);
-                fs.appendFileSync(js_log, `${time} > ${e.event}: ${e.message}` + '\n');
+                fs.appendFileSync(js_log, `${time} > ${e.event} > ${e.message}` + '\n');
             } );
             report.js_warn.forEach( e => {
                 js_log = path.join(_log_path, date + 'js-warn.log')
@@ -421,15 +421,27 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param option 
      */
-    async handleAlertMessage( selector: string, option? ) {
+    async handleAlertMessage( selector: string = 'ion-toast', option? ) {
         let re;
         option = option || {};
         let idx = option.idx || 'handle-alert-message';
         let timeout = option.timeout || 1;
+
+        // Set log filename and message
+        let d = new Date;
+        let date :string = d.getDate() +'-'+ d.getMonth() + 1 +'-'+ d.getFullYear() + '-';
+        let time :string = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        let time_replace :string = time.replace(':','_');
+        
+        let file_path = path.join( __dirname, '../logs' )
+        let file = path.join( file_path, date + idx +'-toast-alert.log' )
+        let log_msg = `${time} > IDX : ${idx} : Alert`;
+
         await this.page.waitFor(timeout*1000);
         await this.waitAppear( selector, option )
             .then( async a => {
-                re = await this.getText( selector )
+                re = await this.getText( selector );
+                fs.appendFileSync( file, `${time} > IDX : ${idx} -> ${re}` );
                 this.success( `Ontue Said :${ re }` );
                 await this.click('ion-toast>.toast-wrapper>.toast-container>button', { idx : idx, success_message : 'Close Toast.' });   
             }).catch( e => e );

@@ -10,6 +10,16 @@
     kakao:    string
     photo?:    string
     birthdate: string
+
+    // cv info
+    fullname?:   string
+    address?:    string
+    education?:  string
+    major?:      string
+    year_start_teaching?: string
+    greeting?:   string
+    youtube?:    string
+    qr_mark?:   string
 }
 
 export interface ISchedule {

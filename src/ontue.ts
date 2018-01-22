@@ -1,4 +1,5 @@
-﻿import { OntueReservation } from './scripts/ontue/ontue-reservation';
+﻿import { OntueCurriculumVitae } from './scripts/ontue/ontue-cv';
+import { OntueReservation } from './scripts/ontue/ontue-reservation';
 import { OntuePastSchedule } from './scripts/ontue/ontue-past-schedule';
 import { OntueDashboard } from './scripts/ontue/ontue-dashboard';
 import { OntuePaymentSetting } from './scripts/ontue/ontue-payment-setting';
@@ -50,6 +51,9 @@ global['schedule-edit'] = new OntueSchedule( teacher_data, schedule_data, 'edit'
 global['schedule-add'] = new OntueSchedule( teacher_data, schedule_data, 'add' );
 global['schedule-delete'] = new OntueSchedule( teacher_data, schedule_data, 'delete' );
 
+// informations
+global['cv'] = new OntueCurriculumVitae( teacher_data );
+
 // classes
 global['past-schedule'] = new OntuePastSchedule( teacher_data );
 global['reservation'] = new OntueReservation( teacher_data )
@@ -76,8 +80,7 @@ let i, args = argv._[0];
 async function _run() {
     if ( args ) { 
         await util.run(global[args]); 
-    }
-    else {
+    } else {
         for( i of _global ){
             await util.run(i);
         }

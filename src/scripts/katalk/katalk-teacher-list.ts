@@ -23,7 +23,7 @@ export class KatalkTeacherList extends Login {
         if ( isMobile ){
             await this.open( this.katalkTeacherListPage.head_mobile_menu, [this.katalkTeacherListPage.menu_page], openOption );
             await this.open(this.katalkTeacherListPage.menu_reserve, [this.katalkTeacherListPage.list_page], openOption);
-        }else{
+        } else {
             await this.open( this.katalkTeacherListPage.head_menu, [this.katalkTeacherListPage.menu_page], openOption );
             await this.open(this.katalkTeacherListPage.menu_reserve, [this.katalkTeacherListPage.list_page], openOption);
         }

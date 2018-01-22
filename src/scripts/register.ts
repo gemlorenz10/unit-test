@@ -28,7 +28,7 @@ export class Register extends PuppeteerExtension {
         let is_katalk_page = ( register_page instanceof KatalkRegistrationPage )
         if( is_mobile && is_katalk_page ){
             await this.open(register_page.head_mobile_menu,  [register_page.menu_registration],{ success_message: 'Open menu page.', idx : 'register-open-menu' }); 
-        }else{
+        } else {
             await this.open(register_page.head_menu,  [register_page.menu_registration],{ success_message: 'Open menu page.', idx : 'register-open-menu' });
         }
         await this.open( register_page.menu_registration, [register_page.page], { success_message: 'Open Registration.', idx: 'register-open-page' } );

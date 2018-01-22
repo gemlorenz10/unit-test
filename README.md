@@ -22,6 +22,7 @@ unit-testing for ontue and kakatalkenglish
 - *scuedule-delete* - test deleting schedule.
 - *past-schedule* - test past schedule. displays the summary of past sessions.
 - *reservatation* - test reservations. displays the summary of reservations.
+- *cv* - tests curriculum vitae update.
 
 
 ... other options will follow.

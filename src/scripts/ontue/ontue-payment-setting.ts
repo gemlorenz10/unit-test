@@ -9,21 +9,23 @@ export class OntuePaymentSetting extends OntueDashboard {
     }
 
     async main() {
+        
         if ( !this.page ) await this.start( this.paymentSettingPage.domain, 'ontue', browserOption );
         if ( this.paymentSettingUser ) await this.submitLogin()
         await this._openPage();
         await this._fillUpForm();
         await this.handleAlertMessage('ion-toast', { idx : 'payment-setting-alert' })
+    
     }
 
     private async _openPage() {
         let payment_page = this.paymentSettingPage;
         let is_mobile = browserOption.viewport.width <= breakpoint;
         // await this.open( payment_page.dashboard_payment_information, [ payment_page.pay_setting_page ], { idx : 'open-payment-settings' } )
-        if ( !is_mobile ){
+        if ( !is_mobile ) {
             await this.open( payment_page.head_menu, [ payment_page.menu_payment_setting ], { idx : 'open-menu-page' } );
             await this.open( payment_page.menu_payment_setting, [ payment_page.pay_setting_page ], { idx : 'open-payment-setting-page' } );
-        }else{
+        } else {
             await this.open( payment_page.head_mobile_menu, [ payment_page.menu_payment_setting ], { idx : 'open-menu-page' } );
             await this.open( payment_page.menu_payment_setting, [ payment_page.pay_setting_page ], { idx : 'open-payment-setting-page' } );
         }
@@ -33,6 +35,7 @@ export class OntuePaymentSetting extends OntueDashboard {
         let user = this.paymentSettingUser;
         let setting = this.setting;
         let page = this.paymentSettingPage;
+        
         await this.waitAppear( page.pay_setting_form, { idx : 'pay-setting-form' } )
             .then( a => this.success(a) );
         await this.type( page.pay_setting_firstname, setting.firstname, { idx : 'payment-setting-firstname' } );

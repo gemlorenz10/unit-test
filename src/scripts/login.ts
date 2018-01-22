@@ -18,22 +18,24 @@ export class Login extends Register {
      * Opens the browser and logs the use in. Sequence "start -> login".
      */
     async main() {
+        
         console.log('LOGIN TESTING STARTS...');
         let website = this._page.domain;
         await this.start(website, this._page.sitename, browserOption);
         // if ( this._page instanceof OntueLoginPage || KatalkLoginPage )
         await this.openLogin();
         await this.submitLogin();
+    
     }
 
     async openLogin() {
         let login = this._page;
         let is_mobile = browserOption.viewport.width <= breakpoint; 
         // GO TO LOGIN
-         if( !is_mobile && login instanceof OntueLoginPage ){
+        if( !is_mobile && login instanceof OntueLoginPage ){
             await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login-open-menu' } );
             await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login-open-page' });
-        }else {
+        } else {
             // await this.open( login.head_mobile_login, [ login.login_page ], { idx: 'login-mobile-page', delay : 2 } );
             return;
         }

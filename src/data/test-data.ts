@@ -22,7 +22,18 @@ export let teacher_data = {
     "kakao": "Eden123",
     "photo": "eden.jpg",
     "timezone": 8,
-    "birthdate": "12/10/1993"
+    "birthdate": "12/10/1993",
+
+    // cv
+    "fullname":"Eden Ontue",
+    "address":"angeles city, pampanga",
+    "education":"Education",
+    "major":"English",
+    "year_start_teaching":"2010",
+    "youtube":"https://www.youtube.com/watch?v=5CHuPIo0a78",
+    "qr_mark":"",
+    "greeting":`Lorem ipsum dolor sit amet, his purto fierent volutpat in, per debet iuvaret delicatissimi cu, vis an option debitis. Timeam debitis pri te. Vidit eirmod pri an, id sea elit saperet pericula. In hinc esse duo, ea mei nominati instructior.`
+
 
 }
 

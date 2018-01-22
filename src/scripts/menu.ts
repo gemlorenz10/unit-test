@@ -70,8 +70,7 @@ export class Menu extends Login {
             
             if ( re.menu === this.menu_page.menu_qna ) {
                 await this.open(re.menu, [re.expect],  { idx : re.idx, error_message : `QnA Opens a link to a Kakao Profile. -> ${re.idx}`});
-            }
-            else{
+            } else {
                 await this.open(re.menu, [re.expect],  menu_option);
             }
 

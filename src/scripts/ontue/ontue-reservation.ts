@@ -10,14 +10,16 @@ export class OntueReservation extends OntueDashboard {
     }
 
     async main() {
-        await this.gotoPastSchedule();
+        await this.initPastSchedule();
         await this.getSummary();
     }
 
-    private async gotoPastSchedule() {
+    private async initPastSchedule() {
         let page = this.reservationPage;
         let user = this.reservationUser;
+        
         if( !this.page ) await this.start( page.domain, 'ontue', browserOption );
+       
         await this.waitInCase(.5);
         await this.open( page.head_home, [ page.home ], { idx : 'go-to-homepage' } );
         await this.submitLogin()
@@ -28,6 +30,7 @@ export class OntueReservation extends OntueDashboard {
     private async getSummary(){
         let page = this.reservationPage;
         let user = this.reservationUser;
+        
         console.log( 'Past Schedule Summary :', await this.getText( page.reserve_summary ) );
     }
 }

@@ -19,7 +19,8 @@ export class OntueSchedule extends OntueDashboard {
         super( scheduleUser )
     }
     async main() { 
-        await this.gotoScheduler();
+        
+        await this.initScheduler();
 
         if ( this.doTest === 'add' ) await this.addSched().catch( async e => await this.error( e.code, e.message ) );
         else if ( this.doTest === 'edit' ) await this.editSched( this.schedule.row ).catch( async e => await this.error( e.code, e.message ) );
@@ -32,10 +33,12 @@ export class OntueSchedule extends OntueDashboard {
 
     }
 
-    async gotoScheduler(){
+    async initScheduler(){
         let page = this.schedulePage;
         let is_mobile = browserOption.viewport.width <= breakpoint;
+        
         console.log('SCHEDULER TESTING STARTS...');
+        
         await this.start(this.schedulePage.domain, 'ontue', browserOption).catch( async e => { await this.fatal( e.code, e ) } );
         await this.waitInCase(.5);
         await this.open( page.head_home, [ page.home ], { idx : 'go-to-homepage' } );
@@ -62,6 +65,7 @@ export class OntueSchedule extends OntueDashboard {
         // await this.getChildDom()
         // console.table(['name', 'age'], [['gem','14']]);
     }
+
     /**
      * Deletes the schedule based on row.
      * 
@@ -70,6 +74,7 @@ export class OntueSchedule extends OntueDashboard {
      */
     async deleteSched( row: number ) {
         console.log('TEST: DELETE a schedule.');
+        
         await this.click( this._queryTable( row, this.schedulePage.sched_action_delete ), {success_message:'Delete schedule.'});
         await this.click( this.schedulePage.sched_alert_accept, {success_message:'Accept to delete!'} );
     }
@@ -80,11 +85,14 @@ export class OntueSchedule extends OntueDashboard {
      * @param row
      */
     async editSched( row: number ) {
-        console.log('TEST: EDIT a schedule.');
         let open_option = { error_message : 'Failed to open EDIT form.', success_message: 'Open EDIT form.', idx : 'schedule-edit-open' }
+        
+        console.log('TEST: EDIT a schedule.');
+        
         await this.waitInCase(.5);
         await this.open( this._queryTable( row, this.schedulePage.sched_action_edit ), [this.schedulePage.sched_form], open_option )
                     .catch( e => this.warn( e.code, `Row #${row} to edit not found` ) );
+        
         await this._fillUpForm( 'edit' );
         await this._checkAlert();
 
@@ -119,6 +127,7 @@ export class OntueSchedule extends OntueDashboard {
     private _queryTable( row_number: number, target ) {
         let row = (row_number + 1);
         let re = this.schedulePage.sched_table_row + `:nth-child(${row})>${target}`;
+        
         return re;
     }
 

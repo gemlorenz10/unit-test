@@ -35,8 +35,7 @@ let i, args = argv._[0];
 async function _run() {
     if ( args ) { 
         await util.run(global[args]); 
-    }
-    else {
+    } else {
         for ( i of _global ) {
             await util.run(i);
         }

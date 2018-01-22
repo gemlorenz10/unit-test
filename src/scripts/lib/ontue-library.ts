@@ -209,7 +209,6 @@ export class OntueRegistrationPage extends OntueMenuPage {
 
 }
 
-
 /**
  * Ontue element queries for login page.
  */
@@ -426,4 +425,51 @@ export class OntueReservationPage extends OntueDashboardPage {
     reserve_page = ontue_page_list.reservation;
 
     reserve_summary = `${ this.reserve_page }>ion-content>.scroll-content>.page>session-list>section>ul`;
+}
+
+export class OntueCurriculumVitaPage extends OntueDashboardPage {
+    cv_page = ontue_page_list.cv_page;
+    cv_form = `${this.cv_page}>ion-content>.scroll-content>.page>.page-body>form>ion-list`;
+    cv_teacher_id = this.cv_getField('name');
+    cv_fullname = this.cv_getField('fullname');
+    cv_nickname = this.cv_getField('display_name');
+    cv_email = this.cv_getField('user_email');
+    cv_phone_no = this.cv_getField('phone_number');
+    cv_gender = this.cv_getRadio;
+    // cv_birthday = this.cv_getField(7);
+    cv_address = this.cv_getField('address');
+    // cv_profile_pic = this.cv_getField(9);
+    cv_nationality = `select[name="nationality"]`;
+    cv_education = this.cv_getField('last_education');
+    cv_major = this.cv_getField('major');
+    // cv_start_teaching = this.cv_getField(13);
+    cv_greeting = `textarea[name="introduction"]`;
+    cv_youtube = this.cv_getField('youtube_video_url');
+    cv_kakao_id = this.cv_getField('kakaotalk_id');
+    cv_qr_mark = this.cv_getField(17);
+    cv_submit = `${ this.cv_form }>ion-item:nth-child(18)>.item-inner>.input-wrapper>ion-label>button`;
+
+    cv_text_list = [
+        this.cv_teacher_id,
+        this.cv_fullname,
+        this.cv_nickname,
+        this.cv_email,
+        this.cv_phone_no,
+        this.cv_address,
+        this.cv_education,
+        this.cv_major,
+        this.cv_greeting,
+        this.cv_youtube,
+        this.cv_kakao_id
+    ]
+    
+    private cv_getField( name ){
+        // return `${ this.cv_form }>ion-item:nth-child(${index})>.item-inner>.input-wrapper>ion-label>button`;
+        return `input[name=${name}]`;
+    }
+
+    private cv_getRadio( value ){
+        return `input[value="${value}"]`;
+    }
+
 }
