@@ -23,6 +23,7 @@ unit-testing for ontue and kakatalkenglish
 - *past-schedule* - test past schedule. displays the summary of past sessions.
 - *reservatation* - test reservations. displays the summary of reservations.
 - *cv* - tests curriculum vitae update.
+- *term-condition* - tests term and condition displays the text content of page.
 
 
 ... other options will follow.

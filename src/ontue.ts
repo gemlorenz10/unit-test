@@ -1,4 +1,5 @@
-﻿import { OntueCurriculumVitae } from './scripts/ontue/ontue-cv';
+﻿import { OntueTermCondition } from './scripts/ontue/ontue-term-condition';
+import { OntueCurriculumVitae } from './scripts/ontue/ontue-cv';
 import { OntueReservation } from './scripts/ontue/ontue-reservation';
 import { OntuePastSchedule } from './scripts/ontue/ontue-past-schedule';
 import { OntueDashboard } from './scripts/ontue/ontue-dashboard';
@@ -53,6 +54,7 @@ global['schedule-delete'] = new OntueSchedule( teacher_data, schedule_data, 'del
 
 // informations
 global['cv'] = new OntueCurriculumVitae( teacher_data );
+global['term-condition'] = new OntueTermCondition( teacher_data );
 
 // classes
 global['past-schedule'] = new OntuePastSchedule( teacher_data );
