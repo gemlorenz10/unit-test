@@ -10,9 +10,18 @@ export class KatalkTeacherList extends Login {
         super( teacherListUser, katalkTeacherListPage )
     }
 
-    async main() {
+    async main() {  
+
+        await this.initTeacherList();
+        await this._selectGender();
+        await this._selectGrade();
+        await this.waitInCase(1);
+        await this.countTeacherList();
+    }
+
+    async initTeacherList() {
         // console.log( student_domain )
-        let isMobile = browserOption.viewport.width < breakpoint;
+        let isMobile = browserOption.viewport.width <= breakpoint;
         let openOption = {
             success_message : "Success opening teacher list page.",
             error_mesassage : 'Error opening teacher list page.',
@@ -27,11 +36,7 @@ export class KatalkTeacherList extends Login {
             await this.open( this.katalkTeacherListPage.head_menu, [this.katalkTeacherListPage.menu_page], openOption );
             await this.open(this.katalkTeacherListPage.menu_reserve, [this.katalkTeacherListPage.list_page], openOption);
         }
-
-        await this._selectGender();
-        await this._selectGrade();
-        await this.waitInCase(1);
-        await this.countTeacherList();
+        
     }
 
     async countTeacherList( recommended: boolean = true ) {
@@ -67,6 +72,11 @@ export class KatalkTeacherList extends Login {
         await this.open( option_selector, [value_selector], { idx : idx }  )
         await this.click( value_selector, {success_message : `Chosen option : ${ idx }`, idx : idx} );
         await this.click( this.katalkTeacherListPage.list_option_confirm,  {success_message :`Close ${ idx } option.`, idx : idx} );
-        await this.click( this.katalkTeacherListPage.list_btn_close_option, {success_message :`Close options.`, idx : idx}  )
+
+        await this.page.waitFor(1000);
+
+        await this.click( this.katalkTeacherListPage.list_btn_close_option, {success_message :`Close options.`, idx : idx}  );
+
+
     }
 }
