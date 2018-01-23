@@ -23,7 +23,6 @@ export class Login extends Register {
         let website = this._page.domain;
         await this.start(website, this._page.sitename, browserOption);
         // if ( this._page instanceof OntueLoginPage || KatalkLoginPage )
-        await this.openLogin();
         await this.submitLogin();
     
     }
@@ -32,12 +31,19 @@ export class Login extends Register {
         let login = this._page;
         let is_mobile = browserOption.viewport.width <= breakpoint; 
         // GO TO LOGIN
-        if( !is_mobile && login instanceof OntueLoginPage ){
+        if( login instanceof OntueLoginPage ){
+            // await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login-open-menu' } );
+            // await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login-open-page' });
+            return;
+        } 
+        else if ( login instanceof KatalkLoginPage ) {
             await this.open( login.head_menu, [login.menu_login], { success_message: 'Open MENU page.', error_message : 'Failed to open MENU page.', idx : 'login-open-menu' } );
             await this.open( login.menu_login, [login.login_page], { success_message: 'Open LOGIN page.', error_message : 'Failed to open LOGIN page.', idx : 'login-open-page' });
+    
         } else {
-            // await this.open( login.head_mobile_login, [ login.login_page ], { idx: 'login-mobile-page', delay : 2 } );
-            return;
+            console.log('PAGE NOT SUPPORTED!');
+            this.browser.close();
+            await this.endScript();
         }
     }
      /**
@@ -46,10 +52,13 @@ export class Login extends Register {
     async submitLogin( idx = 'login' ) {
         let user = this._user;
         let login = this._page;
+        
+        await this.openLogin();
+
         await this.type( login.login_email, user.email, { idx : idx + '-type-email' } );
         await this.type( login.login_password, user.password, { idx : idx + '-type-password' });
         await this.click( login.login_btnSubmit, {success_message:'Attemp to login. Click submit!', idx : idx + '-submit'} );
-        await this.handleAlertMessage('ion-toast', { timeout : 1 });
+        await this.handleAlertMessage( { timeout : 1, idx : 'login-attempt' } );
 
         await this.waitInCase(.5);
         // CHECK if wrong password.
