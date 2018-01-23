@@ -136,7 +136,7 @@ export class OntueSchedule extends OntueDashboard {
      * @param alertWrapper 
      */
     private async _checkAlert() {
-        await this.handleAlertMessage('ion-toast', { idx : 'schedule-handle-toast' });
+        await this.handleAlertMessage({ idx : 'schedule-handle-toast' });
         await this.waitInCase(.5);
 
         await this.waitDisappear( this.schedulePage.sched_form, 2 )

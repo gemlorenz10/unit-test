@@ -14,7 +14,7 @@ export class OntuePaymentSetting extends OntueDashboard {
         if ( this.paymentSettingUser ) await this.submitLogin()
         await this._openPage();
         await this._fillUpForm();
-        await this.handleAlertMessage('ion-toast', { idx : 'payment-setting-alert' })
+        await this.handleAlertMessage({ idx : 'payment-setting-alert' })
     
     }
 
@@ -48,9 +48,12 @@ export class OntuePaymentSetting extends OntueDashboard {
         await this.type( page.pay_setting_city, setting.city, { idx : 'payment-setting-city' }  );
         await this.type( page.pay_setting_address, setting.address, { idx : 'payment-setting-address' }  );
         await this.type( page.pay_setting_zip, setting.zip, { idx : 'payment-setting-zip' }  );
-        // await this.countSelector( page.pay_setting_submit, 'Payment Submit Submit' );
+        await this.countSelector( page.pay_setting_submit, 'Payment Submit Submit' );
         await this.click( page.paySelectMethod( setting.pay_method ), { idx : 'payment-select-method' } )
         // not working?
-        await this.click( page.pay_setting_submit, { idx : 'payment-setting-submit' } );
+        await this.page( page.pay_setting_submit, { idx : 'payment-setting-submit' } );
+        
+        // await this.countSelector( page.pay_setting_submit, 'ion-label count: ' )
+    
     }
 }

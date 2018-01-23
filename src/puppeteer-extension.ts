@@ -421,9 +421,10 @@ export abstract class PuppeteerExtension{
      * @param selector 
      * @param option 
      */
-    async handleAlertMessage( selector: string = 'ion-toast', option? ) {
+    async handleAlertMessage( option? ) {
         let re;
         option = option || {};
+        let selector = option.selector || 'ion-toast';
         let idx = option.idx || 'handle-alert-message';
         let timeout = option.timeout || 1;
 
@@ -495,17 +496,16 @@ export abstract class PuppeteerExtension{
         await this.page.waitFor(delay / 2);
         // await this.page.waitFor(selector,{visible:true, timeout:2000}).catch( async e => await this.fatal(idx, e.message) );
         await this.click( selector, option );
-        await this.handleAlertMessage('ion-toast', { idx : `onclick-${idx}-toast`, timeout : .8 });
-        if( expect === null ) this.success('Not expecting any selector');
-
-        if( expect ){ 
+        await this.handleAlertMessage({ idx : `onclick-${idx}-toast`, timeout : .8 });
+        if( expect == null || expect[0] == null ) this.success('Not expecting any selector');
+        else { 
             for( i of expect )
                 await this.waitAppear(i, { error_message : error, idx : idx })
                         .then( a => this.success( a ))
                         .catch( async e => await this.fatal( `${idx}-page-open-failed`, e.message ) );
         }
 
-        await this.handleAlertMessage('ion-toast', { idx : `onload-${idx}-toast`, timeout : .8 });
+        await this.handleAlertMessage({ idx : `onload-${idx}-toast`, timeout : .8 });
         await this.page.waitFor(delay / 2);
     
     }

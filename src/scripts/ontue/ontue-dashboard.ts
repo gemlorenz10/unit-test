@@ -77,6 +77,7 @@ export class OntueDashboard extends Login{
             await this.open( head_dashboard, [ this.dashboardPage.dashboard_page ], { idx : 'go-to-dashboard' } );
             console.log(`TEST ${i}:`,re.idx);
             await this.open(re.menu, [re.expect], menu_option);
+            await this.handleAlertMessage()
             
             i++;
         

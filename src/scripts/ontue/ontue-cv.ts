@@ -14,7 +14,7 @@ export class OntueCurriculumVitae extends OntueDashboard {
         await this.getCVContent();
         await this.fillUpCV();
 
-        await this.handleAlertMessage( 'ion-toast', { idx : 'alert-on-cv-end' } );
+        await this.handleAlertMessage( { idx : 'alert-on-cv-end' } );
     }
 
     private async initCV() {
@@ -26,7 +26,7 @@ export class OntueCurriculumVitae extends OntueDashboard {
         await this.open( page.head_login_dashboard, [ page.dashboard_page ], { idx : 'go-to-dashboard' } );
         await this.open( page.dashboard_curriculum_vitae, [ page.cv_page ], { idx : 'go-to-cv' } );
 
-        await this.handleAlertMessage('ion-toast', { idx : 'alert-on-cv-load' })
+        await this.handleAlertMessage({ idx : 'alert-on-cv-load' })
     } 
 
     private async fillUpCV() {
@@ -45,9 +45,11 @@ export class OntueCurriculumVitae extends OntueDashboard {
         await this.type( page.cv_youtube, user.youtube, { idx : 'type-youtube-video' } );
         await this.type( page.cv_kakao_id, user.kakao, { idx : 'type-kakao-id' } );
 
+        await this.upload(  user.qr_mark , page.cv_qr_mark );
+
         await this.click( page.cv_submit, { idx : 'submit-cv' } );
 
-        await this.handleAlertMessage( 'ion-toast', { idx : 'alert-on-cv-submit' } );
+        await this.handleAlertMessage( { idx : 'alert-on-cv-submit' } );
     }
 
     private async getCVContent() {
