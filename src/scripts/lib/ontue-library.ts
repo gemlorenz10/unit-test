@@ -56,18 +56,18 @@ export class OntueHeaderElements{
     head_menu = `${this.head_wide}>ion-icon[name="menu"]`
     head_home = `${this.head_wide}:nth-child(1)`;
     head_login = `${this.head_wide}:nth-child(2)>div`;
-    head_register = `${this.head_wide}:nth-child(3)>div`;
-    head_contact_us = `${this.head_wide}:nth-child(4)>div`;
-    head_how_to = `${this.head_wide}:nth-child(5)>div`;
+    head_register = `${ this.head_wide }:nth-child(3)>div`;
+    head_contact_us = `${ this.head_wide }:nth-child(4)>div`;
+    head_how_to = `${ this.head_wide }:nth-child(5)>div`;
 
     // when logged in
-    head_reserve = `${this.head_wide}:nth-child(2)>div`;
-    head_past = `${this.head_wide}:nth-child(3)>div`;
-    head_schedule = `${this.head_wide}:nth-child(4)>div`;
+    head_reserve = `${ this.head_wide }:nth-child(2)>div`;
+    head_past = `${ this.head_wide }:nth-child(3)>div`;
+    head_schedule = `${ this.head_wide }:nth-child(4)>div`;
     // head_logout = `${this.head_wide}:nth-child(5)>div`;
-    head_login_contact_us = `${this.head_wide}:nth-child(5)>div`;
-    head_login_how_to = `${this.head_wide}:nth-child(6)>div`;
-    head_login_dashboard = `${this.head_wide}:nth-child(7)>div`;
+    head_login_contact_us = `${ this.head_wide }:nth-child(5)>div`;
+    head_login_how_to = `${ this.head_wide }:nth-child(6)>div`;
+    head_login_dashboard = `${ this.head_wide }:nth-child(7)>div`;
 
     head_mobile = `${ this.head }>.teacher-mobile-toolbar`;
     head_mobile_home = `${ this.head_mobile }>ion-grid>ion-row>ion-col:nth-child(1)`;
@@ -224,33 +224,39 @@ export class OntueLoginPage extends  OntueRegistrationPage implements ILoginPage
     }
 }
 
-export class OntueDashboardPage extends OntueRegistrationPage implements ILoginPage{
+export class OntueDashboardPage extends OntueLoginPage implements ILoginPage{
     dashboard_page = ontue_page_list.dashboard;
     form_list = `#teacher-intro1>.intro-wrapper>.page>ion-grid>ion-row`;
     dashboard_navigation = '#teacher-navigation';
     // Login Form
-    login_form = `${this.form_list}>ion-col:nth-child(1)>ion-card>form>ion-list`;
-    login_email = `${this.login_form}>ion-item:nth-child(1)>div>div>ion-input>input[name="email"]`;
-    login_password = `${this.login_form}>ion-item:nth-child(2)>div>div>ion-input>input[name="password"]`;
-    login_btnSubmit = `${this.login_form}>div>button`;
+    // login_form = `${this.form_list}>ion-col:nth-child(1)>ion-card>form>ion-list`;
+    // login_email = `${this.login_form}>ion-item:nth-child(1)>div>div>ion-input>input[name="email"]`;
+    // login_password = `${this.login_form}>ion-item:nth-child(2)>div>div>ion-input>input[name="password"]`;
+    // login_btnSubmit = `${this.login_form}>div>button`;
     
     // Registration Form
     register_form = `${this.form_list}>ion-col:nth-child(2)>ion-card>form>ion-list`;
     register_button = `${ this.register_form }>div>button`;
 
-    dashboard_item = `${ this.dashboard_navigation }>ion-grid>ion-row>ion-col`;
+    dashboard_row_1 = `${ this.dashboard_navigation }>ion-grid>ion-row:nth-child(1)>ion-col`;
+    dashboard_row_2 = `${ this.dashboard_navigation }>ion-grid>ion-row:nth-child(2)>ion-col`;
+    dashboard_row_3 = `${ this.dashboard_navigation }>ion-grid>ion-row:nth-child(3)>ion-col`;
+    dashboard_row_4 = `${ this.dashboard_navigation }>ion-grid>ion-row:nth-child(4)>ion-col`;
     
-    dashboard_reserve =  `${this.dashboard_item}:nth-child(1)`;
-    dashboard_past_class =  `${this.dashboard_item}:nth-child(2)`;
-    dashboard_schedule =  `${this.dashboard_item}:nth-child(3)`;
-    dashboard_curriculum_vitae =  `${this.dashboard_item}:nth-child(4)`;
-    dashboard_profile_update =  `${this.dashboard_item}:nth-child(5)`;
-    dashboard_payment_information =  `${this.dashboard_item}:nth-child(6)`;
-    dashboard_message_list =  `${this.dashboard_item}:nth-child(7)`;
-    // dashboard_contact_us
-    // dashboard_guideline
-    dashboard_term_condition =  `${this.dashboard_item}:nth-child(10)`;
-    dashboard_setting =  `${this.dashboard_item}:nth-child(11)`;
+    dashboard_reserve =  `${this.dashboard_row_1}:nth-child(1)`;
+    dashboard_past_class =  `${this.dashboard_row_1}:nth-child(2)`;
+    dashboard_schedule =  `${this.dashboard_row_1}:nth-child(3)`;
+    
+    dashboard_curriculum_vitae =  `${this.dashboard_row_2}:nth-child(1)`;
+    dashboard_profile_update =  `${this.dashboard_row_2}:nth-child(2)`;
+    dashboard_payment_information =  `${this.dashboard_row_2}:nth-child(3)`;
+
+    dashboard_message_list =  `${this.dashboard_row_3}:nth-child(1)`;
+    dashboard_contact_us = `${this.dashboard_row_3}:nth-child(2)`;
+    dashboard_guideline = `${this.dashboard_row_3}:nth-child(3)`;
+
+    dashboard_term_condition =  `${this.dashboard_row_4}:nth-child(1)`;
+    dashboard_setting =  `${this.dashboard_row_4}:nth-child(2)`;
 
     dashboard_item_list = [
 
@@ -261,8 +267,8 @@ export class OntueDashboardPage extends OntueRegistrationPage implements ILoginP
         { idx : 'dashboard-profile-update', menu : this.dashboard_profile_update, expect : ontue_page_list.register },
         { idx : 'dashboard-payment-information', menu : this.dashboard_payment_information, expect : ontue_page_list.payment_setting },
         { idx : 'dashboard-message-list', menu : this.dashboard_message_list, expect : ontue_page_list.message },
-        // { idx : 'dashboard-contact-us', menu : `${this.dashboard_item}:nth-child(8)`, expect : ontue_page_list.qna },
-        // { idx : 'dashboard-guideline', menu : `${this.dashboard_item}:nth-child(9)`, expect : ontue_page_list.guidline },
+        { idx : 'dashboard-contact-us', menu : this.dashboard_contact_us, expect : null },
+        { idx : 'dashboard-guideline', menu : this.dashboard_guideline, expect : null },
         { idx : 'dashboard-term-condition', menu : this.dashboard_term_condition, expect : ontue_page_list.policy },
         { idx : 'dashboard-settings', menu : this.dashboard_setting, expect : ontue_page_list.setting },
         
@@ -404,7 +410,7 @@ export class OntuePaymentSettingPage extends OntueDashboardPage {
         this.pay_setting_address,
         this.pay_setting_zip,
     ] 
-    pay_setting_submit = `${ this.pay_setting_page }>ion-content>.scroll-content>.page>.page-body>ion-item:nth-child(2)>.item-inner>.input-wrapper>ion-label`;
+    pay_setting_submit = `${ this.pay_setting_page }>ion-content>.scroll-content>.page>.page-body>ion-item:nth-child(2)>.item-inner>.input-wrapper>ion-label>.button`;
 
     // payment method
     paySelectMethod( value ) {
@@ -471,5 +477,19 @@ export class OntueCurriculumVitaPage extends OntueDashboardPage {
     private cv_getRadio( value ){
         return `input[value="${value}"]`;
     }
+
+}
+
+export class OntueTermConditionPage extends OntueDashboardPage {
+    term_con_page = ontue_page_list.policy
+    term_con_reminder = `page[name="ontue.reminders"]`;
+    term_con_policy = `page[name="ontue.policy"]`;
+    term_con_guideline = `page[name="ontue.guideline"]`;
+
+    content_list = [
+        this.term_con_reminder,
+        this.term_con_policy,
+        this.term_con_guideline
+    ]
 
 }
