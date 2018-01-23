@@ -444,7 +444,7 @@ export class OntueCurriculumVitaPage extends OntueDashboardPage {
     cv_gender = this.cv_getRadio;
     // cv_birthday = this.cv_getField(7);
     cv_address = this.cv_getField('address');
-    // cv_profile_pic = this.cv_getField(9);
+    cv_profile_pic = `${ this.cv_form }>ion-item:nth-child(9)>.item-inner>.input-wrapper>ion-label>div>div>input`;
     cv_nationality = `select[name="nationality"]`;
     cv_education = this.cv_getField('last_education');
     cv_major = this.cv_getField('major');
@@ -452,7 +452,7 @@ export class OntueCurriculumVitaPage extends OntueDashboardPage {
     cv_greeting = `textarea[name="introduction"]`;
     cv_youtube = this.cv_getField('youtube_video_url');
     cv_kakao_id = this.cv_getField('kakaotalk_id');
-    cv_qr_mark = this.cv_getField(17);
+    cv_qr_mark = `${ this.cv_form }>ion-item:nth-child(17)>.item-inner>.input-wrapper>ion-label>file-upload-widget>.file-upload>.file-upload-button>input`;
     cv_submit = `${ this.cv_form }>ion-item:nth-child(18)>.item-inner>.input-wrapper>ion-label>button`;
 
     cv_text_list = [
@@ -490,6 +490,6 @@ export class OntueTermConditionPage extends OntueDashboardPage {
         this.term_con_reminder,
         this.term_con_policy,
         this.term_con_guideline
-    ]
+    ];
 
 }

@@ -254,12 +254,14 @@ export abstract class PuppeteerExtension{
      * @param inputElement - puppeteer.page.$(input-selector); 
      */
     async upload( filePath, inputElement ) {
-        
+        let input = await this.page.$(inputElement);
         console.log('UPLOAD: ',filePath);
         await this.page.waitFor(500);
-        await inputElement.uploadFile( filePath )
+        await input.uploadFile( filePath )
             .then(a => this.success('Image Uploaded'))
             .catch( async e => { await this.fatal('error-uploading-file', e) } );
+
+        await this.page.waitFor(500);
     }
     /**
      * Display the activity summary of the test.

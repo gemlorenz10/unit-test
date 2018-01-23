@@ -8,7 +8,7 @@ export let path_to_images = '../../picture';
 export let breakpoint = 690;
 
 export let browserOption = {
-    headless : true,
+    headless : false,
     devtools : false,
     // web
     viewport : {

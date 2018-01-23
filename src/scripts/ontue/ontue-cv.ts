@@ -1,8 +1,9 @@
 ﻿import { teacher_data } from './../../data/test-data';
 import { OntueCurriculumVitaPage } from './../lib/ontue-library';
-import { browserOption } from './../lib/global-library';
+import { browserOption, path_to_images } from './../lib/global-library';
 import { IScript } from './../lib/interface';
 import { OntueDashboard } from './ontue-dashboard';
+import * as path from 'path';
 
 export class OntueCurriculumVitae extends OntueDashboard {
     constructor( private cvUser = teacher_data, private cvPage = new OntueCurriculumVitaPage ) {
@@ -32,6 +33,11 @@ export class OntueCurriculumVitae extends OntueDashboard {
     private async fillUpCV() {
         let page = this.cvPage;
         let user = this.cvUser;
+        let qr_path = path.join(__dirname, '../../../picture/qr', user.qr_mark);
+        let profile_path = path.join(__dirname, '../../../picture', user.photo);
+
+        await this.upload( qr_path , page.cv_qr_mark );
+        await this.upload( profile_path, page.cv_profile_pic );
 
         await this.type( page.cv_teacher_id, user.name, { idx : 'type-teacher-id' } );
         await this.type( page.cv_fullname, user.fullname, { idx : 'type-fullname' } );
@@ -44,8 +50,6 @@ export class OntueCurriculumVitae extends OntueDashboard {
         await this.type( page.cv_greeting, user.greeting, { idx : 'type-greetings', delay : 60 } );
         await this.type( page.cv_youtube, user.youtube, { idx : 'type-youtube-video' } );
         await this.type( page.cv_kakao_id, user.kakao, { idx : 'type-kakao-id' } );
-
-        await this.upload(  user.qr_mark , page.cv_qr_mark );
 
         await this.click( page.cv_submit, { idx : 'submit-cv' } );
 

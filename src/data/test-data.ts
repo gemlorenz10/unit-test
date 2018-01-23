@@ -31,7 +31,7 @@ export let teacher_data = {
     "major":"English",
     "year_start_teaching":"2010",
     "youtube":"https://www.youtube.com/watch?v=5CHuPIo0a78",
-    "qr_mark":"",
+    "qr_mark":"withcenter1.png",
     "greeting":`Lorem ipsum dolor sit amet, his purto fierent volutpat in, per debet iuvaret delicatissimi cu, vis an option debitis. Timeam debitis pri te. Vidit eirmod pri an, id sea elit saperet pericula. In hinc esse duo, ea mei nominati instructior.`
 
 
@@ -78,7 +78,7 @@ export let schedule_data = {
 
 export let teacher_search_query = {
     "gender":"f",
-    "grade":"all"
+    "grade":"recommend"
 };
 
 export let payment_setting = {
