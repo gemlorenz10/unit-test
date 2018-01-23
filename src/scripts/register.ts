@@ -93,7 +93,7 @@ export class Register extends PuppeteerExtension {
     private async _checkAlertRegister() {
         let user: IUserInfo = this.userRegister
 
-        await this.handleAlertMessage('ion-toast', { idx : 'schedule-handle-toast' });
+        await this.handleAlertMessage( { idx : 'schedule-handle-toast' } );
         await this.waitInCase(.5);
 
     }
