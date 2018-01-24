@@ -1,34 +1,45 @@
-﻿import { ReserveSchedule } from './katalk-reserve-sched';
+﻿import { student_data } from './../../data/test-data';
+import { KatalkReservationListPage } from './../lib/katalk-library';
+import { ReserveSchedule } from './katalk-reserve-sched';
 import { student_domain, browserOption } from './../lib/global-library';
 import { Login } from "../login";
-import { KatalkReservationListPage } from '../lib/katalk-library';
 
-let reserve_list = new KatalkReservationListPage;
-class KatalkReservationList extends Login {
+export class KatalkReservationList extends Login {
 
-    constructor( private katalkUserInfo, private katalkReservePage ) {
-        super( katalkUserInfo, katalkReservePage )
+    constructor( private reservationUser = student_data, private reservationPage = new KatalkReservationListPage ) {
+        super( reservationUser, reservationPage )
     }
     async main() {
-        console.log('Test: ', student_domain )
-        await this.start( this.katalkReservePage.domain, this.katalkReservePage.sitename, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
-        if ( this.katalkUserInfo ) await this.submitLogin();
-        await this.open( reserve_list.head_reservation );
-        await this.checkUserPoint()
 
-        await this.exitProgram(0);
+        await this.initReservation();
+        await this.searchSummary();
+        await this.countReservationList();
+
     }
 
-    async checkUserPoint() {
-        await this.displayChild( reserve_list.rv_header_points, 'Points :' );
-        await this.displayChild( reserve_list.rv_search_period, 'Search Period' );
-        await this.displayChild( reserve_list.rv_search_result, 'Result Count' );
-        let row_count = await this.getCount( reserve_list.rv_reservation_row );
-        this.success( 'Schedule Count in table:'+row_count );
-        // let i;
-        // for ( i = 0 ; i < row_count ; i++ ) {
-        //     await this.displayChild( ``, 'Row' )
-        // }
+    private async searchSummary() {
+        let page = this.reservationPage;
+        let user = this.reservationUser;
+        let search_period = await this.getText( page.rv_search_period );
+        let result = await this.getText( page.rv_search_result );
+
+        this.success('Search Period: ' + search_period);
+        this.success('Result :' + result );
+    }
+
+    private async countReservationList() {
+        let page = this.reservationPage;
+        await this.countSelector( page.rv_row, 'Reservations displayed ' );
+    }
+    
+    private async initReservation() {
+        let page = this.reservationPage;
+        let user = this.reservationUser;
+        if ( !this.page ) await this.start( page.domain, page.sitename, browserOption ).catch( async e => await this.fatal('fail-webpage', `Can't open ${student_domain}!`) );
+        if ( user ) await this.submitLogin();
+
+        await this.open( page.head_reservation, [ page.rv_page ], { idx : 'open-reservation-list' } );
+    
     }
 
 }

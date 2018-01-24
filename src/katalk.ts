@@ -1,4 +1,5 @@
-﻿import { KatalkTeacherList } from './scripts/katalk/katalk-teacher-list';
+﻿import { KatalkReservationList } from './scripts/katalk/katalk-reservation-list';
+import { KatalkTeacherList } from './scripts/katalk/katalk-teacher-list';
 import { KatalkHome } from './scripts/katalk/katalk-home';
 import { Login } from './scripts/login';
 import { ISummary } from './scripts/lib/interface';
@@ -26,6 +27,7 @@ global['register'] = new Register( register_page, student_register );
 global['menu'] = new Menu( login_page, student_data );
 global['menu-no-user'] = new Menu( login_page );
 global['teacher-list'] = new KatalkTeacherList ( student_data, teacher_search_query );
+global['reservation'] = new KatalkReservationList()
 
 // katalk testers
 global['home'] = new KatalkHome( student_data, home_page );

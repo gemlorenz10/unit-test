@@ -34,7 +34,6 @@ let katalk_page_list = {
     logout : 'page-home' //expects home page when logged-out.
 }
 
-
 /**
  * katalk elements queries for Header navbar
  */
@@ -113,7 +112,6 @@ export class KatalkHeaderElements {
     head_mobile_qna = `${ this.head_mobile_submenu }>.group>div:nth-child(4)`;
     
 }
-
 
 export class KatalkMenuPage extends KatalkHeaderElements{
     menu_page = katalk_page_list.menu;
@@ -231,59 +229,6 @@ export class KatalkRegistrationPage extends KatalkMenuPage {
 
 }
 
-export class KatalkTeacherListPage extends KatalkLoginPage {
-    list_page = 'teacher-list-page';
-    // sections
-    list_section_header = `${this.list_page}>ion-content>.scroll-content>.page>.page-header`;
-    list_section_desc = `${this.list_page}>ion-content>.scroll-content>.page>.page-desc`;
-    list_section_body = `${this.list_page}>ion-content>.scroll-content>.page>.page-body`;
-    list_section_option = `${this.list_page}>ion-content>.scroll-content>.page>.options`;
-
-    // header
-    list_btn_option = `${this.list_section_header}>div>ion-icon[name="options"]`;
-    // list
-    list_teacher_card = `${this.list_section_body}>ion-grid>ion-row>ion-col`;
-    // options
-    list_option_list = `${this.list_section_option}>ion-list`;
-    list_option_gender = `${this.list_option_list}>.item:nth-child(2)`//>div>div>ion-select`;
-    list_option_grade = `${this.list_option_list}>.item:nth-child(3)`//>div>div>ion-select`;
-    list_btn_close_option = `${this.list_section_option}>button`;
-
-    // option
-    list_alert = `ion-alert>.alert-wrapper`;
-    list_alert_option = `${ this.list_alert }>div:nth-child(3)>.alert-radio-group`;
-    list_option_confirm = `${ this.list_alert }>div:nth-child(4)>button:nth-child(2)`;
-    list_option_cancel = `${ this.list_alert }>div:nth-child(4)>button:nth-child(1)`;
-
-    // gender
-    list_gender_female = `${ this.list_alert_option }>button:nth-child(1)`;
-    list_gender_male = `${ this.list_alert_option }>button:nth-child(2)`;
-    list_gender_all = `${ this.list_alert_option }>button:nth-child(3)`;
-
-    // grade
-    list_grade_recommended = `${ this.list_alert_option }>button:nth-child(1)`;
-    list_grade_all = `${ this.list_alert_option }>button:nth-child(2)`;
-}
-
-
-
-
-export class KatalkReservationListPage extends KatalkLoginPage {
-    rv_list_page = katalk_page_list.reservation;
-    rv_login_first_toast = 'ion-toast>error-42205';
-    // page header
-    rv_header = `${this.rv_list_page}>ion-content`;
-    rv_header_points = `${this.rv_header}.page>div:nth-child(1)`;
-    rv_header_options = `${this.rv_header}.page>.pointer`;
-    // search results
-    rv_session_list = `${this.rv_header}>.page>session-list>section`;
-    rv_search_period = `${this.rv_session_list}>section.search-result>div:nth-child(1)`;
-    rv_search_result = `${this.rv_session_list}>section.search-result>div:nth-child(2)`;
-    // reservation table
-    rv_reservation_table = `${this.rv_session_list}>div.books>table>tbody`;
-    rv_reservation_row = `${this.rv_reservation_table}>tr`;
-}
-
 /**
  * katalk elements queries for Menu
  */
@@ -309,4 +254,68 @@ export class KatalkHomePage extends KatalkLoginPage {
     // teacher list
     home_teacher_list = '.teacher-list';
     home_teacher_pointer = `${ this.home_teacher_list }>ion-grid>ion-row>.pointer`;
- }
+}
+
+export class KatalkTeacherListPage extends KatalkLoginPage {
+    list_page = 'teacher-list-page';
+    // sections
+    list_section_header = `${ this.list_page }>ion-content>.scroll-content>.page>.page-header`;
+    list_section_desc = `${ this.list_page }>ion-content>.scroll-content>.page>.page-desc`;
+    list_section_body = `${ this.list_page }>ion-content>.scroll-content>.page>.page-body`;
+    list_section_option = `${ this.list_page }>ion-content>.scroll-content>.page>.options`;
+
+    // header
+    list_btn_option = `${ this.list_section_header }>div>ion-icon[name="options"]`;
+    // list
+    list_teacher_card = `${ this.list_section_body }>ion-grid>ion-row>ion-col`;
+    // options
+    list_option_list = `${ this.list_section_option }>ion-list`;
+    list_option_gender = `${ this.list_option_list }>.item:nth-child(2)`//>div>div>ion-select`;
+    list_option_grade = `${ this.list_option_list }>.item:nth-child(3)`//>div>div>ion-select`;
+    list_btn_close_option = `${ this.list_section_option }>button`;
+
+    // option
+    list_alert = `ion-alert>.alert-wrapper`;
+    list_alert_option = `${ this.list_alert }>div:nth-child(3)>.alert-radio-group`;
+    list_option_confirm = `${ this.list_alert }>div:nth-child(4)>button:nth-child(2)`;
+    list_option_cancel = `${ this.list_alert }>div:nth-child(4)>button:nth-child(1)`;
+
+    // gender
+    list_gender_female = `${ this.list_alert_option }>button:nth-child(1)`;
+    list_gender_male = `${ this.list_alert_option }>button:nth-child(2)`;
+    list_gender_all = `${ this.list_alert_option }>button:nth-child(3)`;
+
+    // grade
+    list_grade_recommended = `${ this.list_alert_option }>button:nth-child(1)`;
+    list_grade_all = `${ this.list_alert_option }>button:nth-child(2)`;
+}
+
+export class KatalkReservationListPage extends KatalkLoginPage {
+    rv_page = katalk_page_list.reservation;
+    // page header
+    rv_header = `${this.rv_page}>ion-content>.scroll-content>.page>.page-header`;
+    rv_header_points = `${this.rv_header}.page>div:nth-child(1)`;
+    rv_header_options = `${this.rv_header}.page>div:nth-child(2)`;
+    // search results
+    rv_session_list = `${this.rv_page}>ion-content>.scroll-content>.page>session-list`;
+    rv_search_period = `${this.rv_session_list}>section>.search-result>div:nth-child(1)`;
+    rv_search_result = `${this.rv_session_list}>section>.search-result>div:nth-child(2)`;
+    // reservation table
+    rv_table = `${this.rv_session_list}>section>.books>table>tbody`;
+    rv_row = `${this.rv_table}>tr`;
+}
+
+export class KatalkPastSessionPage extends KatalkLoginPage {
+    past_page = katalk_page_list.past_session;
+
+    past_header = `${this.past_page}>ion-content>.scroll-content>.page>.page-header`;
+    past_header_points = `${this.past_header}.page>div:nth-child(1)`;
+    past_header_options = `${this.past_header}.page>div:nth-child(2)`;
+    // search results
+    past_session_list = `${this.past_page}>ion-content>.scroll-content>.page>session-list`;
+    past_search_period = `${this.past_session_list}>section>.search-result>div:nth-child(1)`;
+    past_search_result = `${this.past_session_list}>section>.search-result>div:nth-child(2)`;
+    // resepastation table
+    past_table = `${this.past_session_list}>section>.books>table>tbody`;
+    past_row = `${this.past_table}>tr`;
+}

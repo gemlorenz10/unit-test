@@ -30,6 +30,14 @@ unit-testing for ontue and kakatalkenglish
 
 #### For Katalkenglish
 ... Options will be documented once done.
+- *login* - tests login.
+- *register-random* - registers ramdom data.  
+- *register* - register data found in test-data.ts.
+- *menu* - tests menus without logging in.
+- *menu-no-login* - logs in then tests the menus.
+- *teacher-list* - searches teachers based on query found in test-data.ts
+- *reservation* - counts the displayed reservations in the current page.
+- *home* - tests homepage contents. 
 
 
 # Installation
