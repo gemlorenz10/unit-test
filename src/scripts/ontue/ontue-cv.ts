@@ -24,7 +24,7 @@ export class OntueCurriculumVitae extends OntueDashboard {
 
         if ( !this.page ) await this.start( page.domain, 'ontue', browserOption );
         await this.submitLogin();
-        await this.open( page.head_login_dashboard, [ page.dashboard_page ], { idx : 'go-to-dashboard' } );
+        await this.open( page.head_dashboard, [ page.dashboard_page ], { idx : 'go-to-dashboard' } );
         await this.open( page.dashboard_curriculum_vitae, [ page.cv_page ], { idx : 'go-to-cv' } );
 
         await this.handleAlertMessage({ idx : 'alert-on-cv-load' })

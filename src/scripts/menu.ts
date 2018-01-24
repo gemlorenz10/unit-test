@@ -25,7 +25,7 @@ export class Menu extends Login {
         if ( !this.page ) await this.startMenu();
         if ( this.menu_user ) await this.submitLogin();
         if ( browserOption.viewport.width > breakpoint ) await this.checkHeadMenu();
-        await this.checkMenuList();
+        // await this.checkMenuList();
     }
 
     async startMenu() {

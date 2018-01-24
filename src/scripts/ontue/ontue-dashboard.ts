@@ -30,7 +30,7 @@ export class OntueDashboard extends Login{
         if ( user && !user.is_new_teacher ) await this.dashboardLogin();
         else await this.dashboardRegister();
         
-        await this.open( page.head_login_dashboard, [page.dashboard_page], { idx : 'go-to-dashboard' } );
+        await this.open( page.head_dashboard, [page.dashboard_page], { idx : 'go-to-dashboard' } );
     
     }
     
@@ -55,7 +55,7 @@ export class OntueDashboard extends Login{
     async dashboardTest() {
         let re;
         let dashboard_list = this.dashboardPage.dashboard_item_list;
-        let head_dashboard = this.dashboardPage.head_login_dashboard;
+        let head_dashboard = this.dashboardPage.head_dashboard;
         let head_mobile_home = this.dashboardPage.head_mobile_home;
         let i = 1, menu_option;
         let is_mobile = browserOption.viewport.width <= breakpoint;

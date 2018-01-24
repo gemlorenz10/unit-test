@@ -22,7 +22,7 @@ export class OntuePastSchedule extends OntueDashboard {
         await this.waitInCase(.5);
         await this.open( page.head_home, [ page.home ], { idx : 'go-to-homepage' } );
         await this.submitLogin()
-        await this.open( page.head_login_dashboard, [page.dashboard_page], { idx : 'open-dashboard' } );
+        await this.open( page.head_dashboard, [page.dashboard_page], { idx : 'open-dashboard' } );
         await this.open( page.dashboard_past_class, [page.past_page], { idx : 'open-past-schedule' } );
     
     }

@@ -23,11 +23,11 @@ export class OntuePaymentSetting extends OntueDashboard {
         let is_mobile = browserOption.viewport.width <= breakpoint;
         // await this.open( payment_page.dashboard_payment_information, [ payment_page.pay_setting_page ], { idx : 'open-payment-settings' } )
         if ( !is_mobile ) {
-            await this.open( payment_page.head_menu, [ payment_page.menu_payment_setting ], { idx : 'open-menu-page' } );
-            await this.open( payment_page.menu_payment_setting, [ payment_page.pay_setting_page ], { idx : 'open-payment-setting-page' } );
+            await this.open( payment_page.head_dashboard, [ payment_page.dashboard_payment_information ], { idx : 'open-menu-page' } );
+            await this.open( payment_page.dashboard_payment_information, [ payment_page.pay_setting_page ], { idx : 'open-payment-setting-page' } );
         } else {
-            await this.open( payment_page.head_mobile_menu, [ payment_page.menu_payment_setting ], { idx : 'open-menu-page' } );
-            await this.open( payment_page.menu_payment_setting, [ payment_page.pay_setting_page ], { idx : 'open-payment-setting-page' } );
+            await this.open( payment_page.head_mobile_menu, [ payment_page.dashboard_payment_information ], { idx : 'open-menu-page' } );
+            await this.open( payment_page.dashboard_payment_information, [ payment_page.pay_setting_page ], { idx : 'open-payment-setting-page' } );
         }
     }
 

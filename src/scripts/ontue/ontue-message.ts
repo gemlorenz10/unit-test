@@ -21,8 +21,8 @@ export class OntueMessage extends Login implements IScript {
         let option = { success_message : 'Open Message page', error_message : 'Failed to open Message page', idx : 'message-page', delay: 1000 }
         
         await this.submitLogin();
-        await this.open( ontue_page.head_menu, [ ontue_page.menu_page ], option );
-        await this.open( ontue_page.menu_message, [ontue_page.msg_page], option ); // Changed, Open it in 
+        await this.open( ontue_page.head_dashboard, [ ontue_page.dashboard_page ], option );
+        await this.open( ontue_page.dashboard_message_list, [ontue_page.msg_page], option ); // Changed, Open it in 
         await this.viewPages();
 
     }

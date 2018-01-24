@@ -25,7 +25,7 @@ export class OntueTermCondition extends OntueDashboard {
 
         if ( user ) await this.submitLogin();
 
-        await this.open( page.head_login_dashboard, [page.dashboard_page], { idx : 'go-to-dashboard' } );
+        await this.open( page.head_dashboard, [page.dashboard_page], { idx : 'go-to-dashboard' } );
         await this.open( page.dashboard_term_condition, [ page.term_con_page ], { idx : 'go-to-term-condition' } );
 
         await this.handleAlertMessage( { idx : 'term-condition' } );

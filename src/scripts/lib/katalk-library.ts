@@ -55,6 +55,14 @@ export class KatalkHeaderElements {
     head_payment = ".header-class-payment";
     head_help = ".header-class-help";
     head_menu = ".header-menu";
+
+    head_login = ".header-login";
+    head_register = ".header-register";
+
+
+    // mobile head
+    head_mobile_
+
     constructor(){
     }
     /**
@@ -63,8 +71,8 @@ export class KatalkHeaderElements {
     head_expect_list_login = [
             { menu : this.head_home,            expect : katalk_page_list.home, idx: 'katalk-head-home' },
             { menu : this.head_reservation,     expect : katalk_page_list.reservation, idx: 'katalk-head-reservation' },
-            // { menu : this.head_level_test,     expect : katalk_page_list.teacher_list, idx: 'katalk-head-level-test' },
-            { menu : this.head_reserve, expect : katalk_page_list.teacher_list, idx: 'katalk-head-reserve-session' },
+            { menu : this.head_level_test,     expect : katalk_page_list.teacher_list, idx: 'katalk-head-level-test' },
+            // { menu : this.head_reserve, expect : katalk_page_list.teacher_list, idx: 'katalk-head-reserve-session' },
             { menu : this.head_schedule_available,    expect : katalk_page_list.schedule_available, idx: 'katalk-head-schedule-now' },
             { menu : this.head_message,         expect : katalk_page_list.message, idx: 'katalk-head-message' },
             { menu : this.head_past_reservation, expect : katalk_page_list.past_session, idx: 'katalk-head-reservation' },
@@ -74,31 +82,20 @@ export class KatalkHeaderElements {
             { menu : this.head_help,            expect : katalk_page_list.help, idx: 'katalk-head-help' },
             { menu : this.head_menu,            expect : katalk_page_list.menu, idx: 'katalk-head-menu' }
 
-            // { menu : this.head_curriculum,      expect : katalk_page_list.curriculum },
-            // { menu : this.head_freeClass,       expect : katalk_page_list.free_class },
-            // { menu : this.head_forum,           expect : katalk_page_list.forum },
-
         ];
     /**
      * expected element list for non-user.
      */
     head_expect_list = [
         { menu : this.head_home,            expect : katalk_page_list.home, idx: 'katalk-head-home' },
-        { menu : this.head_reservation,     expect : katalk_page_list.reservation, idx: 'katalk-head-reservation' },
-        // { menu : this.head_level_test,     expect : katalk_page_list.teacher_list, idx: 'katalk-head-level-test' },
-        { menu : this.head_reserve, expect : katalk_page_list.teacher_list, idx: 'katalk-head-reserve-session' },
+        { menu : this.head_login,     expect : katalk_page_list.login, idx: 'katalk-head-level-test' },
+        { menu : this.head_register,     expect : katalk_page_list.register, idx: 'katalk-head-level-test' }, 
+        { menu : this.head_level_test,     expect : katalk_page_list.teacher_list, idx: 'katalk-head-level-test' },
         { menu : this.head_schedule_available,    expect : katalk_page_list.schedule_available, idx: 'katalk-head-schedule-now' },
-        { menu : this.head_message,         expect : katalk_page_list.message, idx: 'katalk-head-message' },
-        { menu : this.head_past_reservation, expect : katalk_page_list.past_session, idx: 'katalk-head-reservation' },
         { menu : this.head_class_comments,   expect : katalk_page_list.class_comment, idx: 'katalk-head-comment' },
-        // { menu : this.head_class_qna,       expect : katalk_page_list.class_qna, idx: 'head-qna' },
         { menu : this.head_payment,         expect : katalk_page_list.payment, idx: 'katalk-head-payment' },
         { menu : this.head_help,            expect : katalk_page_list.help, idx: 'katalk-head-help' },
         { menu : this.head_menu,            expect : katalk_page_list.menu, idx: 'katalk-head-menu' }
-
-        // { menu : this.head_curriculum,      expect : katalk_page_list.curriculum },
-        // { menu : this.head_freeClass,       expect : katalk_page_list.free_class },
-        // { menu : this.head_forum,           expect : katalk_page_list.forum },
     ];
 
     
@@ -264,8 +261,8 @@ export class KatalkTeacherListPage extends KatalkLoginPage {
     list_gender_all = `${ this.list_alert_option }>button:nth-child(3)`;
 
     // grade
-    list_grade_recommended = `${ this.list_alert_option }>button:nth-child(2)`;
-    list_grade_all = `${ this.list_alert_option }>button:nth-child(3)`;
+    list_grade_recommended = `${ this.list_alert_option }>button:nth-child(1)`;
+    list_grade_all = `${ this.list_alert_option }>button:nth-child(2)`;
 }
 
 

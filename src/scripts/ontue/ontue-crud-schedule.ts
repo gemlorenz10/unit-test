@@ -43,7 +43,7 @@ export class OntueSchedule extends OntueDashboard {
         await this.waitInCase(.5);
         await this.open( page.head_home, [ page.home ], { idx : 'go-to-homepage' } );
         await this.submitLogin();
-        await this.open( page.head_login_dashboard, [page.dashboard_page], {idx:'open-dashboard'} )
+        await this.open( page.head_dashboard, [page.dashboard_page], {idx:'open-dashboard'} )
         await this.open( page.dashboard_schedule, [page.sched_page], { success_message: 'Open schedule page.', idx : 'schedule-open-page' } );
         
     }
