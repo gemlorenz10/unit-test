@@ -37,7 +37,8 @@ unit-testing for ontue and kakatalkenglish
 - *menu-no-login* - logs in then tests the menus.
 - *teacher-list* - searches teachers based on query found in test-data.ts
 - *reservation* - counts the displayed reservations in the current page.
-- *home* - tests homepage contents. 
+- *home* - tests homepage contents.
+- *past-session* - Counts the past sessions displayed in page. *will update for list filtering/search*
 
 
 # Installation
