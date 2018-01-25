@@ -18,12 +18,13 @@ export class OntueHome extends Login {
         await this.initHome();
         
         if ( this.homeUser ) {
-            await this.checkIntro().then( a => this.success( 'Intro found will login and check if intro will disappear.' ) );
+            // await this.checkIntro().then( a => this.success( 'Intro found will login and check if intro will disappear.' ) );
             await this.submitLogin()
             await this.waitDisappear( this.homePage.home_intro, 2 )
                 .then( a => this.success('Intro disappears.') )
                 .catch( e => this.fatal( e.code, 'Intro did not disappear after timeout.') )
             await this.checkPage();
+
         } else {
             await this.checkPage();
         }
@@ -46,22 +47,10 @@ export class OntueHome extends Login {
 
     async checkPage() {
         let home = this.homePage
-        let content_list = home.content;
-        let content, i = 1;
 
-        for( content of content_list ){
-            let option = { idx:  content.idx , error_message : `Cannot find "${content.idx}".`, delay : 2000  }; 
-            
-            await this.waitAppear ( content.selector, option )
-                .then( a => this.success(`Content ${ option.idx } found.`) )
-                .catch( async e => await this.error( e.code, e.message ) );
-            
-            console.log( '--------------\nCONTENTS' );
-            console.log( await this.getText( content.selector ) );
-            console.log( 'END OF CONTENTS\n--------------' );
-            
-            i++;
-        }
+        console.log( '--------------\nCONTENTS' );
+        console.log( await this.getText( home.home_content ) );
+        console.log( 'END OF CONTENTS\n--------------' );
 
     }
 

@@ -285,22 +285,22 @@ export class OntueHomePage extends OntueLoginPage {
 
     // intro
     home_intro = ontue_page_list.intro;
-    home_register_btn = `${this.home_page}>${this.home_intro}.register-button`;
-    
+    // home_register_btn = `${this.home_page}>${this.home_intro}.register-button`;
+    home_content = "#home-teacher-content"
     // content
-    home_reminder = `${this.home_page}>ion-content>div:nth-child(2)>.page>page[name='ontue.reminders']`;
-    home_policy = `${this.home_page}>ion-content>div>.page>page[name='ontue.policy']`;
-    home_guideline = `${this.home_page}>ion-content>div>.page>page[name='ontue.guideline']`;
+    // home_reminder = `${this.home_content}>ion-content>div:nth-child(2)>.page>page[name='ontue.reminders']`;
+    // home_policy = `${this.home_content}>ion-content>div>.page>page[name='ontue.policy']`;
+    // home_guideline = `${this.home_content}>ion-content>div>.page>page[name='ontue.guideline']`;
 
-    // reminder content
-    home_discussion = `${this.home_reminder}>section>.xpage>button:nth-child(1)`;
-    home_qna = `${this.home_reminder}>section>.xpage>button:nth-child(2)`;
-    home_pages = `${this.home_reminder}>section>.xpage>button:nth-child(3)`;
+    // // reminder content
+    // home_discussion = `${this.home_reminder}>section>.xpage>button:nth-child(1)`;
+    // home_qna = `${this.home_reminder}>section>.xpage>button:nth-child(2)`;
+    // home_pages = `${this.home_reminder}>section>.xpage>button:nth-child(3)`;
 
     content = [
-        { selector : this.home_reminder, idx : 'ontue-home-reminder' },
-        { selector : this.home_policy, idx : 'ontue-home-policy' },
-        { selector : this.home_guideline, idx : 'ontue-home-guideline' }
+        // { selector : this.home_reminder, idx : 'ontue-home-reminder' },
+        // { selector : this.home_policy, idx : 'ontue-home-policy' },
+        // { selector : this.home_guideline, idx : 'ontue-home-guideline' }
     ];
 
     content_login = [
